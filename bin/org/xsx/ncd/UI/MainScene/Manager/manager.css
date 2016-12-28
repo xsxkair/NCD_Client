@@ -1,0 +1,5 @@
+
+.modifystatus:focused{
+  -fx-border-color:blue;
+  -fx-background-color:white;
+}

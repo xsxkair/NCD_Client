@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="250.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox alignment="CENTER" prefHeight="250.0" prefWidth="500.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label text="Welcome">
+                     <font>
+                        <Font size="29.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox alignment="BOTTOM_CENTER" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT" text="账号：" textAlignment="CENTER">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="UserNameText" onKeyPressed="#GB_LoginKeyEvent" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label text="密码：" textAlignment="CENTER">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Label>
+                  <PasswordField fx:id="UserPasswordText" onKeyPressed="#GB_LoginKeyEvent" />
+               </children>
+            </HBox>
+            <HBox fx:id="LoginHBox" alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <StackPane fx:id="LoginStackPane" prefHeight="150.0" prefWidth="200.0">
+                     <children>
+                        <Button fx:id="LoginButton" mnemonicParsing="false" onAction="#LoginAction" prefHeight="35.0" prefWidth="95.0" text="登   陆">
+                           <padding>
+                              <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
+                           </padding>
+                        </Button>
+                     </children>
+                  </StackPane>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

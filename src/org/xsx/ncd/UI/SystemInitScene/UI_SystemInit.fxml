@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="53.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+	<children>
+      <Label fx:id="SystemInitLabel" layoutY="5.0" text="系统初始化，请稍等。。。">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+      <ProgressBar fx:id="SystemInitProgress" layoutY="30.0" prefWidth="500.0" progress="0.0" />
+      <Label fx:id="SystemInitProgressValue" alignment="CENTER" contentDisplay="CENTER" layoutX="235.0" layoutY="32.0" textAlignment="CENTER" />
+   </children>
+</AnchorPane>
+

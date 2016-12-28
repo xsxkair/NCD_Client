@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="765.0" prefWidth="1240.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox prefHeight="200.0" prefWidth="100.0" spacing="50.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="20.0">
+         <children>
+            <StackPane style="-fx-border-color: grey; -fx-border-width: 1;">
+               <children>
+                  <Label style="-fx-background-color: #F4F4F4;" text="试剂卡入库操作" translateY="-10.0" StackPane.alignment="TOP_LEFT">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                     <StackPane.margin>
+                        <Insets left="15.0" />
+                     </StackPane.margin>
+                  </Label>
+                  <GridPane>
+                    <columnConstraints>
+                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" percentWidth="30.0" prefWidth="100.0" />
+                      <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="10.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" valignment="BOTTOM" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <StackPane.margin>
+                        <Insets bottom="20.0" left="10.0" right="10.0" top="20.0" />
+                     </StackPane.margin>
+                     <children>
+                        <GridPane vgap="15.0">
+                          <columnConstraints>
+                            <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <HBox alignment="CENTER_LEFT" spacing="15.0">
+                                 <children>
+                                    <Label text="入库试剂卡名称" />
+                                    <TextField fx:id="GB_InItemNameTextField" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" spacing="15.0" GridPane.rowIndex="1">
+                                 <children>
+                                    <Label text="入库试剂卡数目" />
+                                    <TextField fx:id="GB_InItemNumTextField" />
+                                    <Label text="(人份)" />
+                                 </children>
+                              </HBox>
+                           </children>
+                           <GridPane.margin>
+                              <Insets left="20.0" />
+                           </GridPane.margin>
+                        </GridPane>
+                        <Button fx:id="GB_InButton" mnemonicParsing="false" onAction="#GB_InAction" prefHeight="30.0" prefWidth="80.0" text="入库" GridPane.columnIndex="1">
+                           <GridPane.margin>
+                              <Insets left="20.0" />
+                           </GridPane.margin>
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </GridPane>
+               </children>
+            </StackPane>
+            <StackPane style="-fx-border-color: grey; -fx-border-width: 1;">
+               <children>
+                  <Label style="-fx-background-color: #F4F4F4;" text="试剂卡出库操作" translateY="-10.0" StackPane.alignment="TOP_LEFT">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                     <StackPane.margin>
+                        <Insets left="15.0" />
+                     </StackPane.margin>
+                  </Label>
+                  <GridPane>
+                     <children>
+                        <GridPane vgap="15.0">
+                           <children>
+                              <HBox alignment="CENTER_LEFT" spacing="15.0">
+                                 <children>
+                                    <Label prefWidth="85.0" text="出库试剂卡名称" />
+                                    <TextField fx:id="GB_OutItemNameTextField" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" spacing="15.0" GridPane.rowIndex="1">
+                                 <children>
+                                    <Label prefWidth="85.0" text="出库试剂卡数目" />
+                                    <TextField fx:id="GB_OutItemNumTextField" />
+                                    <Label text="(人份)" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" spacing="15.0" GridPane.rowIndex="2">
+                                 <children>
+                                    <Label graphicTextGap="5.0" prefWidth="85.0" text="出库领用人" />
+                                    <TextField fx:id="GB_OutPersonNameTextField" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" spacing="15.0" GridPane.rowIndex="3">
+                                 <children>
+                                    <Label text="出库目标设备ID" />
+                                    <ComboBox fx:id="GB_OutDeviceIDComboBox" prefWidth="160.0" />
+                                 </children>
+                              </HBox>
+                           </children>
+                           <columnConstraints>
+                              <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <GridPane.margin>
+                              <Insets left="20.0" />
+                           </GridPane.margin>
+                        </GridPane>
+                        <Button fx:id="GB_OutButton" mnemonicParsing="false" onAction="#GB_OutAction" prefHeight="30.0" prefWidth="80.0" text="出库" GridPane.columnIndex="1">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                           <GridPane.margin>
+                              <Insets left="20.0" />
+                           </GridPane.margin>
+                        </Button>
+                     </children>
+                     <columnConstraints>
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" percentWidth="30.0" prefWidth="100.0" />
+                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="10.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" valignment="BOTTOM" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <StackPane.margin>
+                        <Insets bottom="20.0" left="10.0" right="10.0" top="20.0" />
+                     </StackPane.margin>
+                  </GridPane>
+               </children>
+            </StackPane>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

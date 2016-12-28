@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="765.0" prefWidth="1240.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Button maxHeight="1.0" maxWidth="1.0" minHeight="1.0" minWidth="1.0" mnemonicParsing="false" prefHeight="1.0" prefWidth="1.0" text="Button" />
+      <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <content>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0">
+               <children>
+                  <VBox fx:id="GB_ContentPane" prefWidth="100.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <VBox>
+                           <children>
+                              <HBox alignment="CENTER_LEFT" style="-fx-border-width: 0 0 1 0; -fx-border-color: grey;">
+                                 <children>
+                                    <Label text="管理员">
+                                       <font>
+                                          <Font name="System Bold" size="15.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="5.0" left="10.0" top="20.0" />
+                                 </padding>
+                              </HBox>
+                              <GridPane>
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <GridPane>
+                                      <columnConstraints>
+                                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="608.0" minWidth="10.0" percentWidth="20.0" prefWidth="166.0" />
+                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="1074.0" minWidth="10.0" prefWidth="1074.0" />
+                                      </columnConstraints>
+                                      <rowConstraints>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                      </rowConstraints>
+                                       <children>
+                                          <Label text="姓名" />
+                                          <TextField fx:id="GB_AdminNameTextField" GridPane.columnIndex="1" />
+                                          <Label text="性别" GridPane.rowIndex="1" />
+                                          <TextField fx:id="GB_AdminSexTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                          <Label text="年龄" GridPane.rowIndex="2" />
+                                          <TextField fx:id="GB_AdminAgeTextField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                          <Label text="联系方式" GridPane.rowIndex="3" />
+                                          <TextField fx:id="GB_AdminPhoneTextField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                          <Label text="职务" GridPane.rowIndex="4" />
+                                          <TextField fx:id="GB_AdminJobTextField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                          <Label alignment="CENTER" contentDisplay="CENTER" text="备注" textOverrun="CLIP" GridPane.rowIndex="5" />
+                                          <TextField fx:id="GB_AdminDescTextField" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                          <Label text="密码" GridPane.rowIndex="6" />
+                                          <PasswordField fx:id="GB_AdminPasswordTextField" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                       </children>
+                                    </GridPane>
+                                    <HBox alignment="BOTTOM_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="50.0" GridPane.columnIndex="1">
+                                       <children>
+                                          <Button fx:id="GB_AdminModifyButton" mnemonicParsing="false" onAction="#GB_AdminModifyAction" text="提交修改">
+                                             <HBox.margin>
+                                                <Insets left="20.0" />
+                                             </HBox.margin>
+                                          </Button>
+                                          <Button mnemonicParsing="false" onAction="#GB_RefreshManagerAction" text="刷       新" />
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </GridPane>
+                           </children>
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                        </VBox>
+                        <VBox fx:id="GB_ManagerListPane" alignment="CENTER">
+                           <children>
+                              <HBox alignment="CENTER_LEFT" style="-fx-border-width: 0 0 1 0; -fx-border-color: grey;">
+                                 <children>
+                                    <Label text="审核人">
+                                       <font>
+                                          <Font name="System Bold" size="15.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="5.0" left="10.0" top="20.0" />
+                                 </padding>
+                              </HBox>
+                              <GridPane alignment="CENTER" hgap="50.0">
+                                <columnConstraints>
+                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints minHeight="10.0" prefHeight="300.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <ListView fx:id="GB_ManagerListView" prefHeight="300.0" prefWidth="200.0" />
+                                    <GridPane gridLinesVisible="true" prefHeight="300.0" prefWidth="300.0" GridPane.columnIndex="1">
+                                       <children>
+                                          <Label text="账号" />
+                                          <TextField fx:id="GB_ManagerAccoutTextFiled" GridPane.columnIndex="1" />
+                                          <Label text="密码" GridPane.rowIndex="1" />
+                                          <PasswordField fx:id="GB_ManagerPasswordTextFiled" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                          <Label text="姓名" GridPane.rowIndex="2" />
+                                          <TextField fx:id="GB_ManagerNameTextFiled" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                          <Label text="性别" GridPane.rowIndex="3" />
+                                          <TextField fx:id="GB_ManagerSexTextFiled" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                          <Label text="年龄" GridPane.rowIndex="4" />
+                                          <TextField fx:id="GB_ManagerAgeTextFiled" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                          <Label text="联系方式" GridPane.rowIndex="5" />
+                                          <TextField fx:id="GB_ManagerPhoneTextFiled" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                          <Label text="职务" GridPane.rowIndex="6" />
+                                          <TextField fx:id="GB_ManagerJobTextFiled" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                          <Label alignment="CENTER" contentDisplay="CENTER" text="备注" textOverrun="CLIP" GridPane.rowIndex="7" />
+                                          <TextField fx:id="GB_ManagerDescTextFiled" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                                       </children>
+                                       <columnConstraints>
+                                          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="608.0" minWidth="10.0" prefWidth="93.0" />
+                                          <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" maxWidth="1074.0" minWidth="10.0" prefWidth="207.0" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                       </rowConstraints>
+                                    </GridPane>
+                                    <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="30.0" GridPane.columnIndex="2">
+                                       <children>
+                                          <Button fx:id="GB_ModifyManagerButton" mnemonicParsing="false" onAction="#GB_ModifyManagerAction" text="修改/添加" />
+                                          <Button fx:id="GB_DeleteManagerButton" mnemonicParsing="false" onAction="#GB_DeleteManagerAction" text="删除" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets left="20.0" right="20.0" top="10.0" />
+                                 </VBox.margin>
+                              </GridPane>
+                           </children>
+                        </VBox>
+                     </children>
+                     <padding>
+                        <Insets bottom="50.0" />
+                     </padding>
+                  </VBox>
+               </children>
+            </AnchorPane>
+         </content>
+      </ScrollPane>
+   </children>
+</AnchorPane>

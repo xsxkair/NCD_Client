@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.input.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1240.0" styleClass="homepage" stylesheets="@mainuistyle.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <MenuBar fx:id="GB_MenuBar" style="-fx-background-color: white;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <menus>
+          <Menu fx:id="GB_ReportMenu" mnemonicParsing="false" style="-fx-font-size: 14;" text="报告管理">
+            <items>
+              <MenuItem mnemonicParsing="false" onAction="#ReportThumbAction" text="报告概览" />
+                  <MenuItem mnemonicParsing="false" onAction="#QueryReportAction" text="报告查询" />
+            </items>
+          </Menu>
+          <Menu fx:id="GB_DeviceMenu" mnemonicParsing="false" style="-fx-font-size: 14;" text="设备信息">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#ShowDevicesAction" text="我的设备" />
+               </items>
+            </Menu>
+          <Menu fx:id="GB_CardMenu" mnemonicParsing="false" style="-fx-font-size: 14;" text="检测卡管理">
+            <items>
+              <MenuItem mnemonicParsing="false" onAction="#ShowInOutRecordAction" text="库存记录" />
+                  <MenuItem mnemonicParsing="false" onAction="#GB_CardInOutAction" text="试剂卡出入库" />
+            </items>
+          </Menu>
+            <Menu fx:id="GB_CheckMenu" mnemonicParsing="false" style="-fx-font-size: 14;" text="维护保养">
+              <items>
+                <MenuItem mnemonicParsing="false" text="Action 1" />
+              </items>
+            </Menu>
+            <Menu fx:id="GB_MyInfoMenu" mnemonicParsing="false" style="-fx-font-size: 14;" text="我的信息">
+              <items>
+                  <MenuItem mnemonicParsing="false" onAction="#ShowMyInfoAction" text="我的信息" />
+              </items>
+            </Menu>
+            <Menu fx:id="GB_SystemSetMenu" mnemonicParsing="false" style="-fx-font-size: 14;" text="设置" />
+            <Menu fx:id="GB_AboutMenu" mnemonicParsing="false" style="-fx-font-size: 14;" text="关于">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#AboutMeAction" text="关于" />
+               </items>
+            </Menu>
+        </menus>
+         <padding>
+            <Insets bottom="5.0" left="100.0" top="5.0" />
+         </padding>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+      </MenuBar>
+      <AnchorPane fx:id="GB_RootPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0" />
+      <HBox alignment="CENTER" prefHeight="40.0" spacing="15.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Label fx:id="GB_SignedManagerLable" alignment="CENTER" graphicTextGap="1.0" nodeOrientation="LEFT_TO_RIGHT" onMouseClicked="#GB_SignedManagerAction" text="管理员" textAlignment="JUSTIFY" textFill="#bf3256">
+               <graphic>
+                  <ImageView fx:id="GB_SignedManagerIcoView" fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../../../RES/Userico.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+               <font>
+                  <Font name="System Bold" size="17.0" />
+               </font>
+            </Label>
+            <Label onMouseClicked="#GB_SignOutAction" text="注销">
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Label>
+         </children>
+      </HBox>
+      <AnchorPane AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Button fx:id="GB_MyWorkSpaceButton" mnemonicParsing="false" onAction="#GB_MyWorkSpaceAction" prefHeight="40.0" style="-fx-background-color: rgba(239,238,211,1); -fx-background-radius: 0;" text="工作台" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <graphic>
+                  <ImageView fx:id="GB_WorkSpaceIcoView" fitHeight="27.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true" />
+               </graphic>
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+               <padding>
+                  <Insets right="20.0" />
+               </padding>
+            </Button>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>

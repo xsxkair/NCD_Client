@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="765.0" prefWidth="1240.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <ScrollPane fitToWidth="true" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <content>
+            <VBox spacing="50.0">
+               <children>
+                  <GridPane>
+                    <columnConstraints>
+                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <ImageView fx:id="GB_DeviceImg" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../../../../../RES/deviceico_on.png" />
+                           </image>
+                        </ImageView>
+                        <GridPane GridPane.columnIndex="1">
+                          <columnConstraints>
+                            <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <HBox alignment="CENTER">
+                                 <children>
+                                    <Label text="设备ID" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER" GridPane.rowIndex="1">
+                                 <children>
+                                    <Label text="责任人" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER" GridPane.rowIndex="2">
+                                 <children>
+                                    <Label text="设备安装地址" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
+                                 <children>
+                                    <Label fx:id="GB_DeviceIDLabel" text="-" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="10.0" />
+                                 </padding>
+                              </HBox>
+                              <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                 <children>
+                                    <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+                                       <children>
+                                          <Label fx:id="GB_DevicerNameLabel" text="-" />
+                                          <Label fx:id="GB_DevicerAgeLabel" text="-" />
+                                          <Label fx:id="GB_DevicerSexLabel" text="-" />
+                                       </children>
+                                       <padding>
+                                          <Insets left="10.0" />
+                                       </padding>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+                                       <children>
+                                          <Label fx:id="GB_DevicerPhoneLabel" text="-" />
+                                          <Label fx:id="GB_DevicerJobLabel" text="-" />
+                                       </children>
+                                       <padding>
+                                          <Insets left="10.0" />
+                                       </padding>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+                                       <children>
+                                          <Label fx:id="GB_DevicerDescLabel" text="-" />
+                                       </children>
+                                       <padding>
+                                          <Insets left="10.0" />
+                                       </padding>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+                              <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                 <children>
+                                    <Label fx:id="GB_DevicerAddrLabel" text="-" />
+                                 </children>
+                                 <GridPane.margin>
+                                    <Insets />
+                                 </GridPane.margin>
+                                 <padding>
+                                    <Insets left="10.0" />
+                                 </padding>
+                              </HBox>
+                           </children>
+                        </GridPane>
+                     </children>
+                  </GridPane>
+                  <VBox>
+                     <children>
+                        <HBox alignment="CENTER_LEFT" style="-fx-border-width: 0 0 1 0; -fx-border-color: grey;">
+                           <children>
+                              <Label text="操作人">
+                                 <font>
+                                    <Font name="System Bold" size="15.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                           <padding>
+                              <Insets bottom="5.0" left="10.0" top="20.0" />
+                           </padding>
+                        </HBox>
+                        <GridPane alignment="CENTER" hgap="50.0">
+                           <children>
+                              <ListView fx:id="GB_DevicerListView" prefHeight="300.0" prefWidth="200.0" />
+                              <GridPane gridLinesVisible="true" prefHeight="300.0" prefWidth="300.0" GridPane.columnIndex="1">
+                                 <children>
+                                    <Label alignment="CENTER" contentDisplay="CENTER" text="备注" textOverrun="CLIP" GridPane.rowIndex="5" />
+                                    <Label text="职务" GridPane.rowIndex="4" />
+                                    <TextField fx:id="GB_DevicerJobTextFiled" editable="false" style="-fx-background-color: transparent;" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                    <Label text="联系方式" GridPane.rowIndex="3" />
+                                    <TextField fx:id="GB_DevicerPhoneTextFiled" editable="false" style="-fx-background-color: transparent;" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                    <Label text="年龄" GridPane.rowIndex="2" />
+                                    <TextField fx:id="GB_DevicerSexTextFiled" editable="false" style="-fx-background-color: transparent;" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                    <Label text="性别" GridPane.rowIndex="1" />
+                                    <TextField fx:id="GB_DevicerAgeTextFiled" editable="false" style="-fx-background-color: transparent;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                    <Label text="姓名" />
+                                    <TextField fx:id="GB_DevicerNameTextFiled" editable="false" style="-fx-background-color: transparent;" GridPane.columnIndex="1" />
+                                    <TextField fx:id="GB_DevicerDescTextFiled" editable="false" style="-fx-background-color: transparent;" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                 </children>
+                                 <columnConstraints>
+                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="608.0" minWidth="10.0" prefWidth="93.0" />
+                                    <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" maxWidth="1074.0" minWidth="10.0" prefWidth="207.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                              </GridPane>
+                           </children>
+                           <columnConstraints>
+                              <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="300.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <VBox.margin>
+                              <Insets top="10.0" />
+                           </VBox.margin>
+                        </GridPane>
+                     </children>
+                  </VBox>
+                  <LineChart fx:id="GB_DeviceLineChart" legendVisible="false" prefHeight="520.0" title="设备月活跃度" verticalGridLinesVisible="false">
+                    <xAxis>
+                      <CategoryAxis fx:id="GB_DeviceXaxis" label="日期" side="BOTTOM" />
+                    </xAxis>
+                    <yAxis>
+                      <NumberAxis fx:id="GB_DeviceYaxis" label="测试数目" side="LEFT" />
+                    </yAxis>
+                     <VBox.margin>
+                        <Insets bottom="100.0" />
+                     </VBox.margin>
+                  </LineChart>
+               </children>
+               <padding>
+                  <Insets left="20.0" right="20.0" top="50.0" />
+               </padding>
+            </VBox>
+         </content>
+      </ScrollPane>
+   </children>
+</AnchorPane>

@@ -1,0 +1,32 @@
+.markunqualifiedrow{
+	-fx-background-color: rgba(255,0,0,0.5);
+}
+
+.tablerow:hover{
+	-fx-background-color: darkseagreen ;
+}
+
+.pagination {
+    -fx-border-color:  #0E5D79;
+}
+ 
+.pagination .page {
+    -fx-background-color: #DDF1F8;
+}
+ 
+.pagination .pagination-control {
+    -fx-background-color: #C8C6C6;
+}
+ 
+.pagination .pagination-control .bullet-button {
+    -fx-background-color: transparent, #DDF1F8, #0E5D79, white, white;
+}
+ 
+.pagination .pagination-control .bullet-button:selected {   
+    -fx-background-color: transparent, #DDF1F8, #0E5D79, white, #0E5D79;
+}
+ 
+.pagination .pagination-control .left-arrow, .right-arrow{
+    -fx-background-color: #DDF1F8, #0E5D79;
+}
+
