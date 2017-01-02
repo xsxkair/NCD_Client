@@ -3,7 +3,6 @@ package com.xsx.ncd.application;
 import java.util.Optional;
 
 import com.xsx.ncd.handlers.LoginHandler;
-import com.xsx.ncd.handlers.WorkPaneHandler;
 import com.xsx.ncd.spring.SpringFacktory;
 
 import javafx.application.Application;
@@ -35,7 +34,7 @@ public class AppStart extends Application{
 		//this.FunctionInit(primaryStage);
 
 		ImageView imageView = new ImageView(new Image(this.getClass().getResourceAsStream("/RES/logo.png")));
-		
+
 		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			
 			@Override
@@ -45,8 +44,10 @@ public class AppStart extends Application{
 				System.exit(0);
 			}
 		});
-
-		primaryStage.setScene(new Scene(new AnchorPane(imageView)));
+		
+		AnchorPane root = new AnchorPane(imageView);
+		
+		primaryStage.setScene(new Scene(root));
 		primaryStage.setTitle("荧光分析仪  V2.3.0");
 		primaryStage.initStyle(StageStyle.UNDECORATED);
 		primaryStage.getIcons().add(new Image(this.getClass().getResourceAsStream("/RES/logo.png")));
@@ -63,10 +64,7 @@ public class AppStart extends Application{
 				// TODO Auto-generated method stub
 				
 				if(newValue){
-					//加载所有页面
-					SpringFacktory.getCtx().getBean(LoginHandler.class).UI_Init();
-					SpringFacktory.getCtx().getBean(WorkPaneHandler.class).UI_Init();
-					
+				
 					SpringFacktory.getCtx().getBean(LoginHandler.class).startLoginActivity();
 					primaryStage.close();
 				}

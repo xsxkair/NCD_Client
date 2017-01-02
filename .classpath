@@ -46,6 +46,15 @@
 	<classpathentry kind="lib" path="lib/slf4j-api-1.7.7.jar"/>
 	<classpathentry kind="lib" path="lib/ehcache-2.10.1.jar"/>
 	<classpathentry kind="lib" path="lib/hibernate-ehcache-5.1.0.Final.jar"/>
+	<classpathentry kind="lib" path="lib/core-8.0b8.jar"/>
+	<classpathentry kind="lib" path="lib/datafx-8.0b8.jar"/>
+	<classpathentry kind="lib" path="lib/flow-8.0b8.jar"/>
+	<classpathentry kind="lib" path="lib/fontawesomefx-8.0.10.jar"/>
+	<classpathentry kind="lib" path="lib/javassist.jar"/>
+	<classpathentry kind="lib" path="lib/javax.inject.jar"/>
+	<classpathentry kind="lib" path="lib/jfxrt.jar"/>
+	<classpathentry kind="lib" path="lib/retrolambda-2.0.6.jar"/>
+	<classpathentry kind="lib" path="lib/jfoenix.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
