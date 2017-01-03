@@ -150,7 +150,11 @@ public class MainContainHandler {
 				System.exit(0);
 			}
 		});
-	    s_Stage.initModality(Modality.APPLICATION_MODAL);
+	    //s_Stage.initModality(Modality.APPLICATION_MODAL);
+	    s_Stage.setResizable(true);
+	    s_Stage.setTitle("Ó«¹â·ÖÎöÒÇ  V2.3.0");
+
+	    s_Stage.getIcons().add(new Image(this.getClass().getResourceAsStream("/RES/logo.png")));
 	    s_Stage.setScene(s_Scene);
 		s_Stage.show();
 	}

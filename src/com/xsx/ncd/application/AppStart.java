@@ -17,9 +17,14 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaPlayer.Status;
+import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
+import javafx.util.Duration;
 
 public class AppStart extends Application{
 	
@@ -31,9 +36,6 @@ public class AppStart extends Application{
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		// TODO Auto-generated method stub
-		//this.FunctionInit(primaryStage);
-
-		ImageView imageView = new ImageView(new Image(this.getClass().getResourceAsStream("/RES/logo.png")));
 
 		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			
@@ -45,17 +47,45 @@ public class AppStart extends Application{
 			}
 		});
 		
-		AnchorPane root = new AnchorPane(imageView);
+		Media pick = new Media(this.getClass().getResource("/RES/Å¦¿µ¶È-Welcome.mp4").toExternalForm());
+        MediaPlayer player = new MediaPlayer(pick);
+        
+        
+        
+        player.play();
+       
+        //Add a mediaView, to display the media. Its necessary !
+        //This mediaView is added to a Pane
+        MediaView mediaView = new MediaView(player);
+        mediaView.setFitWidth(500);
+        
+		AnchorPane root = new AnchorPane(mediaView);
+		root.setStyle("-fx-border-color:red");
 		
-		primaryStage.setScene(new Scene(root));
-		primaryStage.setTitle("Ó«¹â·ÖÎöÒÇ  V2.3.0");
+		primaryStage.setScene(new Scene(root, 500, 281));
 		primaryStage.initStyle(StageStyle.UNDECORATED);
-		primaryStage.getIcons().add(new Image(this.getClass().getResourceAsStream("/RES/logo.png")));
-		primaryStage.setResizable(true);
+		primaryStage.setResizable(false);
 		primaryStage.show();
 		
 		LoadResourceTask loadResourceTask = new LoadResourceTask();
 		new Thread(loadResourceTask).start();
+		
+		player.currentTimeProperty().addListener(new ChangeListener<Duration>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) {
+				// TODO Auto-generated method stub
+				System.out.println(player.getMedia().getDuration());
+				System.out.println(player.getCurrentTime());
+				
+				if(loadResourceTask.getValue() != null && loadResourceTask.getValue().equals(true)){
+					if(player.getMedia().getDuration().subtract(newValue).lessThan(new Duration(200))){
+						SpringFacktory.getCtx().getBean(LoginHandler.class).startLoginActivity();
+						primaryStage.close();
+					}
+				}
+			}
+        });
 		
 		loadResourceTask.valueProperty().addListener(new ChangeListener<Boolean>() {
 
@@ -64,9 +94,12 @@ public class AppStart extends Application{
 				// TODO Auto-generated method stub
 				
 				if(newValue){
-				
-					SpringFacktory.getCtx().getBean(LoginHandler.class).startLoginActivity();
-					primaryStage.close();
+					System.out.println(player.getMedia().getDuration());
+					System.out.println(player.getCurrentTime());
+					if(player.getMedia().getDuration().subtract(player.getCurrentTime()).lessThan(new Duration(200))){
+						SpringFacktory.getCtx().getBean(LoginHandler.class).startLoginActivity();
+						primaryStage.close();
+					}
 				}
 				else{
 					 Alert alert = new Alert(AlertType.ERROR);

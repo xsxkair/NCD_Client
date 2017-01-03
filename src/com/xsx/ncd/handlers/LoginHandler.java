@@ -17,6 +17,8 @@ import com.xsx.ncd.spring.ManagerSession;
 import com.xsx.ncd.spring.SpringFacktory;
 
 import javafx.beans.binding.BooleanBinding;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -53,7 +55,7 @@ public class LoginHandler {
 	@PostConstruct
 	public void UI_Init() {
 		AnchorPane root = null;
-		
+
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(this.getClass().getResource("/com/xsx/ncd/views/LoginFXML.fxml"));
         InputStream in = this.getClass().getResourceAsStream("/com/xsx/ncd/views/LoginFXML.fxml");
@@ -75,7 +77,9 @@ public class LoginHandler {
 			@Override
 			protected boolean computeValue() {
 				// TODO Auto-generated method stub
-				if((UserNameText.getText() != null)&&(UserPasswordText.getText() != null))
+				
+				if(UserNameText.getText() != null && UserNameText.getText().length() > 0 &&
+						UserPasswordText.getText() != null && UserPasswordText.getText().length() >0)
 					return false;
 				else
 					return true;
@@ -83,6 +87,7 @@ public class LoginHandler {
 		});
 		
 		UserPasswordText.focusedProperty().addListener((o, oldVal, newVal) -> {
+
 			if (!newVal) UserPasswordText.validate();
 		});
 		

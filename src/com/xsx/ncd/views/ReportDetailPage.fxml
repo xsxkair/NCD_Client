@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="765.0" prefWidth="1240.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Button mnemonicParsing="false" />
+      <ScrollPane fitToWidth="true" pannable="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0">
+               <children>
+                  <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <TitledPane animated="false" collapsible="false" style="-fx-border-width: 0;" text="测试信息">
+                          <content>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" style="-fx-border-width: 0;">
+                                 <children>
+                                    <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <children>
+                                          <LineChart fx:id="S_TestLineChart" legendVisible="false" title="荧光曲线图">
+                                            <xAxis>
+                                              <NumberAxis side="BOTTOM" />
+                                            </xAxis>
+                                            <yAxis>
+                                              <NumberAxis side="LEFT" />
+                                            </yAxis>
+                                          </LineChart>
+                                          <GridPane>
+                                            <columnConstraints>
+                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                            </columnConstraints>
+                                            <rowConstraints>
+                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                            </rowConstraints>
+                                             <children>
+                                                <HBox>
+                                                   <children>
+                                                      <Label text="设备ID：">
+                                                         <font>
+                                                            <Font size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label fx:id="S_DeviceidLabel" text="null">
+                                                         <font>
+                                                            <Font size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                   </children>
+                                                </HBox>
+                                                <HBox GridPane.columnIndex="1">
+                                                   <children>
+                                                      <Label text="责任人：">
+                                                         <font>
+                                                            <Font size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label fx:id="S_UserNameLabel" text="Label">
+                                                         <font>
+                                                            <Font size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                   </children>
+                                                </HBox>
+                                                <HBox GridPane.columnIndex="2">
+                                                   <children>
+                                                      <Label text="设备位置：">
+                                                         <font>
+                                                            <Font size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label fx:id="S_DeviceLocationLabel" text="null">
+                                                         <font>
+                                                            <Font size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                   </children>
+                                                </HBox>
+                                                <HBox GridPane.rowIndex="1">
+                                                   <children>
+                                                      <Label text="试剂卡批号：">
+                                                         <font>
+                                                            <Font size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label fx:id="S_CardidLabel" text="null">
+                                                         <font>
+                                                            <Font size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                   </children>
+                                                </HBox>
+                                                <HBox GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                   <children>
+                                                      <Label text="测试项目：">
+                                                         <font>
+                                                            <Font size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label fx:id="S_ItemNameLabel" text="Label">
+                                                         <font>
+                                                            <Font size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                   </children>
+                                                </HBox>
+                                                <HBox GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                                   <children>
+                                                      <Label text="样品编号：">
+                                                         <font>
+                                                            <Font size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label fx:id="S_SampleIDLabel" text="null">
+                                                         <font>
+                                                            <Font size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                   </children>
+                                                </HBox>
+                                                <HBox GridPane.columnIndex="3" GridPane.rowIndex="1">
+                                                   <children>
+                                                      <Label text="测试人：">
+                                                         <font>
+                                                            <Font size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label fx:id="S_TesterNameLabel" text="Label">
+                                                         <font>
+                                                            <Font size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                   </children>
+                                                </HBox>
+                                                <HBox GridPane.rowIndex="2">
+                                                   <children>
+                                                      <Label text="层析时间：">
+                                                         <font>
+                                                            <Font size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label fx:id="S_RealWaittimeLabel" text="null">
+                                                         <font>
+                                                            <Font size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                   </children>
+                                                </HBox>
+                                                <HBox GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                                   <children>
+                                                      <Label text="标准层析时间：">
+                                                         <font>
+                                                            <Font size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label fx:id="S_WaittimeLabel" text="Label">
+                                                         <font>
+                                                            <Font size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                   </children>
+                                                </HBox>
+                                                <HBox GridPane.columnIndex="2" GridPane.rowIndex="2">
+                                                   <children>
+                                                      <Label text="测试结果：">
+                                                         <font>
+                                                            <Font size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label fx:id="S_TestResultLabel" text="null">
+                                                         <font>
+                                                            <Font size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                   </children>
+                                                </HBox>
+                                                <HBox GridPane.columnIndex="3" GridPane.rowIndex="2">
+                                                   <children>
+                                                      <Label text="参考值：">
+                                                         <font>
+                                                            <Font size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label fx:id="S_NormalLabel" text="Label">
+                                                         <font>
+                                                            <Font size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                             <VBox.margin>
+                                                <Insets left="10.0" right="10.0" />
+                                             </VBox.margin>
+                                          </GridPane>
+                                       </children>
+                                    </VBox>
+                                    <HBox alignment="CENTER" spacing="20.0" AnchorPane.rightAnchor="17.0" AnchorPane.topAnchor="10.0">
+                                       <children>
+                                          <Label fx:id="S_TesttimeLabel" text="测试时间：2017年1月3日16:19:33" />
+                                          <Label fx:id="S_EnTempLabel" text="环境温度：21.5 ℃" />
+                                          <Label fx:id="S_CardTempLabel" text="试剂卡温度：21.5 ℃" />
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </AnchorPane>
+                          </content>
+                        </TitledPane>
+                        <TitledPane animated="false" collapsible="false" style="-fx-border-color: transparent; -fx-background-color: transparent;" text="报告信息">
+                          <content>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-border-insets: 0; -fx-border-width: 0;">
+                                 <children>
+                                    <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                      <columnConstraints>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="70.0" prefWidth="100.0" />
+                                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                      </columnConstraints>
+                                      <rowConstraints>
+                                        <RowConstraints valignment="CENTER" vgrow="SOMETIMES" />
+                                      </rowConstraints>
+                                       <children>
+                                          <GridPane alignment="CENTER_LEFT" gridLinesVisible="true">
+                                            <columnConstraints>
+                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="596.0" minWidth="100.0" prefWidth="150.0" />
+                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="1049.0" minWidth="300.0" prefWidth="1036.0" />
+                                            </columnConstraints>
+                                            <rowConstraints>
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                              <RowConstraints minHeight="10.0" prefHeight="90.0" vgrow="SOMETIMES" />
+                                            </rowConstraints>
+                                             <children>
+                                                <TextArea fx:id="S_ReportDescTextArea" prefHeight="200.0" prefWidth="200.0" promptText="Input Report Description" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="50.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                                   <children>
+                                                      <RadioButton fx:id="S_ReportOK" mnemonicParsing="false" text="合格">
+                                                         <toggleGroup>
+                                                            <ToggleGroup fx:id="S_ReportResultToogleGroup" />
+                                                         </toggleGroup>
+                                                      </RadioButton>
+                                                      <RadioButton fx:id="S_ReportNotOK" mnemonicParsing="false" text="不合格" toggleGroup="$S_ReportResultToogleGroup" />
+                                                   </children>
+                                                   <padding>
+                                                      <Insets left="10.0" />
+                                                   </padding>
+                                                </HBox>
+                                                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="2">
+                                                   <children>
+                                                      <Label text="报告状态" />
+                                                   </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="3">
+                                                   <children>
+                                                      <Label text="报告备注" />
+                                                   </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                                                   <children>
+                                                      <Label text="审核人" />
+                                                   </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
+                                                   <children>
+                                                      <Label fx:id="GB_ManagerNameLabel" text="审核人" />
+                                                   </children>
+                                                   <GridPane.margin>
+                                                      <Insets />
+                                                   </GridPane.margin>
+                                                   <padding>
+                                                      <Insets left="10.0" />
+                                                   </padding>
+                                                </HBox>
+                                                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="1">
+                                                   <children>
+                                                      <Label text="审核时间" />
+                                                   </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                   <children>
+                                                      <Label fx:id="GB_ManagerTimeLabel" text="审核时间" />
+                                                   </children>
+                                                   <padding>
+                                                      <Insets left="10.0" />
+                                                   </padding>
+                                                </HBox>
+                                             </children>
+                                          </GridPane>
+                                          <HBox alignment="CENTER" spacing="20.0" GridPane.columnIndex="1">
+                                             <children>
+                                                <VBox alignment="CENTER" spacing="15.0">
+                                                   <children>
+                                                      <JFXButton fx:id="S_CommitReportButton" onAction="#S_CommitReportAction" ripplerFill="#4ca861" style="-fx-background-color: mediumturquoise;" text="提交报告">
+                                                         <font>
+                                                            <Font size="20.0" />
+                                                         </font>
+                                                      </JFXButton>
+                                                      <JFXButton onAction="#GB_PrintfReportAction" style="-fx-background-color: seagreen;" text="打印报告">
+                                                         <font>
+                                                            <Font size="20.0" />
+                                                         </font>
+                                                      </JFXButton>
+                                                      <JFXButton onAction="#S_BackAction" text="返       回">
+                                                         <font>
+                                                            <Font size="20.0" />
+                                                         </font>
+                                                      </JFXButton>
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </GridPane>
+                                 </children>
+                              </AnchorPane>
+                          </content>
+                        </TitledPane>
+                     </children>
+                  </VBox>
+               </children>
+            </AnchorPane>
+        </content>
+      </ScrollPane>
+   </children>
+</AnchorPane>

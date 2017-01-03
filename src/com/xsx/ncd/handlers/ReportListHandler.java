@@ -4,6 +4,7 @@ package com.xsx.ncd.handlers;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -85,8 +87,6 @@ import javafx.util.Callback;
 
 @Component
 public class ReportListHandler {
-	
-	private static ReportListHandler S_ReportPage = null;
 	
 	private AnchorPane reportpane;
 	
@@ -188,7 +188,7 @@ public class ReportListHandler {
         TableColumn8.setCellValueFactory(new PropertyValueFactory<ReportTableItem, String>("reportresult"));
         TableColumn8.setCellFactory(new TableColumnModel<ReportTableItem, String>());
 
-        GB_ReportResultFilterCombox.getItems().addAll("All", "未审核", "合格", "不合格");
+        GB_ReportResultFilterCombox.getItems().addAll("ALL", "未审核", "合格", "不合格");
         
         S_QueryReportService = new QueryReportService();
         
@@ -233,64 +233,34 @@ public class ReportListHandler {
 
         GB_FreshPane.visibleProperty().bind(S_QueryReportService.runningProperty());
         
-		GB_TestItemFilterTextfield.textProperty().addListener(new ChangeListener<String>() {
-
-			@Override
-			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				// TODO Auto-generated method stub
-
-				StartReportService();
-			}
-		});
-
-		GB_TestTimeFilterDateChoose.valueProperty().addListener(new ChangeListener<LocalDate>() {
-
-			@Override
-			public void changed(ObservableValue<? extends LocalDate> observable, LocalDate oldValue,
-					LocalDate newValue) {
-				// TODO Auto-generated method stub
-
-				StartReportService();
-			}
+        //过滤测试项目
+		GB_TestItemFilterTextfield.textProperty().addListener((o, oldVal, newVal) -> {
+			StartReportService();
 		});
 		
-		GB_TesterFilterTextfield.textProperty().addListener(new ChangeListener<String>() {
+		//过滤测试时间
+		GB_TestTimeFilterDateChoose.valueProperty().addListener((o, oldVal, newVal) -> {
+			StartReportService();
+		});
 
-			@Override
-			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				// TODO Auto-generated method stub
-
-				StartReportService();
-			}
+		//过滤测试人
+		GB_TesterFilterTextfield.textProperty().addListener((o, oldVal, newVal) -> {
+			StartReportService();
 		});
 		
-		GB_TestDeviceFilterCombox.valueProperty().addListener(new ChangeListener<String>() {
-
-			@Override
-			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				// TODO Auto-generated method stub
-
-				StartReportService();
-			}
+		//过滤测试设备
+		GB_TestDeviceFilterCombox.valueProperty().addListener((o, oldVal, newVal) -> {
+			StartReportService();
 		});
 		
-		GB_TestSampleFilterTextField.textProperty().addListener(new ChangeListener<String>() {
-
-			@Override
-			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				// TODO Auto-generated method stub
-				StartReportService();
-			}
+		//过滤样品编号
+		GB_TestSampleFilterTextField.textProperty().addListener((o, oldVal, newVal) -> {
+			StartReportService();
 		});
 		
-		GB_ReportResultFilterCombox.valueProperty().addListener(new ChangeListener<String>() {
-
-			@Override
-			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				// TODO Auto-generated method stub
-				
-				StartReportService();
-			}
+		//过滤报告结果
+		GB_ReportResultFilterCombox.valueProperty().addListener((o, oldVal, newVal) -> {
+			StartReportService();
 		});
 		
 		GB_Pagination.currentPageIndexProperty().addListener(new ChangeListener<Number>() {
@@ -632,7 +602,34 @@ public class ReportListHandler {
 								predicate = cb.like(path, "%"+item+"%");
 							}
 							
-
+							//过滤测试时间
+							java.sql.Date tempdate = null;
+							try {
+								tempdate = java.sql.Date.valueOf(GB_TestTimeFilterDateChoose.getValue());
+							} catch (Exception e2) {
+								// TODO: handle exception
+								tempdate = null;
+							}
+							if(tempdate != null){
+								Path<java.sql.Timestamp> param = root.get("testtime");
+								if(predicate == null)
+									predicate = cb.equal(param, tempdate);
+								else
+									predicate = cb.and(cb.equal(param, tempdate), predicate);
+							}
+							
+							
+							//过滤测试人
+							String tester = GB_TesterFilterTextfield.getText();
+							if((tester != null) && (tester.length() > 0)){
+								path = root.get("t_name");
+								
+								if(predicate == null)
+									predicate = cb.like(path, "%"+tester+"%");
+								else
+									predicate = cb.and(cb.like(path, "%"+tester+"%"), predicate);
+							}
+							
 							//设备id
 							String deviceDid = GB_TestDeviceFilterCombox.getSelectionModel().getSelectedItem();
 							Device deviceo = null;
@@ -653,6 +650,28 @@ public class ReportListHandler {
 									predicate = cb.equal(path1, deviceo);
 								else
 									predicate = cb.and(cb.equal(path1, deviceo), predicate);
+							}
+							
+							//过滤样品编号
+							String sampleid = GB_TestSampleFilterTextField.getText();
+							if((sampleid != null) && (sampleid.length() > 0)){
+								path = root.get("sid");
+								
+								if(predicate == null)
+									predicate = cb.like(path, "%"+sampleid+"%");
+								else
+									predicate = cb.and(cb.like(path, "%"+sampleid+"%"), predicate);
+							}
+							
+							//过滤报告结果
+							String reportresult = GB_ReportResultFilterCombox.getValue();
+							if((reportresult != null) && (reportresult != "ALL")){
+								path = root.get("result");
+								
+								if(predicate == null)
+									predicate = cb.equal(path, reportresult);
+								else
+									predicate = cb.and(cb.equal(path, reportresult), predicate);
 							}
 							
 							return predicate;

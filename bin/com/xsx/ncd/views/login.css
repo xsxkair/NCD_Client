@@ -1,0 +1,4 @@
+.jfx-text-field .errorLabel, .jfx-password-field .errorLabel , .jfx-text-area .errorLabel{
+	-fx-text-fill : #D34336;
+	-fx-font-size: 0.75em;
+}
