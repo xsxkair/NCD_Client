@@ -149,6 +149,8 @@ public class ReportListHandler {
 	private WorkPageSession workPageSession;
 	@Autowired
 	private SystemSetData systemSetData;
+	@Autowired
+	private ReportDetailHandler reportDetailHandler;
 	
 	@PostConstruct
 	private void UI_Init(){
@@ -376,6 +378,7 @@ public class ReportListHandler {
 						if(event.getClickCount() == 2){
 							//ReportDetailPage.GetInstance().setS_ReportData(GB_TableView.getItems().get(row.getIndex()).getTestdata());
 							//UIMainPage.GetInstance().setGB_Page(ReportDetailPage.GetInstance().getPane());
+							reportDetailHandler.startReportDetailActivity(GB_TableView.getItems().get(row.getIndex()).getTestdata());
 						}
 						else if(event.getButton().equals(MouseButton.SECONDARY)){
 							myContextMenu.show(cell, event.getScreenX(), event.getScreenY());

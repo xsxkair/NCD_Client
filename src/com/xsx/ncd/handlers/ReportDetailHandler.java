@@ -114,8 +114,8 @@ public class ReportDetailHandler {
 	@PostConstruct
 	public void UI_Init(){
 		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(this.getClass().getResource("ReportDetailPage.fxml"));
-        InputStream in = this.getClass().getResourceAsStream("ReportDetailPage.fxml");
+		loader.setLocation(this.getClass().getResource("/com/xsx/ncd/views/ReportDetailPage.fxml"));
+        InputStream in = this.getClass().getResourceAsStream("/com/xsx/ncd/views/ReportDetailPage.fxml");
         loader.setController(this);
         try {
         	rootpane = loader.load(in);
@@ -135,6 +135,31 @@ public class ReportDetailHandler {
         S_ReportData.addListener((o, oldVal, newVal) -> {
         	//清空曲线
 			series.getData().clear();
+			
+			S_DeviceidLabel.setText(newVal.getDevice().getDid());
+			S_UserNameLabel.setText(newVal.getDevice().getName());
+			S_DeviceLocationLabel.setText(newVal.getDevice().getAddr());
+			
+			//试剂卡信息
+			S_CardidLabel.setText(newVal.getCard().getCid());
+			S_ItemNameLabel.setText(newVal.getCard().getItem());
+			
+			//操作人信息
+			S_TesterNameLabel.setText(newVal.getT_name());
+			
+			//测试信息
+			S_SampleIDLabel.setText(newVal.getSid());
+			
+			if(newVal.getOutt().doubleValue() <= 10)
+				S_RealWaittimeLabel.setStyle("-fx-text-fill:mediumseagreen");
+			else
+				S_RealWaittimeLabel.setStyle("-fx-text-fill: red");
+			S_RealWaittimeLabel.setText(newVal.getOutt()+newVal.getCard().getWaitt()*60+" S ( 标准时间："+newVal.getCard().getWaitt()*60+" S )");
+			
+			S_CardTempLabel.setText("试剂卡温度："+newVal.getO_t()+" ℃");
+			S_EnTempLabel.setText("环境温度："+newVal.getE_t()+" ℃");
+			S_TesttimeLabel.setText("测试时间："+ newVal.getTesttime());
+			S_TestResultLabel.setText(newVal.getA_v()+" " + newVal.getCard().getDanwei() + " ( 参考值："+newVal.getCard().getNormal()+" " + newVal.getCard().getDanwei() + " )");
 		});
 
 /*			@Override
@@ -325,6 +350,8 @@ public class ReportDetailHandler {
 		if(testData == null)
 			return;
 		
+		S_ReportData.set(testData);
+		
 		workPageSession.setWorkPane(this.rootpane);
 	}
 
@@ -338,7 +365,7 @@ public class ReportDetailHandler {
 	*/
 	@FXML
 	public void S_CommitReportAction(){
-		TestDataBean testDataBean = S_ReportData.get();
+/*		TestDataBean testDataBean = S_ReportData.get();
 		testDataBean.setResult((String) S_ReportResultToogleGroup.getSelectedToggle().getUserData());
 		testDataBean.setR_desc(S_ReportDescTextArea.getText());
 		testDataBean.setHandletime(new Timestamp(System.currentTimeMillis()));
@@ -352,12 +379,12 @@ public class ReportDetailHandler {
 		
 		ReportDao.UpdateReport(testDataBean);
 		
-		UIMainPage.GetInstance().setGB_Page(S_FatherPane);
+		UIMainPage.GetInstance().setGB_Page(S_FatherPane);*/
 	}
 	
 	@FXML
 	public void S_BackAction(){
-		UIMainPage.GetInstance().setGB_Page(S_FatherPane);
+		//UIMainPage.GetInstance().setGB_Page(S_FatherPane);
 	}
 	
 	@FXML
