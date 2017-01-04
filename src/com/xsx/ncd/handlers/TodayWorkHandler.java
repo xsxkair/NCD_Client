@@ -100,6 +100,8 @@ public class TodayWorkHandler {
 	private SystemSetData systemSetData;
 	@Autowired
 	private WorkPageSession workPageSession;
+	@Autowired
+	private ReportDetailHandler reportDetailHandler;
 	
 	private QueryReportService queryReportService;
 
@@ -263,7 +265,7 @@ public class TodayWorkHandler {
 					
 					if((row != null)&&(row.getIndex() < tableView.getItems().size())){
 						if(event.getClickCount() == 2){
-
+							reportDetailHandler.startReportDetailActivity(tableView.getItems().get(row.getIndex()).getTestdata());
 						}
 						else if(event.getButton().equals(MouseButton.SECONDARY)){
 							myContextMenu.show(cell, event.getScreenX(), event.getScreenY());

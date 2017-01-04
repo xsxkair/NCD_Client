@@ -14,12 +14,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaPlayer.Status;
 import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -49,8 +46,6 @@ public class AppStart extends Application{
 		
 		Media pick = new Media(this.getClass().getResource("/RES/Å¦¿µ¶È-Welcome.mp4").toExternalForm());
         MediaPlayer player = new MediaPlayer(pick);
-        
-        
         
         player.play();
        
@@ -108,7 +103,6 @@ public class AppStart extends Application{
 
 					 Optional<ButtonType> result = alert.showAndWait();
 					 if (result.get() == ButtonType.OK){
-						 System.out.println("xsx");
 						 primaryStage.close();
 							System.exit(0);
 					 }

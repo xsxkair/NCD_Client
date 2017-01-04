@@ -614,13 +614,12 @@ public class ReportListHandler {
 								tempdate = null;
 							}
 							if(tempdate != null){
-								Path<java.sql.Timestamp> param = root.get("testtime");
+								//Path<java.sql.Date> param = root.get("testtime").as(java.sql.Date.class);
 								if(predicate == null)
-									predicate = cb.equal(param, tempdate);
+									predicate = cb.equal(root.get("testtime").as(java.sql.Date.class), tempdate);
 								else
-									predicate = cb.and(cb.equal(param, tempdate), predicate);
+									predicate = cb.and(cb.equal(root.get("testtime").as(java.sql.Date.class), tempdate), predicate);
 							}
-							
 							
 							//π˝¬À≤‚ ‘»À
 							String tester = GB_TesterFilterTextfield.getText();

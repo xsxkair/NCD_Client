@@ -13,6 +13,10 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXRadioButton;
+import com.jfoenix.controls.JFXTextField;
+import com.xsx.ncd.entity.Manager;
 import com.xsx.ncd.entity.TestData;
 import com.xsx.ncd.repository.DeviceRepository;
 import com.xsx.ncd.repository.ManagerRepository;
@@ -43,6 +47,8 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONSerializer;
 
 @Component
 public class ReportDetailHandler {
@@ -83,13 +89,13 @@ public class ReportDetailHandler {
 	@FXML
 	Label GB_ManagerTimeLabel;
 	@FXML
-	private RadioButton S_ReportOK;
+	private JFXRadioButton S_ReportOK;
 	@FXML
-	private RadioButton S_ReportNotOK;
+	private JFXRadioButton S_ReportError;
 	@FXML
-	private ToggleGroup S_ReportResultToogleGroup;
+	private ToggleGroup S_ReportToogleGroup;
 	@FXML
-	private TextArea S_ReportDescTextArea;
+	private JFXTextField S_ReportDescTextArea;
 	@FXML
 	private Button S_CommitReportButton;
 	@FXML
@@ -102,14 +108,9 @@ public class ReportDetailHandler {
 	@Autowired
 	private ManagerRepository managerRepository;
 	@Autowired
-	private DeviceRepository deviceRepository;
-	@Autowired
 	private ManagerSession managerSession;
-	
 	@Autowired
 	private WorkPageSession workPageSession;
-	@Autowired
-	private SystemSetData systemSetData;
 	
 	@PostConstruct
 	public void UI_Init(){
@@ -160,184 +161,88 @@ public class ReportDetailHandler {
 			S_EnTempLabel.setText("环境温度："+newVal.getE_t()+" ℃");
 			S_TesttimeLabel.setText("测试时间："+ newVal.getTesttime());
 			S_TestResultLabel.setText(newVal.getA_v()+" " + newVal.getCard().getDanwei() + " ( 参考值："+newVal.getCard().getNormal()+" " + newVal.getCard().getDanwei() + " )");
+			
+			//测试信息
+			JSONArray jsonArray = null;
+	        List<Integer> seriesdata = new ArrayList<>();
+	        
+	        try {
+	        	jsonArray = (JSONArray) JSONSerializer.toJSON(newVal.getSerie_a());
+		        seriesdata.addAll((List<Integer>) JSONSerializer.toJava(jsonArray));
+		        
+		        jsonArray = (JSONArray) JSONSerializer.toJSON(newVal.getSerie_b());
+		        seriesdata.addAll((List<Integer>) JSONSerializer.toJava(jsonArray));
+		        
+		        jsonArray = (JSONArray) JSONSerializer.toJSON(newVal.getSerie_c());
+		        seriesdata.addAll((List<Integer>) JSONSerializer.toJava(jsonArray));
+
+			} catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+				
+				seriesdata.clear();
+			}
+
+	        Integer t = newVal.getT_l();
+	        Integer b = newVal.getB_l();
+	        Integer c = newVal.getC_l();
+
+	        for(int i=0; i<seriesdata.size(); i++){
+	        	Data<Number, Number> data = new Data<Number, Number>(i, seriesdata.get(i));
+	        	StackPane stackPane = new StackPane();
+	        	
+	        	stackPane.setPrefSize(0, 0);
+	        	
+	        	if((t != null) && (i == t.intValue())){
+	        		stackPane.setStyle("-fx-background-color:red");
+	        		stackPane.setPrefSize(10, 10);
+	        	}
+	        	else if((b != null) && (i == b.intValue())){
+	        		stackPane.setStyle("-fx-background-color:green");
+	        		stackPane.setPrefSize(10, 10);
+	        	}
+	        	else if((c != null) && (i == c.intValue())){
+	        		stackPane.setStyle("-fx-background-color:blue");
+	        		stackPane.setPrefSize(10, 10);
+	        	}
+	        	
+	        	data.setNode(stackPane);
+	        	series.getData().add(data);
+			}
+	        
+	        Manager manager = newVal.getManager();
+	        if(manager == null){
+	        	GB_ManagerNameLabel.setText("null");
+	        }
+	        else{
+	        	GB_ManagerNameLabel.setText(manager.getName());
+	        }
+	        
+	        Timestamp handlerTime = newVal.getHandletime();
+	        if(handlerTime == null)
+	        	GB_ManagerTimeLabel.setText("null");
+	        else
+	        	GB_ManagerTimeLabel.setText(handlerTime.toLocaleString());
+	        
+	        String r_result = newVal.getResult();
+	        if(r_result.equals("合格")){
+	        	S_ReportToogleGroup.selectToggle(S_ReportOK);
+	        }
+	        else if(r_result.equals("不合格")){
+	        	S_ReportToogleGroup.selectToggle(S_ReportError);
+	        }
+	        else {
+				S_ReportToogleGroup.selectToggle(null);
+			}
+	        
+	        S_ReportDescTextArea.setText(newVal.getR_desc());
 		});
 
-/*			@Override
-			public void changed(ObservableValue<? extends TestDataBean> observable, TestDataBean oldValue, TestDataBean newValue) {
-				// TODO Auto-generated method stub
-				
-				//清空曲线
-				series.getData().clear();
-				
-				S_DeviceidLabel.setText("-");
-				S_UserNameLabel.setText("-");
-				S_UserAgeLabel.setText("-");
-				S_UserSexLabel.setText("-");
-				S_UserJobLabel.setText("-");
-				S_UserPhoneLabel.setText("-");
-				S_UserDescLabel.setText("-");
-				S_DeviceLocationLabel.setText("-");
-				
-				S_CardidLabel.setText("-");
-				S_ItemNameLabel.setText("-");
-				S_NormalLabel.setText("-");
-				S_WaittimeLabel.setText("-");
-				S_OuttimeLabel.setText("-");
-
-				S_TesterNameLabel.setText("-");
-				S_TesterAgeLabel.setText("-");
-				S_TesterSexLabel.setText("-");
-				S_TesterJobLabel.setText("-");
-				S_TesterPhoneLabel.setText("-");
-				S_TesterDescLabel.setText("-");
-				
-				S_SampleIDLabel.setText("-");
-		        S_CardTempLabel.setText("-");
-		        S_EnTempLabel.setText("-");
-		        S_TesttimeLabel.setText("-");
-		        S_ReportUpTimeLabel.setText("-");
-		        S_RealWaittimeLabel.setText("-");
-		        
-				//报告信息
-		        GB_ManagerNameLabel.setText("-");
-		        GB_ManagerTimeLabel.setText("-");
-		        S_ReportDescTextArea.setText("-");
-				
-				if(newValue != null){
-					TestDataBean testDataBean = null;
-					CardBean cardBean = null;
-					DeviceBean deviceBean = null;
-					PersonBean sampleperson = null;
-					DevicerBean tester = null;
-					ManagerBean managerBean = null;
-					
-					testDataBean = newValue;
-					
-					cardBean = ReportDao.ReadCardByCID(newValue.getCid());
-					deviceBean = DeviceInfoDao.ReadDeviceByDID(newValue.getDid());
-					tester = DeviceInfoDao.ReadDevicerByID(newValue.getT_id());
-					managerBean = ManagerDao.QueryReportManager(newValue.getM_account(), null);
-					sampleperson = PersonDao.QueryPerson(newValue.getS_id());
-					
-					
-					//更新设备信息
-					S_DeviceidLabel.setText((testDataBean.getDid() == null)?"null":testDataBean.getDid().toString());
-					
-					S_UserNameLabel.setText((deviceBean.getName() == null)?"null":deviceBean.getName().toString());
-					S_UserAgeLabel.setText((deviceBean.getAge() == null)?"null":deviceBean.getAge().toString());
-					S_UserSexLabel.setText((deviceBean.getSex() == null)?"null":deviceBean.getSex().toString());
-					S_UserJobLabel.setText((deviceBean.getJob() == null)?"null":deviceBean.getJob().toString());
-					S_UserPhoneLabel.setText((deviceBean.getPhone() == null)?"null":deviceBean.getPhone().toString());
-					S_UserDescLabel.setText((deviceBean.getDsc() == null)?"null":deviceBean.getDsc().toString());
-					
-					if(deviceBean != null)
-						S_DeviceLocationLabel.setText((deviceBean.getDaddr() == null)?"null":deviceBean.getDaddr().toString());
-					
-					//试剂卡信息
-					S_CardidLabel.setText((testDataBean.getCid() == null)?"null":testDataBean.getCid().toString());
-					S_ItemNameLabel.setText((testDataBean.getCitem() == null)?"null":testDataBean.getCitem().toString());
-					if(cardBean != null){
-						S_NormalLabel.setText((cardBean.getN_v() == null)?"null":cardBean.getN_v().toString());
-						S_WaittimeLabel.setText((cardBean.getWaitt() == null)?"null":cardBean.getWaitt().toString());
-						S_OuttimeLabel.setText((cardBean.getOutdate() == null)?"null":cardBean.getOutdate().toString());
-					}
-					
-					
-					//操作人信息
-					S_TesterNameLabel.setText((testDataBean.getT_name() == null)?"null":testDataBean.getT_name().toString());
-					if(tester != null){
-						S_TesterAgeLabel.setText((tester.getAge() == null)?"null":tester.getAge().toString());
-						S_TesterSexLabel.setText((tester.getSex() == null)?"null":tester.getSex().toString());
-						S_TesterJobLabel.setText((tester.getJob() == null)?"null":tester.getJob().toString());
-						S_TesterPhoneLabel.setText((tester.getPhone() == null)?"null":tester.getPhone().toString());
-						S_TesterDescLabel.setText((tester.getDsc() == null)?"null":tester.getDsc().toString());
-					}
-
-					//测试信息
-					JSONArray jsonArray = null;
-			        List<Integer> seriesdata = new ArrayList<>();
-			        
-			        try {
-			        	jsonArray = (JSONArray) JSONSerializer.toJSON(testDataBean.getSerie_a());
-				        seriesdata.addAll((List<Integer>) JSONSerializer.toJava(jsonArray));
-				        
-				        jsonArray = (JSONArray) JSONSerializer.toJSON(testDataBean.getSerie_b());
-				        seriesdata.addAll((List<Integer>) JSONSerializer.toJava(jsonArray));
-				        
-				        jsonArray = (JSONArray) JSONSerializer.toJSON(testDataBean.getSerie_c());
-				        seriesdata.addAll((List<Integer>) JSONSerializer.toJava(jsonArray));
-				        
-				        jsonArray = (JSONArray) JSONSerializer.toJSON(testDataBean.getSerie_d());
-				        seriesdata.addAll((List<Integer>) JSONSerializer.toJava(jsonArray));
-					} catch (Exception e) {
-						// TODO: handle exception
-						e.printStackTrace();
-					}
-
-			        Integer t = testDataBean.getT_l();
-			        Integer b = testDataBean.getB_l();
-			        Integer c = testDataBean.getC_l();
-
-			        for(int i=0; i<seriesdata.size(); i++){
-			        	Data<Number, Number> data = new Data<Number, Number>(i, seriesdata.get(i));
-			        	StackPane stackPane = new StackPane();
-			        	
-			        	stackPane.setPrefSize(0, 0);
-			        	
-			        	if((t != null) && (i == t.intValue())){
-			        		stackPane.setStyle("-fx-background-color:red");
-			        		stackPane.setPrefSize(10, 10);
-			        	}
-			        	else if((b != null) && (i == b.intValue())){
-			        		stackPane.setStyle("-fx-background-color:green");
-			        		stackPane.setPrefSize(10, 10);
-			        	}
-			        	else if((c != null) && (i == c.intValue())){
-			        		stackPane.setStyle("-fx-background-color:blue");
-			        		stackPane.setPrefSize(10, 10);
-			        	}
-			        	
-			        	data.setNode(stackPane);
-			        	series.getData().add(data);
-					}
-	
-			        S_SampleIDLabel.setText((testDataBean.getSampleid() == null)?"null":testDataBean.getSampleid().toString());
-			        S_CardTempLabel.setText((testDataBean.getO_t() == null)?"null":testDataBean.getO_t().toString());
-			        S_EnTempLabel.setText((testDataBean.getE_t() == null)?"null":testDataBean.getE_t().toString());
-			        S_TesttimeLabel.setText((testDataBean.getTesttime() == null)?"null":testDataBean.getTesttime().toString());
-			        S_ReportUpTimeLabel.setText((testDataBean.getUptime() == null)?"null":testDataBean.getUptime().toString());
-			        
-			        if(cardBean != null)
-			        	S_RealWaittimeLabel.setText(((cardBean.getWaitt() == null)?0:cardBean.getWaitt()*60)+(testDataBean.getOutt()==null?0:testDataBean.getOutt())+" 秒");
-			        
-					//报告信息
-			        GB_ManagerNameLabel.setText((testDataBean.getM_name() == null)?"无":testDataBean.getM_name().toString());
-			        GB_ManagerTimeLabel.setText((testDataBean.getHandletime() == null)?"无":testDataBean.getHandletime().toString());
-					
-			        String string = testDataBean.getResult();
-
-					if (string == null) {	
-						S_ReportResultToogleGroup.selectToggle(null);
-					}
-					else if (string.equals("合格")) {
-						S_ReportResultToogleGroup.selectToggle(S_ReportOK);
-						S_ReportDescTextArea.setText((testDataBean.getR_desc() == null)?"null":testDataBean.getR_desc().toString());
-					}
-					else if (string.equals("不合格")) {
-						S_ReportResultToogleGroup.selectToggle(S_ReportNotOK);
-						S_ReportDescTextArea.setText((testDataBean.getR_desc() == null)?"null":testDataBean.getR_desc().toString());
-					}
-					else{
-						S_ReportResultToogleGroup.selectToggle(null);
-					}
-				}
-			}
-		});*/
         
         S_TestLineChart.getData().add(series);
         
         S_ReportOK.setUserData("合格");
-        S_ReportNotOK.setUserData("不合格");
+        S_ReportError.setUserData("不合格");
         
         AnchorPane.setTopAnchor(rootpane, 0.0);
         AnchorPane.setBottomAnchor(rootpane, 0.0);
@@ -355,36 +260,24 @@ public class ReportDetailHandler {
 		workPageSession.setWorkPane(this.rootpane);
 	}
 
-	
-/*	@FXML
-	public void S_DeleteReportAction(){
-		ReportDao.DeleteReport(S_ReportData.get());
-		
-		UIMainPage.GetInstance().setGB_Page(ReportListPage.GetInstance().GetReportPane());
-	}
-	*/
 	@FXML
 	public void S_CommitReportAction(){
-/*		TestDataBean testDataBean = S_ReportData.get();
-		testDataBean.setResult((String) S_ReportResultToogleGroup.getSelectedToggle().getUserData());
-		testDataBean.setR_desc(S_ReportDescTextArea.getText());
-		testDataBean.setHandletime(new Timestamp(System.currentTimeMillis()));
+		TestData testData = S_ReportData.get();
+		testData.setResult((String) S_ReportToogleGroup.getSelectedToggle().getUserData());
+		testData.setR_desc(S_ReportDescTextArea.getText());
+		testData.setHandletime(new Timestamp(System.currentTimeMillis()));
 		
-		ManagerBean tempmanager = ManagerDao.QueryReportManager(SignedManager.GetInstance().getGB_SignedAccount(), null);
-		testDataBean.setM_account(tempmanager.getAccount());
-		testDataBean.setM_name(tempmanager.getName());
+		Manager tempmanager = managerRepository.findManagerByAccount(managerSession.getAccount());
+		testData.setManager(tempmanager);
 		
-		GB_ManagerNameLabel.setText((testDataBean.getM_name() == null)?"无":testDataBean.getM_name().toString());
-        GB_ManagerTimeLabel.setText((testDataBean.getHandletime() == null)?"无":testDataBean.getHandletime().toString());
+		testDataRepository.save(testData);
 		
-		ReportDao.UpdateReport(testDataBean);
-		
-		UIMainPage.GetInstance().setGB_Page(S_FatherPane);*/
+		workPageSession.setWorkPane(S_FatherPane);
 	}
 	
 	@FXML
 	public void S_BackAction(){
-		//UIMainPage.GetInstance().setGB_Page(S_FatherPane);
+		workPageSession.setWorkPane(S_FatherPane);
 	}
 	
 	@FXML
