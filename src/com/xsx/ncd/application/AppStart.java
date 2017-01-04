@@ -70,8 +70,6 @@ public class AppStart extends Application{
 			@Override
 			public void changed(ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) {
 				// TODO Auto-generated method stub
-				System.out.println(player.getMedia().getDuration());
-				System.out.println(player.getCurrentTime());
 				
 				if(loadResourceTask.getValue() != null && loadResourceTask.getValue().equals(true)){
 					if(player.getMedia().getDuration().subtract(newValue).lessThan(new Duration(200))){
@@ -89,8 +87,7 @@ public class AppStart extends Application{
 				// TODO Auto-generated method stub
 				
 				if(newValue){
-					System.out.println(player.getMedia().getDuration());
-					System.out.println(player.getCurrentTime());
+
 					if(player.getMedia().getDuration().subtract(player.getCurrentTime()).lessThan(new Duration(200))){
 						SpringFacktory.getCtx().getBean(LoginHandler.class).startLoginActivity();
 						primaryStage.close();

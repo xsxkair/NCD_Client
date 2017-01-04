@@ -356,11 +356,11 @@ public class ReportListHandler {
 					
 					if((row != null)&&(row.getIndex() < GB_TableView.getItems().size())){
 						
-						/*if(!row.getStyleClass().contains("tablerow"))
+						if(!row.getStyleClass().contains("tablerow"))
 							row.getStyleClass().add("tablerow");
 						
-						tooltip.setGraphic(new ReportTipInfo(GB_TableView.getItems().get(row.getIndex()).getTestdata()));
-						Tooltip.install(cell, tooltip);	*/
+						tooltip.setGraphic(new ReportTipPaneHandler(GB_TableView.getItems().get(row.getIndex()).getTestdata()));
+						Tooltip.install(cell, tooltip);	
 					}
 					else
 						Tooltip.uninstall(cell, tooltip);
@@ -376,8 +376,6 @@ public class ReportListHandler {
 					
 					if((row != null)&&(row.getIndex() < GB_TableView.getItems().size())){
 						if(event.getClickCount() == 2){
-							//ReportDetailPage.GetInstance().setS_ReportData(GB_TableView.getItems().get(row.getIndex()).getTestdata());
-							//UIMainPage.GetInstance().setGB_Page(ReportDetailPage.GetInstance().getPane());
 							reportDetailHandler.startReportDetailActivity(GB_TableView.getItems().get(row.getIndex()).getTestdata());
 						}
 						else if(event.getButton().equals(MouseButton.SECONDARY)){

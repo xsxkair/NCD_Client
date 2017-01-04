@@ -214,6 +214,8 @@ public class TodayWorkHandler {
 			}
 		});
 			
+		rootpane.getStylesheets().add(this.getClass().getResource("/com/xsx/ncd/views/reportpage.css").toExternalForm());
+        
 		AnchorPane.setTopAnchor(rootpane, 0.0);
         AnchorPane.setBottomAnchor(rootpane, 0.0);
         AnchorPane.setLeftAnchor(rootpane, 0.0);
@@ -247,6 +249,8 @@ public class TodayWorkHandler {
 						
 						if(!row.getStyleClass().contains("tablerow"))
 							row.getStyleClass().add("tablerow");
+						
+						tooltip.setGraphic(new ReportTipPaneHandler(GB_TableView.getItems().get(row.getIndex()).getTestdata()));
 						
 						Tooltip.install(cell, tooltip);	
 					}
