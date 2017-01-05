@@ -26,11 +26,9 @@ public class Card {
 	private String qu1_a;
 	private String qu1_b;
 	private String qu1_c;
-	private String qu1_d;
 	private String qu2_a;
 	private String qu2_b;
 	private String qu2_c;
-	private String qu2_d;
 	
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Id
@@ -162,14 +160,6 @@ public class Card {
 		this.qu1_c = qu1_c;
 	}
 
-	public String getQu1_d() {
-		return qu1_d;
-	}
-
-	public void setQu1_d(String qu1_d) {
-		this.qu1_d = qu1_d;
-	}
-
 	public String getQu2_a() {
 		return qu2_a;
 	}
@@ -192,14 +182,6 @@ public class Card {
 
 	public void setQu2_c(String qu2_c) {
 		this.qu2_c = qu2_c;
-	}
-
-	public String getQu2_d() {
-		return qu2_d;
-	}
-
-	public void setQu2_d(String qu2_d) {
-		this.qu2_d = qu2_d;
 	}
 
 	@Override

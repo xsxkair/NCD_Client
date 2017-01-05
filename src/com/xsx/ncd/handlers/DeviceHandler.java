@@ -55,6 +55,8 @@ public class DeviceHandler {
 	
 	@Autowired
 	private DeviceRepository deviceRepository;
+	@Autowired
+	private DeviceDetailHandler deviceDetailHandler;
 	
 	//更新设备状态任务
 	private ReadDeviceInfoService S_ReadDeviceInfoService;
@@ -113,8 +115,7 @@ public class DeviceHandler {
 							@Override
 							public void handle(MouseEvent event) {
 								// TODO Auto-generated method stub
-								//DeviceDetailPage.GetInstance().setS_DeviceId(temp.getDeviceid());
-								//UIMainPage.GetInstance().setGB_Page(DeviceDetailPage.GetInstance().GetPane());
+								deviceDetailHandler.ShowDeviceDetail(temp.getDeviceId());
 							}
 						});
 				        

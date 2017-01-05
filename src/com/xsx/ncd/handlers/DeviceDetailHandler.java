@@ -5,17 +5,35 @@ import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.List;
 
-import org.com.xsx.Dao.DeviceInfoDao;
-import org.com.xsx.Data.UIMainPage;
-import org.com.xsx.Domain.DevicerBean;
-import org.com.xsx.Service.ReadOneDeviceService;
-import org.com.xsx.UI.MainScene.DevicePage.DeviceDataPackage;
-import org.com.xsx.UI.MainScene.DevicePage.DeviceTipInfo;
+import javax.annotation.PostConstruct;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.domain.Sort.Order;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Component;
+
+import com.xsx.ncd.entity.Device;
+import com.xsx.ncd.entity.Manager;
+import com.xsx.ncd.entity.TestData;
+import com.xsx.ncd.handlers.ReportListHandler.QueryReportService.QueryReportTask;
+import com.xsx.ncd.repository.DeviceRepository;
+import com.xsx.ncd.spring.WorkPageSession;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -24,12 +42,16 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart.Data;
 import javafx.scene.chart.XYChart.Series;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
@@ -39,15 +61,14 @@ import javafx.scene.shape.Path;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 
+@Component
 public class DeviceDetailHandler {
-
-	private static DeviceDetailHandler S_DeviceDetailPage = null;
 	
 	private AnchorPane rootpane;
 	
-	private String S_DeviceId ;
+	private Pane fatherPane;
 	
-	private ReadOneDeviceService S_ReadOneDeviceService = new ReadOneDeviceService();
+	private String S_DeviceId ;
 	
 	@FXML
 	ImageView GB_DeviceImg;
@@ -70,43 +91,25 @@ public class DeviceDetailHandler {
 	Label GB_DevicerAddrLabel;
 	
 	@FXML
-	ListView<String> GB_DevicerListView;
-	@FXML
-	TextField GB_DevicerNameTextFiled;
-	@FXML
-	TextField GB_DevicerAgeTextFiled;
-	@FXML
-	TextField GB_DevicerSexTextFiled;
-	@FXML
-	TextField GB_DevicerPhoneTextFiled;
-	@FXML
-	TextField GB_DevicerJobTextFiled;
-	@FXML
-	TextField GB_DevicerDescTextFiled;
-	
-	@FXML
 	LineChart<String, Number> GB_DeviceLineChart;
 	private Series<String, Number> chartseries;
-	@FXML
-	CategoryAxis GB_DeviceXaxis;
-	@FXML
-	NumberAxis GB_DeviceYaxis;
+	@FXML CategoryAxis GB_DeviceXaxis;
+	@FXML NumberAxis GB_DeviceYaxis;
 	
-	private DeviceDetailHandler() {
-		
-	}
+	private ContextMenu myContextMenu;
+	private MenuItem myMenuItem1;
+	private MenuItem myMenuItem2;
 	
-	public static DeviceDetailHandler GetInstance() {
-		if(S_DeviceDetailPage == null)
-			S_DeviceDetailPage = new DeviceDetailHandler();
-		
-		return S_DeviceDetailPage;
-	}
+	@Autowired
+	private WorkPageSession workPageSession;
+	@Autowired
+	private DeviceRepository deviceRepository;
 	
+	@PostConstruct
 	public void UI_Init(){
 		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(this.getClass().getResource("DeviceDetialPage.fxml"));
-        InputStream in = this.getClass().getResourceAsStream("DeviceDetialPage.fxml");
+		loader.setLocation(this.getClass().getResource("/com/xsx/ncd/views/DeviceDetialPage.fxml"));
+        InputStream in = this.getClass().getResourceAsStream("/com/xsx/ncd/views/DeviceDetialPage.fxml");
         loader.setController(this);
         try {
         	rootpane = loader.load(in);
@@ -115,57 +118,61 @@ public class DeviceDetailHandler {
 			e.printStackTrace();
 		}
         
+        myMenuItem1 = new MenuItem("刷新");
+        myMenuItem2 = new MenuItem("返回");
+        myContextMenu = new ContextMenu(myMenuItem1, myMenuItem2);
+        
         chartseries = new Series<>();
        
         GB_DeviceLineChart.getData().add(chartseries);
         
-        UIMainPage.GetInstance().getGB_Page().addListener(new ChangeListener<Pane>() {
+        workPageSession.getWorkPane().addListener((o, oldValue, newValue) ->{
+        	
+        	if(rootpane.equals(newValue)){
+        		fatherPane = oldValue;
+        		
+        		UpDeviceInfo();
+        		
+        		UpDeviceActiveness();
+			}
+        });
+
+        rootpane.getStylesheets().add(this.getClass().getResource("/com/xsx/ncd/views/devicedetial.css").toExternalForm());
+        
+        rootpane.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 			@Override
-			public void changed(ObservableValue<? extends Pane> observable, Pane oldValue, Pane newValue) {
+			public void handle(MouseEvent event) {
 				// TODO Auto-generated method stub
-				if(rootpane.equals(newValue)){
-					S_ReadOneDeviceService.setS_DeviceID(getS_DeviceId());
-					S_ReadOneDeviceService.restart();
-					UpDeviceTestCountInfo();
+				if(event.getButton().equals(MouseButton.SECONDARY)){
+					myContextMenu.show(rootpane, event.getScreenX(), event.getScreenY());
 				}
-				
-				if(rootpane.equals(oldValue)){
-					S_ReadOneDeviceService.cancel();
-				}
+				else
+					myContextMenu.hide();
 			}
 		});
         
-        S_ReadOneDeviceService.setPeriod(Duration.minutes(5));
-        S_ReadOneDeviceService.lastValueProperty().addListener(new ChangeListener<DeviceDataPackage>() {
+        //刷新
+        myMenuItem1.setOnAction(new EventHandler<ActionEvent>() {
 
-			@Override
-			public void changed(ObservableValue<? extends DeviceDataPackage> observable, DeviceDataPackage oldValue,
-					DeviceDataPackage newValue) {
-				// TODO Auto-generated method stub
-				UpDeviceInfo(newValue);
-			}
-		});
-        
-        GB_DevicerListView.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+  			@Override
+  			public void handle(ActionEvent event) {
+  				// TODO Auto-generated method stub
+  				UpDeviceInfo();
+        		
+        		UpDeviceActiveness();
+  			}
+  		});
+      		
+      	//返回
+        myMenuItem2.setOnAction(new EventHandler<ActionEvent>() {
 
-			@Override
-			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-				// TODO Auto-generated method stub
-				DevicerBean devicerBean = S_ReadOneDeviceService.getLastValue().getDevicerlist().get(newValue.intValue());
-				
-				if(devicerBean != null){
-					GB_DevicerNameTextFiled.setText(devicerBean.getName() == null?"-":devicerBean.getName());
-					GB_DevicerAgeTextFiled.setText(devicerBean.getAge() == null?"-":devicerBean.getAge());
-					GB_DevicerSexTextFiled.setText(devicerBean.getSex() == null?"-":devicerBean.getSex());
-					GB_DevicerPhoneTextFiled.setText(devicerBean.getPhone() == null?"-":devicerBean.getPhone());
-					GB_DevicerJobTextFiled.setText(devicerBean.getJob() == null?"-":devicerBean.getJob());
-					GB_DevicerDescTextFiled.setText(devicerBean.getDsc() == null?"-":devicerBean.getDsc());
-				}
-			}
-		});
-        
-        rootpane.getStylesheets().add(this.getClass().getResource("devicedetial.css").toExternalForm());
+  			@Override
+  			public void handle(ActionEvent event) {
+  				// TODO Auto-generated method stub
+  				workPageSession.setWorkPane(fatherPane);
+  			}
+  		});	
         
         AnchorPane.setTopAnchor(rootpane, 0.0);
         AnchorPane.setBottomAnchor(rootpane, 0.0);
@@ -173,57 +180,50 @@ public class DeviceDetailHandler {
         AnchorPane.setRightAnchor(rootpane, 0.0);
 	}
 	
-	public AnchorPane GetPane() {
-		return rootpane;
+	public void ShowDeviceDetail(String deviceId){
+		
+		S_DeviceId = deviceId;
+		
+		workPageSession.setWorkPane(rootpane);
 	}
 	
-	private void UpDeviceInfo(DeviceDataPackage datas) {
+	private void UpDeviceInfo() {
 		
-		GB_DeviceImg.setImage(new Image(this.getClass().getResourceAsStream("/RES/deviceico_off.png")));;
+		Image image = null;
 		
-		GB_DeviceIDLabel.setText("-");
-		GB_DevicerNameLabel.setText("-");
-		GB_DevicerAgeLabel.setText("-");
-		GB_DevicerSexLabel.setText("-");
-		GB_DevicerPhoneLabel.setText("-");
-		GB_DevicerJobLabel.setText("-");
-		GB_DevicerDescLabel.setText("-");
-		GB_DevicerAddrLabel.setText("-");
+		Device device = deviceRepository.findDeviceByDid(S_DeviceId);
 		
-		GB_DevicerListView.getItems().clear();;
-		GB_DevicerNameTextFiled.setText("-");
-		GB_DevicerAgeTextFiled.setText("-");
-		GB_DevicerSexTextFiled.setText("-");
-		GB_DevicerPhoneTextFiled.setText("-");
-		GB_DevicerJobTextFiled.setText("-");
-		GB_DevicerDescTextFiled.setText("-");
+		Long devicetime = device.getTime();
+		long currenttime = System.currentTimeMillis();
 
-		if(datas.getDeviceBean() != null){
-			GB_DeviceIDLabel.setText(datas.getDeviceBean().getId());
-			GB_DevicerAddrLabel.setText(datas.getDeviceBean().getDaddr());
+		if((devicetime == null) || ((currenttime > devicetime) && (currenttime - devicetime > 120000))){
+			image = new Image(this.getClass().getResourceAsStream("/RES/deviceico_off.png"));
+		}
+		else if(device.getStatus().equals("OK")){
+			image = new Image(this.getClass().getResourceAsStream("/RES/deviceico_ok.png"));
+		}
+		else {
+			image = new Image(this.getClass().getResourceAsStream("/RES/deviceico_error.png"));
 		}
 		
-		if(datas.getDevicerBean() != null){
-			GB_DevicerNameLabel.setText((datas.getDevicerBean().getName() == null)?"-":datas.getDevicerBean().getName());
-			GB_DevicerAgeLabel.setText((datas.getDevicerBean().getAge() == null)?"-":datas.getDevicerBean().getAge());
-			GB_DevicerSexLabel.setText((datas.getDevicerBean().getSex() == null)?"-":datas.getDevicerBean().getSex());
-			GB_DevicerPhoneLabel.setText((datas.getDevicerBean().getPhone() == null)?"-":datas.getDevicerBean().getPhone());
-			GB_DevicerJobLabel.setText((datas.getDevicerBean().getJob() == null)?"-":datas.getDevicerBean().getJob());
-			GB_DevicerDescLabel.setText((datas.getDevicerBean().getDsc() == null)?"-":datas.getDevicerBean().getDsc());
-		}
+		GB_DeviceImg.setImage(image);;
 		
-		if(datas.getDevicerlist() != null){
-			for (DevicerBean devicer : datas.getDevicerlist()) {
-				if(devicer.getName() != null)
-					GB_DevicerListView.getItems().add(devicer.getName());
-			}
-		}
+		GB_DeviceIDLabel.setText(device.getDid());
+		GB_DevicerNameLabel.setText(device.getName());
+		
+		GB_DevicerAgeLabel.setText(device.getAge());
+		GB_DevicerSexLabel.setText(device.getSex());
+		GB_DevicerPhoneLabel.setText(device.getPhone());
+		GB_DevicerJobLabel.setText(device.getJob());
+		GB_DevicerDescLabel.setText(device.getDsc());
+		GB_DevicerAddrLabel.setText(device.getAddr());
+
 	}
 	
-	private void UpDeviceTestCountInfo() {
+	private void UpDeviceActiveness() {
 		chartseries.getData().clear();
 		
-		List<Object[]> countinfo = DeviceInfoDao.QueryDeviceTestCounyGroupByDate(getS_DeviceId());
+		List<Object[]> countinfo = deviceRepository.queryDeviceActiveness(S_DeviceId);
 		
 		if(countinfo == null)
 			return;
@@ -249,17 +249,7 @@ public class DeviceDetailHandler {
 			}
 		}
 		
-		System.out.println(chartseries.getNode());
-		
 		chartseries.getNode().getStyleClass().add("chartstyle");
 
-	}
-	
-	public String getS_DeviceId() {
-		return S_DeviceId;
-	}
-
-	public void setS_DeviceId(String s_DeviceId) {
-		S_DeviceId = s_DeviceId;
 	}
 }

@@ -1,6 +1,5 @@
 package com.xsx.ncd.handlers;
 
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
@@ -8,17 +7,18 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
 public class DeviceThumnPane extends VBox{
 	
-	private String deviceid;
+	private String deviceId;
 	
 	public DeviceThumnPane(Image image, String id, String tester, String addr){
-		this.setDeviceid(id);
+		
+		this.setDeviceId(id);
+		
 		ImageView deviceimage = new ImageView(image);
 		deviceimage.setFitWidth(150);
 		deviceimage.setFitHeight(123);
@@ -42,11 +42,11 @@ public class DeviceThumnPane extends VBox{
         Tooltip.install(this, tooltip);
 	}
 
-	public String getDeviceid() {
-		return deviceid;
+	public String getDeviceId() {
+		return deviceId;
 	}
 
-	public void setDeviceid(String deviceid) {
-		this.deviceid = deviceid;
+	public void setDeviceId(String deviceId) {
+		this.deviceId = deviceId;
 	}
 }

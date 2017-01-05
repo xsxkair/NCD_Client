@@ -43,8 +43,6 @@ public class MainContainHandler {
 	AnchorPane GB_RootPane;
 	
 	@FXML
-	Button GB_MyWorkSpaceButton;
-	@FXML
 	ImageView GB_WorkSpaceIcoView;
 	
 	@FXML
@@ -89,6 +87,12 @@ public class MainContainHandler {
 	
 	@Autowired
 	private ReportListHandler reportListHandler;
+	
+	@Autowired
+	private ReportOverViewPage reportOverViewPage;
+	
+	@Autowired
+	private CardRepertoryHandler cardRepertoryHandler;
 	
 	@PostConstruct
 	public void UI_Init() {
@@ -166,7 +170,7 @@ public class MainContainHandler {
 	
 	@FXML
 	public void ReportThumbAction(){
-		//UIMainPage.GetInstance().setGB_Page(ReportOverViewPage.GetInstance().GetPane());
+		reportOverViewPage.ShowReportOverViewPage();
 	}
 	
 	@FXML
@@ -181,7 +185,7 @@ public class MainContainHandler {
 	
 	@FXML
 	public void ShowInOutRecordAction(){
-		//UIMainPage.GetInstance().setGB_Page(CardRecordPage.GetInstance().GetPane());
+		cardRepertoryHandler.ShowCardRecordPage();
 	}
 	
 	@FXML

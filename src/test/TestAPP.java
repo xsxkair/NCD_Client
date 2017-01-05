@@ -14,7 +14,7 @@ public class TestAPP {
 	public void testCommonCustomRepositoryMethod(){
 		SpringFacktory.SpringFacktoryInit();
 		
-		System.out.println(SpringFacktory.getManagerSession().getAccount());
+		//System.out.println(SpringFacktory.getManagerSession().getAccount());
 		
 	}
 }

@@ -1,0 +1,23 @@
+.chart-pie:hover {
+    -fx-border-color: red;
+    -fx-border-width: 2px;
+}
+
+.chart-bar:hover {
+    -fx-border-color: red;
+    -fx-border-width: 2px;
+}
+
+.textstyle1{
+	-fx-text-fill: mediumturquoise ;
+	-fx-font-size:16;
+	-fx-font-style:italic;
+	-fx-font-weight:bold;
+}
+
+.textstyle2{
+	-fx-text-fill:red;
+	-fx-font-size:16;
+	-fx-font-style:italic;
+	-fx-font-weight:bold;
+}
