@@ -3,6 +3,7 @@ package com.xsx.ncd.handlers;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,11 +15,12 @@ import org.springframework.stereotype.Component;
 
 import com.jfoenix.controls.JFXRadioButton;
 import com.xsx.ncd.define.CardRepertoryTableItem;
-import com.xsx.ncd.entity.CardRepertory;
 import com.xsx.ncd.entity.Device;
+import com.xsx.ncd.entity.Manager;
 import com.xsx.ncd.repository.CardRecordRepository;
 import com.xsx.ncd.repository.CardRepository;
 import com.xsx.ncd.repository.DeviceRepository;
+import com.xsx.ncd.repository.ManagerRepository;
 import com.xsx.ncd.spring.ManagerSession;
 import com.xsx.ncd.spring.WorkPageSession;
 
@@ -154,6 +156,8 @@ public class CardRepertoryHandler {
 	private CardRepository cardRepository;
 	@Autowired
 	private ManagerSession managerSession;
+	@Autowired
+	private ManagerRepository managerRepository;
 
 	@PostConstruct
 	private void UI_Init() {
@@ -247,6 +251,10 @@ public class CardRepertoryHandler {
 					GB_MainPane.getStyleClass().remove("backeffict");
 					
 					UpdateDeviceListUI();
+					
+					UpSummyRepositoryPieChart();
+					
+					UpDeviceRepositoryLineChart();
 				}
 			}
 		});
@@ -261,9 +269,23 @@ public class CardRepertoryHandler {
 		workPageSession.setWorkPane(rootpane);
 	}
 	
-	private void UpdateDeviceListUI() {
-		List<Device> devices = deviceRepository.findByManagerAccount(managerSession.getAccount());
+	@FXML
+	public void GB_CloseDetailPaneAction(){
+		GB_CardDetailPane.setVisible(false);
 		
+		GB_MainPane.setEffect(null);
+	}
+	
+	private void UpdateDeviceListUI() {
+		
+		List<Device> devices;
+		
+		Manager manager = managerRepository.findManagerByAccount(managerSession.getAccount());
+		if(manager.getFatheraccount() == null)
+			devices = deviceRepository.findByManagerAccount(managerSession.getAccount());
+		else
+			devices = deviceRepository.findByManagerAccount(manager.getFatheraccount());
+			
 		GB_DeviceFlowPane.getChildren().clear();
 		for (Device device : devices) {
 			JFXRadioButton rb = new JFXRadioButton(device.getDid());
@@ -278,11 +300,81 @@ public class CardRepertoryHandler {
 			GB_DeviceToggleGroup.selectToggle((Toggle) GB_DeviceFlowPane.getChildren().get(0));
 	}
 	
-	@FXML
-	public void GB_CloseDetailPaneAction(){
-		GB_CardDetailPane.setVisible(false);
+	private void UpSummyRepositoryPieChart() {
 		
-		GB_MainPane.setEffect(null);
+		List<Manager> managers = new ArrayList<>();
+		
+		Manager manager = managerRepository.findManagerByAccount(managerSession.getAccount());
+		if(manager.getFatheraccount() == null){
+			managers.add(manager);
+			managers.addAll(managerRepository.queryChildAccountList(manager.getAccount()));
+		}
+		else{
+			managers.add(managerRepository.findManagerByAccount(manager.getFatheraccount()));
+			managers.addAll(managerRepository.queryChildAccountList(manager.getFatheraccount()));
+		}
+
+		List<Object[]> objects = cardRecordRepository.QueryCardRepertoryNumByItem(managers);
+		
+		GB_CardSummyChartData.clear();
+		for (Object[] objects2 : objects) {
+			Data temp = new Data(objects2[0].toString(), ((Long) objects2[1]).intValue());
+			GB_CardSummyChartData.add(temp);
+			
+			HBox tempbox = new HBox();
+			tempbox.setAlignment(Pos.CENTER);
+
+			Label label2 = new Label(objects2[0].toString());
+			label2.getStyleClass().add("textstyle1");
+			
+			Label label5 = new Label(" : ø‚¥Ê  ");
+			label5.setFont(new Font("System", 16));
+			
+			Label label4 = new Label((int)(temp.getPieValue())+"");
+			label4.getStyleClass().add("textstyle2");
+			
+			Label label1 = new Label(" »À∑› ");
+			label1.setFont(new Font("System", 16));
+			
+			tempbox.getChildren().addAll(label2, label5, label4, label1);
+			tempbox.setSpacing(5);
+			
+			Tooltip tooltip = new Tooltip();
+			tooltip.setGraphic(tempbox);
+	        Tooltip.install(temp.getNode(), tooltip);
+	        
+	        temp.getNode().setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+				@Override
+				public void handle(MouseEvent event) {
+					// TODO Auto-generated method stub
+					if(event.getButton().equals(MouseButton.SECONDARY)){
+						myContextMenu.show((Node) event.getSource(), event.getScreenX(), event.getScreenY());
+					}
+					else if (event.getButton().equals(MouseButton.PRIMARY)) {
+						GB_CardDetailPane.setVisible(true);
+		        		
+		        		GB_MainPane.setEffect(new GaussianBlur(10));
+
+					}
+				}
+
+			});
+		}
+	}
+	
+	private void UpDeviceRepositoryLineChart() {
+		
+		Device device = (Device) GB_DeviceToggleGroup.getSelectedToggle().getUserData();
+		
+		if(device == null)
+			return;
+		
+		/*List<Object[]> objects = cardRecordRepository.QueryCardRepertoryByDevice(device);
+		
+		for (Object[] objects2 : objects) {
+			System.out.println(objects2[0].toString()+" -- "+ objects2[1].toString()+ " -- -" + objects2[2]);
+		}*/
 	}
 
 }

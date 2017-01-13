@@ -13,10 +13,11 @@ public interface DeviceRepository extends JpaRepository<Device, Integer>, JpaSpe
 
 	public Device findDeviceByDid(String did);
 	
+	public Device findById(Integer id);
+	
 	public List<Device> findByManagerAccount(String account);
 	
-	@Query(value = "SELECT DATE_FORMAT(t.testtime,'%Y年%m月'),COUNT(DATE_FORMAT(t.testtime,'%Y%m')) "
-			+"FROM testdata t INNER JOIN(SELECT id FROM device WHERE did=:deviceid)d ON t.DEVICE_id = d.id GROUP BY DATE_FORMAT(t.testtime,'%Y%m')",
-			nativeQuery = true)
-	public List<Object[]> queryDeviceActiveness(@Param("deviceid") String deviceId);
+	@Query("SELECT DATE_FORMAT(t.testtime,'%Y年%m月%d') ,COUNT(t.id) "
+			+"FROM TestData t where t.device=:device GROUP BY DATE_FORMAT(t.testtime,'%Y年%m月%d')" )
+	public List<Object[]> queryDeviceActiveness(@Param("device") Device device);
 }

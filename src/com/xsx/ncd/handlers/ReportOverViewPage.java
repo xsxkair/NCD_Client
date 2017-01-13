@@ -3,6 +3,8 @@ package com.xsx.ncd.handlers;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -10,6 +12,7 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.jfoenix.controls.JFXRadioButton;
 import com.xsx.ncd.entity.Device;
 import com.xsx.ncd.repository.CardRepository;
 import com.xsx.ncd.repository.DeviceRepository;
@@ -27,6 +30,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.PieChart.Data;
@@ -35,6 +39,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
@@ -79,13 +85,12 @@ public class ReportOverViewPage {
 	TextField GB_YearTextField;
 	@FXML
 	ComboBox<Integer> GB_MonthComboBox;
-	@FXML
-	FlowPane GB_ItemFlowPane;
-	@FXML
-	FlowPane GB_DeviceFlowPane;
+	@FXML JFXRadioButton GB_GroupByItem;
+	@FXML JFXRadioButton GB_GroupByDevice;
+	@FXML ToggleGroup GB_GroupType;
 	
 	@FXML
-	BarChart<String, Number> GB_ReportDetailBarChart;
+	LineChart<String, Number> GB_ReportDetailChart;
 	@FXML
 	CategoryAxis GB_ReportDetailBarChartX;
 	@FXML
@@ -120,25 +125,24 @@ public class ReportOverViewPage {
 			e.printStackTrace();
 		}
         
-        workPageSession.getWorkPane().addListener(new ChangeListener<Pane>() {
-
-			@Override
-			public void changed(ObservableValue<? extends Pane> observable, Pane oldValue, Pane newValue) {
-				// TODO Auto-generated method stub
-				if(rootpane.equals(newValue)){
-					
-					UpDetailFilterUI();
-					
-					UpTodayReportData();
-					
-					UpTodayItemData();
-					
-					UpTodayDeviceData();
-					
-					UpHistoryReportData();
-				}
+        workPageSession.getWorkPane().addListener( (o, oldValue, newValue)->{
+        	if(rootpane.equals(newValue)){
+				
+				UpTodayReportData();
+				
+				UpTodayItemData();
+				
+				UpTodayDeviceData();
+				
+				UpHistoryReportData();
 			}
-		});
+			else if(oldValue.equals(rootpane)){
+				GB_ReportPieChartData.clear();
+				GB_ItemPieChartData.clear();
+				GB_DevicePieChartData.clear();
+			}
+        });
+
         
         //今日报告审核饼图
         GB_ReportPieChartData = FXCollections.observableArrayList();
@@ -152,9 +156,11 @@ public class ReportOverViewPage {
         GB_DevicePieChartData = FXCollections.observableArrayList();
         GB_DevicePieChart.setData(GB_DevicePieChartData);
 
+        GB_MonthComboBox.getItems().addAll(new Integer[]{1,2,3,4,5,6,7,8,9,10,11,12});
+        GB_MonthComboBox.getSelectionModel().select(-1);
         
-        GB_MonthComboBox.getItems().addAll(new Integer[]{0,1,2,3,4,5,6,7,8,9,10,11,12});
-        GB_MonthComboBox.getSelectionModel().select(0);
+        GB_GroupByItem.setUserData("项目分组");
+        GB_GroupByDevice.setUserData("设备分组");
         
         AnchorPane.setTopAnchor(rootpane, 0.0);
         AnchorPane.setBottomAnchor(rootpane, 0.0);
@@ -164,28 +170,6 @@ public class ReportOverViewPage {
 	
 	public void ShowReportOverViewPage(){
 		workPageSession.setWorkPane(rootpane);
-	}
-
-	//更新筛选条件
-	private void UpDetailFilterUI() {
-		
-		List<Device> deviceidlist = deviceRepository.findByManagerAccount(managerSession.getAccount());
-		
-		GB_DeviceFlowPane.getChildren().clear();
-		for (Device device : deviceidlist) {
-			CheckBox checkBox = new CheckBox(device.getDid());
-			checkBox.setUserData(device);
-			GB_DeviceFlowPane.getChildren().add(checkBox);
-		}
-		
-		List<String> itemlist = cardRepository.queryItem();
-		GB_ItemFlowPane.getChildren().clear();
-
-		for (String string : itemlist) {
-			CheckBox checkBox2 = new CheckBox(string);
-			checkBox2.setUserData(string);
-			GB_ItemFlowPane.getChildren().add(checkBox2);
-		}
 	}
 	
 	//更新今日审核图
@@ -292,25 +276,10 @@ public class ReportOverViewPage {
 		
 	//历史数据
 	private void UpHistoryReportData() {
-		
-		List<String> itemlist = new ArrayList<>();
-		List<Device> deviceidlist = new ArrayList<>();
 		Integer year, month;
-		
-		for (Node node : GB_ItemFlowPane.getChildren()) {
-			CheckBox checkBox = (CheckBox) node;
-			
-			if(checkBox.isSelected())
-				itemlist.add((String) checkBox.getUserData());
-		}
-		
-		for (Node node : GB_DeviceFlowPane.getChildren()) {
-			CheckBox checkBox = (CheckBox) node;
-			
-			if(checkBox.isSelected())
-				deviceidlist.add( (Device) checkBox.getUserData());
-		}
-		
+		String groupType = null;
+		List<Object[]> dataList = null;
+
 		String string = GB_YearTextField.getText();
 		
 		try {
@@ -322,13 +291,33 @@ public class ReportOverViewPage {
 		
 		month = GB_MonthComboBox.getSelectionModel().getSelectedItem();
 		
-		List<Object[]> dataList = testDataRepository.QueryReportSummyChartData(year, month, itemlist, deviceidlist);
+		if(GB_GroupType.getSelectedToggle() == null)
+			GB_GroupType.selectToggle(GB_GroupByItem);
 		
-		//for (Object[] objects : dataList) {
-		//	for
-		//}
+		groupType = GB_GroupType.getSelectedToggle().getUserData().toString();
+		
+		List<Device> devices = deviceRepository.findByManagerAccount(managerSession.getAccount());
+		
+		if(groupType.equals("项目分组")){
+			if(year == null)
+				dataList = testDataRepository.queryReportSummyByItem(devices);
+			else if (month == null) {
+				dataList = testDataRepository.queryReportSummyByYearItem(devices);
+			}
+			else {
+				dataList = testDataRepository.queryReportSummyByYearMonthItem(devices);
+			}
+		}
+		else {
+			
+		}
+		dataList = testDataRepository.queryReportSummyByYearItem(devices);
+		
+		for (Object[] objects : dataList) {
+			System.out.println(objects[0]+"--"+ objects[1]);
+		}
 	}
-	
+
 	@FXML
 	public void QueryReportSummyDataAction(){
 		UpHistoryReportData();

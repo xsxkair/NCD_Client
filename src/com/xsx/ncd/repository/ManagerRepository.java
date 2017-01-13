@@ -14,6 +14,6 @@ public interface ManagerRepository extends JpaRepository<Manager, Integer>{
 	
 	public Manager findManagerByAccountAndPassword(String account, String password);
 
-	@Query("select m.account from Manager m where m.fatheraccount=:father")
-	public List<String> queryChildAccountList(@Param("father") String fatheraccount);
+	@Query("select m from Manager m where m.fatheraccount=:father")
+	public List<Manager> queryChildAccountList(@Param("father") String fatheraccount);
 }

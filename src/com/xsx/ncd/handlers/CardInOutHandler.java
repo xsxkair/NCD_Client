@@ -2,6 +2,7 @@ package com.xsx.ncd.handlers;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
@@ -11,9 +12,14 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.xsx.ncd.entity.Card;
+import com.xsx.ncd.entity.CardRecord;
+import com.xsx.ncd.entity.Device;
+import com.xsx.ncd.entity.Manager;
 import com.xsx.ncd.repository.CardRecordRepository;
 import com.xsx.ncd.repository.CardRepository;
 import com.xsx.ncd.repository.DeviceRepository;
+import com.xsx.ncd.repository.ManagerRepository;
 import com.xsx.ncd.spring.ManagerSession;
 import com.xsx.ncd.spring.WorkPageSession;
 
@@ -26,11 +32,13 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Window;
@@ -41,24 +49,14 @@ public class CardInOutHandler {
 	private AnchorPane rootpane;
 	
 	//入库
-	@FXML
-	TextField GB_InItemNameTextField;
-	@FXML
-	TextField GB_InItemNumTextField;
-	@FXML
-	Button GB_InButton;
+	@FXML TextField GB_InPihaoTextField;
+	@FXML TextField GB_InNumTextField;
 	
 	//出库
-	@FXML
-	TextField GB_OutItemNameTextField;
-	@FXML
-	TextField GB_OutItemNumTextField;
-	@FXML
-	TextField GB_OutPersonNameTextField;
-	@FXML
-	ComboBox<String> GB_OutDeviceIDComboBox;
-	@FXML
-	Button GB_OutButton;
+	@FXML TextField GB_OutPihaoTextField;
+	@FXML TextField GB_OutNumTextField;
+	@FXML TextField GB_OutUserTextField;
+	@FXML ComboBox<Device> GB_OutDeviceComboBox;
 	
 	@Autowired
 	private WorkPageSession workPageSession;
@@ -70,6 +68,8 @@ public class CardInOutHandler {
 	private CardRepository cardRepository;
 	@Autowired
 	private ManagerSession managerSession;
+	@Autowired
+	private ManagerRepository managerRepository;
 	
 	@PostConstruct
 	private void UI_Init() {
@@ -90,76 +90,8 @@ public class CardInOutHandler {
 			public void changed(ObservableValue<? extends Pane> observable, Pane oldValue, Pane newValue) {
 				// TODO Auto-generated method stub
 				if(newValue == rootpane){
-	
-					List<String> devicelist = ManagerDao.QueryDeviceList(SignedManager.GetInstance().getGB_SignedAccount());
-					GB_OutDeviceIDComboBox.getItems().addAll(devicelist);
+					UpOutDeviceListUI();
 				}
-			}
-		});
-        
-        GB_InButton.disableProperty().bind(new BooleanBinding() {
-			{
-				bind(GB_InItemNameTextField.textProperty());
-				bind(GB_InItemNumTextField.textProperty());
-			}
-			@Override
-			protected boolean computeValue() {
-				// TODO Auto-generated method stub
-				String name = GB_InItemNameTextField.getText();
-				Integer num = null;
-				try {
-					num = Integer.valueOf(GB_InItemNumTextField.getText());
-				} catch (Exception e) {
-					// TODO: handle exception
-					num = null;
-				}
-				
-				if((name != null)&&(name.length() > 0)
-						&&(num != null)&&(num > 0))
-					return false;
-				else
-					return true;
-			}
-		});
-        UnaryOperator<Change> integerFilter = change -> {
-            String input = change.getText();
-            if (input.matches("[0-9]*")) { 
-                return change;
-            }
-            return null;
-        };
-
-        GB_InItemNumTextField.setTextFormatter(new TextFormatter<String>(integerFilter));
-        
-        GB_OutItemNumTextField.setTextFormatter(new TextFormatter<String>(integerFilter));
-        
-        GB_OutButton.disableProperty().bind(new BooleanBinding() {
-			{
-				bind(GB_OutItemNameTextField.textProperty());
-				bind(GB_OutItemNumTextField.textProperty());
-				bind(GB_OutPersonNameTextField.textProperty());
-				bind(GB_OutDeviceIDComboBox.valueProperty());
-			}
-			@Override
-			protected boolean computeValue() {
-				// TODO Auto-generated method stub
-				String name = GB_OutItemNameTextField.getText();
-				String person = GB_OutPersonNameTextField.getText();
-				Integer num = null;
-				try {
-					num = Integer.valueOf(GB_OutItemNumTextField.getText());
-				} catch (Exception e) {
-					// TODO: handle exception
-					num = null;
-				}
-				
-				if((name != null)&&(name.length() > 0)
-						&&(person != null)&&(person.length() > 0)
-						&&(GB_OutDeviceIDComboBox.getValue() != null)
-						&&(num > 0))
-					return false;
-				else
-					return true;
 			}
 		});
         
@@ -169,76 +101,139 @@ public class CardInOutHandler {
         AnchorPane.setRightAnchor(rootpane, 0.0);
 	}
 	
-	public AnchorPane GetPane() {
-		return rootpane;
+	public void ShowCardInOutPage() {
+		workPageSession.setWorkPane(rootpane);
 	}
 	
 	@FXML
 	public void GB_InAction(){
+		String string = GB_InNumTextField.getText();
+		Integer num = null;
 		
-		//获取管理员
-		ManagerBean admin = ManagerDao.QueryReportManager(SignedManager.GetInstance().getGB_SignedAccount(), null);
-						
-		if(CheckRight(rootpane.getScene().getWindow(), admin.getPassword())){
+		try {
+			num = Integer.valueOf(string);
 			
-			CardRecordBean cardRecordBean = new CardRecordBean();
+			if(num <= 0){
+				ShowErrorDialog();
+				return;
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			ShowErrorDialog();
+			return;
+		}
+		
+		Card card = cardRepository.findCardByCid(GB_InPihaoTextField.getText());
+		if(card != null){
 			
-			cardRecordBean.setItem(GB_InItemNameTextField.getText());
+			Manager manager = managerRepository.findManagerByAccount(managerSession.getAccount());
 			
-			Integer num = Integer.valueOf(GB_InItemNumTextField.getText());
-			cardRecordBean.setNum(num);
+			CardRecord cardRecord = new CardRecord();
+			cardRecord.setCard(card);
+			cardRecord.setManager(manager);
+			cardRecord.setNum(num);
+			cardRecord.setDotime(new java.sql.Timestamp(System.currentTimeMillis()));
 			
-			CardRecordDao.InOutBound(cardRecordBean, admin);
+			cardRecord = cardRecordRepository.save(cardRecord);
 			
-			GB_InItemNameTextField.setText(null);
-			GB_InItemNumTextField.setText(null);
+			if(cardRecord == null)
+				ShowErrorDialog();
+			else{
+				ShowSuccessDialog();
+				GB_InNumTextField.setText(null);
+				GB_InPihaoTextField.setText(null);
+			}
+		}
+		else{
+			ShowErrorDialog();
 		}
 	}
 	
 	@FXML
 	public void GB_OutAction(){
-		//获取管理员
-		ManagerBean admin = ManagerDao.QueryReportManager(SignedManager.GetInstance().getGB_SignedAccount(), null);
-								
-		if(CheckRight(rootpane.getScene().getWindow(), admin.getPassword())){
-					
-			CardRecordBean cardRecordBean = new CardRecordBean();
-					
-			cardRecordBean.setItem(GB_OutItemNameTextField.getText());
-					
-			Integer num = Integer.valueOf(GB_OutItemNumTextField.getText());
-			cardRecordBean.setNum(0-num);
+		String string = GB_OutNumTextField.getText();
+		Integer num = null;
+		
+		try {
+			num = Integer.valueOf(string);
 			
-			cardRecordBean.setName(GB_OutPersonNameTextField.getText());
-			cardRecordBean.setDeviceid(GB_OutDeviceIDComboBox.getValue());
-					
-			CardRecordDao.InOutBound(cardRecordBean, admin);
+			if(num <= 0){
+				ShowErrorDialog();
+				return;
+			}
+			else {
+				num = (0 - num);
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			ShowErrorDialog();
+			return;
+		}
+		
+		Device device = GB_OutDeviceComboBox.getSelectionModel().getSelectedItem();
+		if(device == null){
+			ShowErrorDialog();
+			return;
+		}
+		
+		Card card = cardRepository.findCardByCid(GB_OutPihaoTextField.getText());
+		if(card != null){
 			
-			GB_OutItemNameTextField.setText(null);
-			GB_OutItemNumTextField.setText(null);
-			GB_OutPersonNameTextField.setText(null);
-			GB_OutDeviceIDComboBox.setValue(null);
+			Manager manager = managerRepository.findManagerByAccount(managerSession.getAccount());
+			
+			CardRecord cardRecord = new CardRecord();
+			cardRecord.setCard(card);
+			cardRecord.setManager(manager);
+			cardRecord.setNum(num);
+			cardRecord.setDotime(new java.sql.Timestamp(System.currentTimeMillis()));
+			cardRecord.setName(GB_OutUserTextField.getText());
+			cardRecord.setDevice(device);
+			
+			cardRecord = cardRecordRepository.save(cardRecord);
+			
+			if(cardRecord == null)
+				ShowErrorDialog();
+			else{
+				ShowSuccessDialog();
+				GB_OutUserTextField.setText(null);
+				GB_OutNumTextField.setText(null);
+				GB_OutPihaoTextField.setText(null);
+				GB_OutDeviceComboBox.getSelectionModel().select(null);
+			}
+		}
+		else{
+			ShowErrorDialog();
 		}
 	}
 	
-	private boolean CheckRight(Window owner, String promtext) {
+	private void UpOutDeviceListUI() {
 		
-		TextInputDialog inputDialog = new TextInputDialog("input admin password");
-		inputDialog.initOwner(owner);
-		Optional<String> result = inputDialog.showAndWait();
+		List<Device> devices = new ArrayList<>();
 		
-		if(result.isPresent()){
-			if(result.get().equals(promtext))
-				return true;
-			else {
-				Alert alert = new Alert(AlertType.ERROR, "Access denied!", ButtonType.OK);
-				alert.initOwner(owner);
-				alert.showAndWait();
-				
-				return false;
-			}
-		}
+		Manager manager = managerRepository.findManagerByAccount(managerSession.getAccount());
 		
-		return false;
+		if(manager.getFatheraccount() != null)
+			devices = deviceRepository.findByManagerAccount(manager.getFatheraccount());
+		else
+			devices = deviceRepository.findByManagerAccount(managerSession.getAccount());
+		
+		GB_OutDeviceComboBox.getItems().clear();
+		GB_OutDeviceComboBox.getItems().addAll(devices);
+	}
+
+	private void ShowErrorDialog() {
+		ButtonType loginButtonType = new ButtonType("确定", ButtonData.OK_DONE);
+		Dialog<String> dialog = new Dialog<>();
+		dialog.getDialogPane().setContentText("操作失败，请检查数据！");
+		dialog.getDialogPane().getButtonTypes().add(loginButtonType);
+		dialog.showAndWait();
+	}
+	
+	private void ShowSuccessDialog() {
+		ButtonType loginButtonType = new ButtonType("确定", ButtonData.OK_DONE);
+		Dialog<String> dialog = new Dialog<>();
+		dialog.getDialogPane().setContentText("操作成功！");
+		dialog.getDialogPane().getButtonTypes().add(loginButtonType);
+		dialog.showAndWait();
 	}
 }

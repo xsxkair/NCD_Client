@@ -1,6 +1,6 @@
 package com.xsx.ncd.define;
 
-import com.xsx.ncd.entity.CardRepertory;
+import com.xsx.ncd.entity.CardRecord;
 
 public class CardRepertoryTableItem {
 	
@@ -13,10 +13,10 @@ public class CardRepertoryTableItem {
 	private String user;
 	private String device;
 	
-	private CardRepertory cardRepertory;
+	private CardRecord cardRecord;
 	
-	public CardRepertoryTableItem(CardRepertory cardRepertory) {
-		this.cardRepertory = cardRepertory;
+	public CardRepertoryTableItem(CardRecord cardRecord) {
+		this.cardRecord = cardRecord;
 	}
 
 	public Integer getIndex() {
@@ -28,11 +28,11 @@ public class CardRepertoryTableItem {
 	}
 
 	public String getTime() {
-		return cardRepertory.getDotime().toString();
+		return cardRecord.getDotime().toString();
 	}
 
 	public String getItem() {
-		return cardRepertory.getCard().getItem()+"("+ cardRepertory.getCard().getCid() +")";
+		return cardRecord.getCard().getItem()+"("+ cardRecord.getCard().getCid() +")";
 	}
 
 	public void setItem(String item) {
@@ -41,10 +41,10 @@ public class CardRepertoryTableItem {
 
 	
 	public String getAction() {
-		if(cardRepertory.getNum().intValue() > 0)
-			return "入库 " + cardRepertory.getNum();
+		if(cardRecord.getNum().intValue() > 0)
+			return "入库 " + cardRecord.getNum();
 		else
-			return "出库 " + Math.abs( cardRepertory.getNum() );
+			return "出库 " + Math.abs( cardRecord.getNum() );
 	}
 
 	public void setAction(String action) {
@@ -52,7 +52,7 @@ public class CardRepertoryTableItem {
 	}
 
 	public String getActer() {
-		return cardRepertory.getManager().getName();
+		return cardRecord.getManager().getName();
 	}
 
 	public void setActer(String acter) {
@@ -60,7 +60,7 @@ public class CardRepertoryTableItem {
 	}
 
 	public String getUser() {
-		return cardRepertory.getName();
+		return cardRecord.getName();
 	}
 
 	public void setUser(String user) {
@@ -68,18 +68,18 @@ public class CardRepertoryTableItem {
 	}
 
 	public String getDevice() {
-		return cardRepertory.getDevice().getDid();
+		return cardRecord.getDevice().getDid();
 	}
 
 	public void setDevice(String device) {
 		this.device = device;
 	}
 
-	public CardRepertory getCardRepertory() {
-		return cardRepertory;
+	public CardRecord getCardRecord() {
+		return cardRecord;
 	}
 
-	public void setCardRepertory(CardRepertory cardRepertory) {
-		this.cardRepertory = cardRepertory;
+	public void setCardRecord(CardRecord cardRepertory) {
+		this.cardRecord = cardRepertory;
 	}
 }

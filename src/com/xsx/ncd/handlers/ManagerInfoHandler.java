@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import com.xsx.ncd.entity.Manager;
 import com.xsx.ncd.repository.ManagerRepository;
 import com.xsx.ncd.spring.ManagerSession;
+import com.xsx.ncd.spring.WorkPageSession;
 
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.value.ChangeListener;
@@ -63,7 +64,7 @@ public class ManagerInfoHandler {
 	@FXML
 	VBox GB_ManagerListPane;
 	@FXML
-	ListView<String> GB_ManagerListView;
+	ListView<Manager> GB_ManagerListView;
 	@FXML
 	TextField GB_ManagerAccoutTextFiled;
 	@FXML
@@ -91,6 +92,9 @@ public class ManagerInfoHandler {
 	@Autowired
 	private ManagerSession managerSession;
 	
+	@Autowired
+	private WorkPageSession workPageSession;
+	
 	@PostConstruct
 	public void UI_Init(){
 
@@ -105,47 +109,33 @@ public class ManagerInfoHandler {
 			e.printStackTrace();
 		}
         
-        GB_ManagerListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-
-			@Override
-			public void changed(ObservableValue<? extends String> arg0, String arg1, String arg2) {
-				// TODO Auto-generated method stub
-				if(arg2 == null){
-					GB_ManagerAccoutTextFiled.setText(null);
-					GB_ManagerPasswordTextFiled.setText(null);
-					GB_ManagerNameTextFiled.setText(null);
-					GB_ManagerSexTextFiled.setText(null);
-					GB_ManagerAgeTextFiled.setText(null);
-					GB_ManagerPhoneTextFiled.setText(null);
-					GB_ManagerJobTextFiled.setText(null);
-					GB_ManagerDescTextFiled.setText(null);
-				}
-				else {
-					Manager manager = managerRepository.findManagerByAccount(arg2);
-					
-					if(manager == null){
-						GB_ManagerAccoutTextFiled.setText(null);
-						GB_ManagerPasswordTextFiled.setText(null);
-						GB_ManagerNameTextFiled.setText(null);
-						GB_ManagerSexTextFiled.setText(null);
-						GB_ManagerAgeTextFiled.setText(null);
-						GB_ManagerPhoneTextFiled.setText(null);
-						GB_ManagerJobTextFiled.setText(null);
-						GB_ManagerDescTextFiled.setText(null);
-					}
-					else {
-						GB_ManagerAccoutTextFiled.setText((manager.getAccount()==null)?"null":manager.getAccount().toString());
-						GB_ManagerPasswordTextFiled.setText((manager.getPassword()==null)?"null":manager.getPassword().toString());
-						GB_ManagerNameTextFiled.setText((manager.getName()==null)?"null":manager.getName().toString());
-						GB_ManagerAgeTextFiled.setText((manager.getAge()==null)?"null":manager.getAge().toString());
-						GB_ManagerSexTextFiled.setText((manager.getSex()==null)?"null":manager.getSex().toString());
-						GB_ManagerPhoneTextFiled.setText((manager.getPhone()==null)?"null":manager.getPhone().toString());
-						GB_ManagerJobTextFiled.setText((manager.getJob()==null)?"null":manager.getJob().toString());
-						GB_ManagerDescTextFiled.setText((manager.getDsc()==null)?"null":manager.getDsc().toString());
-					}
-				}
+        workPageSession.getWorkPane().addListener((o, oldValue, newValue)->{
+        	if((newValue != null) && (newValue.equals(rootpane)))
+        		UpPageValue();
+        });
+        
+        GB_ManagerListView.getSelectionModel().selectedItemProperty().addListener((o, oldValue, newValue)->{
+        	if(newValue == null){
+				GB_ManagerAccoutTextFiled.setText(null);
+				GB_ManagerPasswordTextFiled.setText(null);
+				GB_ManagerNameTextFiled.setText(null);
+				GB_ManagerSexTextFiled.setText(null);
+				GB_ManagerAgeTextFiled.setText(null);
+				GB_ManagerPhoneTextFiled.setText(null);
+				GB_ManagerJobTextFiled.setText(null);
+				GB_ManagerDescTextFiled.setText(null);
 			}
-		});
+        	else {
+        		GB_ManagerAccoutTextFiled.setText((newValue.getAccount()==null)?"null":newValue.getAccount().toString());
+				GB_ManagerPasswordTextFiled.setText((newValue.getPassword()==null)?"null":newValue.getPassword().toString());
+				GB_ManagerNameTextFiled.setText((newValue.getName()==null)?"null":newValue.getName().toString());
+				GB_ManagerAgeTextFiled.setText((newValue.getAge()==null)?"null":newValue.getAge().toString());
+				GB_ManagerSexTextFiled.setText((newValue.getSex()==null)?"null":newValue.getSex().toString());
+				GB_ManagerPhoneTextFiled.setText((newValue.getPhone()==null)?"null":newValue.getPhone().toString());
+				GB_ManagerJobTextFiled.setText((newValue.getJob()==null)?"null":newValue.getJob().toString());
+				GB_ManagerDescTextFiled.setText((newValue.getDsc()==null)?"null":newValue.getDsc().toString());
+			}
+        });
         
         GB_AdminModifyButton.disableProperty().bind(new BooleanBinding() {
         	{
@@ -192,9 +182,8 @@ public class ManagerInfoHandler {
         AnchorPane.setRightAnchor(rootpane, 0.0);
 	}
 	
-	public AnchorPane GetPane() {
-		UpPageValue();
-		return rootpane;
+	public void ShowMyInfoPage(){
+		workPageSession.setWorkPane(rootpane);
 	}
 	
 	private void UpPageValue() {
@@ -221,10 +210,10 @@ public class ManagerInfoHandler {
 	}
 	
 	private void UpChildManagerValue() {
-		List<String> managernamelist = managerRepository.queryChildAccountList(managerSession.getAccount());
+		List<Manager> managernamelist = managerRepository.queryChildAccountList(managerSession.getAccount());
 
 		GB_ManagerListView.getItems().clear();
-		GB_ManagerListView.setItems(FXCollections.observableArrayList(managernamelist));
+		GB_ManagerListView.getItems().addAll(managernamelist);
 	}
 	
 	@FXML
@@ -288,7 +277,7 @@ public class ManagerInfoHandler {
 		if(CheckRight(rootpane.getScene().getWindow(), admin.getPassword())){
 					
 			//获取选中的审核人
-			Manager manager = managerRepository.findManagerByAccount(GB_ManagerListView.getSelectionModel().getSelectedItem());
+			Manager manager = GB_ManagerListView.getSelectionModel().getSelectedItem();
 					
 			managerRepository.delete(manager);
 					

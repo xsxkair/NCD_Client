@@ -34,7 +34,6 @@
                       <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="10.0" />
                     </columnConstraints>
                     <rowConstraints>
-                      <RowConstraints minHeight="10.0" valignment="BOTTOM" vgrow="SOMETIMES" />
                         <RowConstraints valignment="BOTTOM" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="BOTTOM" />
                     </rowConstraints>
@@ -42,7 +41,7 @@
                         <Insets bottom="20.0" left="10.0" right="10.0" top="20.0" />
                      </StackPane.margin>
                      <children>
-                        <Button fx:id="GB_InButton" mnemonicParsing="false" onAction="#GB_InAction" prefHeight="30.0" prefWidth="100.0" text="入库" GridPane.columnIndex="1" GridPane.rowSpan="3">
+                        <Button mnemonicParsing="false" onAction="#GB_InAction" prefHeight="30.0" prefWidth="100.0" text="入库" GridPane.columnIndex="1" GridPane.rowSpan="2">
                            <GridPane.margin>
                               <Insets left="20.0" />
                            </GridPane.margin>
@@ -52,20 +51,14 @@
                         </Button>
                         <HBox alignment="CENTER_LEFT" spacing="15.0">
                            <children>
-                              <Label text="入库试剂卡项目" />
-                              <TextField fx:id="GB_InItemNameTextField" />
-                           </children>
-                        </HBox>
-                        <HBox alignment="CENTER_LEFT" spacing="15.0" GridPane.rowIndex="1">
-                           <children>
                               <Label text="入库试剂卡批号" />
                               <TextField fx:id="GB_InPihaoTextField" />
                            </children>
                         </HBox>
-                        <HBox alignment="CENTER_LEFT" spacing="15.0" GridPane.rowIndex="2">
+                        <HBox alignment="CENTER_LEFT" spacing="15.0" GridPane.rowIndex="1">
                            <children>
                               <Label text="入库试剂卡数目" />
-                              <TextField fx:id="GB_InItemNumTextField" />
+                              <TextField fx:id="GB_InNumTextField" />
                               <Label text="(人份)" />
                            </children>
                         </HBox>
@@ -87,36 +80,30 @@
                      <children>
                         <HBox alignment="CENTER_LEFT" spacing="15.0">
                            <children>
-                              <Label prefWidth="85.0" text="出库试剂卡项目" />
-                              <TextField fx:id="GB_OutItemNameTextField" />
+                              <Label text="出库试剂卡批号" />
+                              <TextField fx:id="GB_OutPihaoTextField" />
                            </children>
                         </HBox>
                         <HBox alignment="CENTER_LEFT" spacing="15.0" GridPane.rowIndex="1">
                            <children>
-                              <Label fx:id="GB_OutPihaoTextField" text="出库试剂卡批号" />
-                              <TextField fx:id="GB_InItemNameTextField11" />
+                              <Label prefWidth="85.0" text="出库试剂卡数目" />
+                              <TextField fx:id="GB_OutNumTextField" />
+                              <Label text="(人份)" />
                            </children>
                         </HBox>
                         <HBox alignment="CENTER_LEFT" spacing="15.0" GridPane.rowIndex="2">
                            <children>
-                              <Label prefWidth="85.0" text="出库试剂卡数目" />
-                              <TextField fx:id="GB_OutItemNumTextField" />
-                              <Label text="(人份)" />
+                              <Label graphicTextGap="5.0" prefWidth="85.0" text="出库领用人" />
+                              <TextField fx:id="GB_OutUserTextField" />
                            </children>
                         </HBox>
                         <HBox alignment="CENTER_LEFT" spacing="15.0" GridPane.rowIndex="3">
                            <children>
-                              <Label graphicTextGap="5.0" prefWidth="85.0" text="出库领用人" />
-                              <TextField fx:id="GB_OutPersonNameTextField" />
-                           </children>
-                        </HBox>
-                        <HBox alignment="CENTER_LEFT" spacing="15.0" GridPane.rowIndex="4">
-                           <children>
                               <Label text="出库目标设备ID" />
-                              <ComboBox fx:id="GB_OutDeviceIDComboBox" prefWidth="160.0" />
+                              <ComboBox fx:id="GB_OutDeviceComboBox" prefWidth="160.0" />
                            </children>
                         </HBox>
-                        <Button fx:id="GB_OutButton" mnemonicParsing="false" onAction="#GB_OutAction" prefHeight="30.0" prefWidth="100.0" text="出库" GridPane.columnIndex="1" GridPane.rowSpan="5">
+                        <Button mnemonicParsing="false" onAction="#GB_OutAction" prefHeight="30.0" prefWidth="100.0" text="出库" GridPane.columnIndex="1" GridPane.rowSpan="4">
                            <font>
                               <Font size="15.0" />
                            </font>
@@ -130,8 +117,7 @@
                         <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="10.0" />
                      </columnConstraints>
                      <rowConstraints>
-                        <RowConstraints minHeight="10.0" valignment="BOTTOM" vgrow="SOMETIMES" />
-                        <RowConstraints />
+                        <RowConstraints valignment="BOTTOM" />
                         <RowConstraints />
                         <RowConstraints />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" />

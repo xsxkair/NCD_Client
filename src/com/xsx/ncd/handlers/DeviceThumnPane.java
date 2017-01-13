@@ -1,5 +1,7 @@
 package com.xsx.ncd.handlers;
 
+import com.xsx.ncd.entity.Device;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
@@ -13,16 +15,14 @@ import javafx.scene.text.FontWeight;
 
 public class DeviceThumnPane extends VBox{
 	
-	private String deviceId;
-	
-	public DeviceThumnPane(Image image, String id, String tester, String addr){
+	public DeviceThumnPane(Image image, Device device){
 		
-		this.setDeviceId(id);
+		this.setUserData(device);
 		
 		ImageView deviceimage = new ImageView(image);
 		deviceimage.setFitWidth(150);
 		deviceimage.setFitHeight(123);
-		Label deviceid = new Label(id);
+		Label deviceid = new Label(device.getDid());
 		deviceid.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
 		
 		this.setCursor(Cursor.HAND);
@@ -33,20 +33,12 @@ public class DeviceThumnPane extends VBox{
 		this.setStyle("-fx-background-color:#D8EFF2");
 		
 		//提示
-		Label userLabel = new Label("责任人："+ tester);
-		Label addrLabel = new Label("设备地点："+ addr);
+		Label userLabel = new Label("责任人："+ device.getName());
+		Label addrLabel = new Label("设备地点："+ device.getAddr());
 		VBox vBox = new VBox(userLabel, addrLabel);
 		
 		Tooltip tooltip = new Tooltip();
 		tooltip.setGraphic(vBox);
         Tooltip.install(this, tooltip);
-	}
-
-	public String getDeviceId() {
-		return deviceId;
-	}
-
-	public void setDeviceId(String deviceId) {
-		this.deviceId = deviceId;
 	}
 }

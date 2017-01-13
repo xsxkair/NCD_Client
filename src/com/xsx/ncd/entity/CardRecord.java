@@ -8,9 +8,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-@Table(name="CARDREPERTORY")
+@Table(name="CARDRECORD")
 @Entity
-public class CardRepertory {
+public class CardRecord {
 	private Integer id;
 	private Card card;
 	private Integer num;					//数目，入库为正，出库为负

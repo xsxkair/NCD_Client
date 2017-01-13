@@ -116,8 +116,7 @@ public class Manager {
 
 	@Override
 	public String toString() {
-		return "Manager [id=" + id + ", account=" + account + ", password=" + password + ", fatheraccount="
-				+ fatheraccount + ", name=" + name + "]";
+		return "ĞÕÃû£º" + name ;
 	}
 	
 	

@@ -68,7 +68,7 @@ public class DeviceDetailHandler {
 	
 	private Pane fatherPane;
 	
-	private String S_DeviceId ;
+	private Device S_Device ;
 	
 	@FXML
 	ImageView GB_DeviceImg;
@@ -180,9 +180,9 @@ public class DeviceDetailHandler {
         AnchorPane.setRightAnchor(rootpane, 0.0);
 	}
 	
-	public void ShowDeviceDetail(String deviceId){
+	public void ShowDeviceDetail(Device device){
 		
-		S_DeviceId = deviceId;
+		S_Device = device;
 		
 		workPageSession.setWorkPane(rootpane);
 	}
@@ -191,7 +191,7 @@ public class DeviceDetailHandler {
 		
 		Image image = null;
 		
-		Device device = deviceRepository.findDeviceByDid(S_DeviceId);
+		Device device = deviceRepository.findById(S_Device.getId());
 		
 		Long devicetime = device.getTime();
 		long currenttime = System.currentTimeMillis();
@@ -223,14 +223,14 @@ public class DeviceDetailHandler {
 	private void UpDeviceActiveness() {
 		chartseries.getData().clear();
 		
-		List<Object[]> countinfo = deviceRepository.queryDeviceActiveness(S_DeviceId);
+		List<Object[]> countinfo = deviceRepository.queryDeviceActiveness(S_Device);
 		
 		if(countinfo == null)
 			return;
 
 		for (Object[] objects : countinfo) {
 			String timelabel = (String) objects[0];
-			BigInteger num = (BigInteger) objects[1];
+			Long num = (Long) objects[1];
 			
 			if(timelabel != null){
 				Data<String, Number> point = new Data<String, Number>(timelabel, num.intValue());

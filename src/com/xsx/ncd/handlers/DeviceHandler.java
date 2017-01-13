@@ -106,7 +106,7 @@ public class DeviceHandler {
 							image = new Image(this.getClass().getResourceAsStream("/RES/deviceico_error.png"));
 						}
 						
-						DeviceThumnPane temp = new DeviceThumnPane(image, device.getDid(), device.getName(), device.getAddr());
+						DeviceThumnPane temp = new DeviceThumnPane(image, device);
 						
 						temp.setCursor(Cursor.HAND);
 						
@@ -115,7 +115,7 @@ public class DeviceHandler {
 							@Override
 							public void handle(MouseEvent event) {
 								// TODO Auto-generated method stub
-								deviceDetailHandler.ShowDeviceDetail(temp.getDeviceId());
+								deviceDetailHandler.ShowDeviceDetail((Device) temp.getUserData());
 							}
 						});
 				        

@@ -93,6 +93,11 @@ public class MainContainHandler {
 	
 	@Autowired
 	private CardRepertoryHandler cardRepertoryHandler;
+	@Autowired
+	private CardInOutHandler cardInOutHandler;
+	
+	@Autowired
+	private LoginHandler loginHandler;
 	
 	@PostConstruct
 	public void UI_Init() {
@@ -154,7 +159,7 @@ public class MainContainHandler {
 				System.exit(0);
 			}
 		});
-	    //s_Stage.initModality(Modality.APPLICATION_MODAL);
+
 	    s_Stage.setResizable(true);
 	    s_Stage.setTitle("Ó«¹â·ÖÎöÒÇ  V2.3.0");
 
@@ -190,12 +195,12 @@ public class MainContainHandler {
 	
 	@FXML
 	public void GB_CardInOutAction(){
-		//UIMainPage.GetInstance().setGB_Page(CardInOutPage.GetInstance().GetPane());
+		cardInOutHandler.ShowCardInOutPage();
 	}
 	
 	@FXML
 	public void ShowMyInfoAction(){
-		workPageSession.setWorkPane(managerInfoHandler.GetPane());
+		managerInfoHandler.ShowMyInfoPage();
 	}
 	
 	@FXML
@@ -205,13 +210,14 @@ public class MainContainHandler {
 	
 	@FXML
 	public void GB_SignedManagerAction(){
-		//UIMainPage.GetInstance().setGB_Page(MyInfoPage.GetInstance().GetPane());
+		managerInfoHandler.ShowMyInfoPage();
 	}
 	
 	@FXML
 	public void GB_SignOutAction(){
-		//SignedManager.GetInstance().setGB_SignedAccount(null);
-		//UIMainPage.GetInstance().setGB_Page(null);
-		//UIScence.GetInstance().setGB_Scene(LoginScene.GetInstance().getS_Scene());
+		managerSession.setAccount(null);
+		workPageSession.setWorkPane(null);
+		s_Stage.close();
+		loginHandler.startLoginActivity();
 	}
 }

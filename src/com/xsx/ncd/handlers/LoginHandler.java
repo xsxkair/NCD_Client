@@ -51,6 +51,8 @@ public class LoginHandler {
 	
 	@Autowired
 	private ManagerSession managerSession;
+	@Autowired
+	private MainContainHandler mainContainHandler;
 	
 	@PostConstruct
 	public void UI_Init() {
@@ -112,6 +114,10 @@ public class LoginHandler {
 			}
 		});
 		
+		
+		UserNameText.setText(null);
+		UserPasswordText.setText(null);
+		
 		s_Stage.getIcons().add(new Image(this.getClass().getResourceAsStream("/RES/logo.png")));
 	    s_Stage.initModality(Modality.APPLICATION_MODAL);
 	        
@@ -127,11 +133,13 @@ public class LoginHandler {
 		Manager tempuser = managerRepository.findManagerByAccountAndPassword(UserNameText.getText(), UserPasswordText.getText());
 
 		if(tempuser != null){
-			managerSession.setAccount(tempuser.getAccount());
-			
-			SpringFacktory.getCtx().getBean(MainContainHandler.class).startWorkActivity();
 			
 			s_Stage.close();
+			
+			managerSession.setAccount(tempuser.getAccount());
+			
+			mainContainHandler.startWorkActivity();
+
 		}
 		else {
 			ButtonType loginButtonType = new ButtonType("È·¶¨", ButtonData.OK_DONE);
