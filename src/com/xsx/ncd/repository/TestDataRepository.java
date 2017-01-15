@@ -24,13 +24,28 @@ public interface TestDataRepository extends JpaRepository<TestData, Integer>, Jp
 	@Query(value="SELECT t.device.did, COUNT(t.id) FROM TestData t where DATE(t.testtime)=CURRENT_DATE and t.device in (:devicelist) GROUP BY (t.device.did)")
 	public List<Object[]> queryTodayReportGroupByDevice( @Param("devicelist")List<Device> devices);
 	
-	@Query("select t.card.item, DATE_FORMAT(t.testtime,'%Y-%m-%d'), count(t.id) from TestData t where t.device in (:devices) group by t.card.item, DATE_FORMAT(t.testtime,'%Y-%m-%d')")
-	public List<Object[]> queryReportSummyByItem(@Param("devices")List<Device>devices);
-	
-	@Query("select t.card.item, DATE_FORMAT(t.testtime,'%m月'), count(t.id) from TestData t where t.device in (:devices) group by t.card.item, DATE_FORMAT(t.testtime,'%m月')")
+	//视图年，分组项目
+	@Query("select t.card.item, DATE_FORMAT(t.testtime,'%Y'), count(t.id) from TestData t where t.device in (:devices) group by t.card.item, DATE_FORMAT(t.testtime,'%Y')")
 	public List<Object[]> queryReportSummyByYearItem(@Param("devices")List<Device>devices);
 	
-	@Query("select t.card.item, DATE_FORMAT(t.testtime,'%d天'), count(t.id) from TestData t where t.device in (:devices) group by t.card.item, DATE_FORMAT(t.testtime,'%d天')")
-	public List<Object[]> queryReportSummyByYearMonthItem(@Param("devices")List<Device>devices);
-	//public List<Object> queryReportSummyByYearItem(@Param("year")Integer year, @Param("items")List<String> items, @Param("devices")List<Device>devices);
+	//视图月，分组项目
+	@Query("select t.card.item, DATE_FORMAT(t.testtime,'%Y-%m'), count(t.id) from TestData t where t.device in (:devices) group by t.card.item, DATE_FORMAT(t.testtime,'%Y年%m月')")
+	public List<Object[]> queryReportSummyByMonthItem(@Param("devices")List<Device>devices);
+	
+	//视图日，分组项目
+	@Query("select t.card.item, DATE_FORMAT(t.testtime,'%Y-%m-%d'), count(t.id) from TestData t where t.device in (:devices) group by t.card.item, DATE_FORMAT(t.testtime,'%Y年%m月%d日')")
+	public List<Object[]> queryReportSummyByDayItem(@Param("devices")List<Device>devices);
+	
+	//视图年，分组设备
+	@Query("select t.device.did, DATE_FORMAT(t.testtime,'%Y'), count(t.id) from TestData t where t.device in (:devices) group by t.device, DATE_FORMAT(t.testtime,'%Y')")
+	public List<Object[]> queryReportSummyByYearDevice(@Param("devices")List<Device>devices);
+	
+	//视图月，分组设备
+	@Query("select t.device.did, DATE_FORMAT(t.testtime,'%Y-%m'), count(t.id) from TestData t where t.device in (:devices) group by t.device, DATE_FORMAT(t.testtime,'%Y年%m月')")
+	public List<Object[]> queryReportSummyByMonthDevice(@Param("devices")List<Device>devices);
+	
+	//视图日，分组设备
+	@Query("select t.device.did, DATE_FORMAT(t.testtime,'%Y-%m-%d'), count(t.id) from TestData t where t.device in (:devices) group by t.device, DATE_FORMAT(t.testtime,'%Y年%m月%d日')")
+	public List<Object[]> queryReportSummyByDayDevice(@Param("devices")List<Device>devices);
+
 }

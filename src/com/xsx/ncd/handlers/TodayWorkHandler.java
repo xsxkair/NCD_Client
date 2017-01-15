@@ -57,6 +57,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 
 @Component
@@ -76,7 +77,7 @@ public class TodayWorkHandler {
 	
 	@FXML Pagination GB_Pagination;
 	
-	@FXML StackPane GB_FreshPane;
+	@FXML VBox GB_FreshPane;
 	
 	ContextMenu myContextMenu;
 	MenuItem myMenuItem1 = new MenuItem("Ë¢ÐÂ");
@@ -150,17 +151,20 @@ public class TodayWorkHandler {
 			public void changed(ObservableValue<? extends Page<TestData>> arg0, Page<TestData> arg1,
 					Page<TestData> arg2) {
 				// TODO Auto-generated method stub
-				GB_Pagination.setPageCount(arg2.getTotalPages());
+				if(arg2 != null){
+					GB_Pagination.setPageCount(arg2.getTotalPages());
 
-				List<TestData> datas = arg2.getContent();
-				
-				List<ReportTableItem> reportTableItems = new ArrayList<>();
-				for (TestData testData : datas) {
-					reportTableItems.add(new ReportTableItem(datas.indexOf(testData)+1+GB_Pagination.getCurrentPageIndex()*systemSetData.getPageSize(), testData));
+					List<TestData> datas = arg2.getContent();
+					
+					List<ReportTableItem> reportTableItems = new ArrayList<>();
+					for (TestData testData : datas) {
+						reportTableItems.add(new ReportTableItem(datas.indexOf(testData)+1+GB_Pagination.getCurrentPageIndex()*systemSetData.getPageSize(), testData));
+					}
+					
+					GB_TableView.getItems().clear();
+					GB_TableView.getItems().addAll(reportTableItems);
 				}
 				
-				GB_TableView.getItems().clear();
-				GB_TableView.getItems().addAll(reportTableItems);
 			}
 		});
         
@@ -176,6 +180,10 @@ public class TodayWorkHandler {
 						GB_Pagination.setCurrentPageIndex(0);
 					else
 						queryReportService.restart();
+				}
+				else{
+					if(queryReportService.isRunning())
+						queryReportService.cancel();
 				}
 			}
 		});

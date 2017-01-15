@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXSpinner?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="765.0" prefWidth="1240.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox alignment="CENTER" spacing="20.0" AnchorPane.bottomAnchor="-0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="20.0">
+         <children>
+            <StackPane>
+               <children>
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <HBox>
+                           <children>
+                              <Label text="总库存">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT">
+                           <children>
+                              <PieChart fx:id="GB_CardRepertoryPieChart" labelsVisible="false" legendSide="RIGHT" minHeight="200.0" />
+                           </children>
+                           <padding>
+                              <Insets left="100.0" />
+                           </padding>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <VBox fx:id="GB_FreshPane1" alignment="CENTER" spacing="10.0" style="-fx-background-color: rgba(0, 0, 0, 0.2);" visible="false">
+                     <children>
+                        <JFXSpinner startingAngle="0.0" style="-fx-radius: 30;" />
+                        <Label text="正在加载数据，请稍后" />
+                     </children>
+                     <cursor>
+                        <Cursor fx:constant="WAIT" />
+                     </cursor>
+                  </VBox>
+               </children>
+            </StackPane>
+            <StackPane>
+               <children>
+                  <VBox fx:id="GB_DeviceVBox" alignment="CENTER" spacing="15.0">
+                     <children>
+                        <HBox>
+                           <children>
+                              <Label text="设备库存图">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT">
+                           <children>
+                              <Label text="设备列表：">
+                                 <font>
+                                    <Font name="System Bold" size="15.0" />
+                                 </font>
+                              </Label>
+                              <FlowPane fx:id="GB_DeviceListPane" hgap="10.0" vgap="10.0" />
+                           </children>
+                        </HBox>
+                        <BarChart fx:id="GB_CardDeviceChart" animated="false" legendVisible="false">
+                          <xAxis>
+                            <CategoryAxis side="BOTTOM" />
+                          </xAxis>
+                          <yAxis>
+                            <NumberAxis side="LEFT" />
+                          </yAxis>
+                        </BarChart>
+                     </children>
+                  </VBox>
+                  <VBox fx:id="GB_FreshPane2" alignment="CENTER" spacing="10.0" style="-fx-background-color: rgba(0, 0, 0, 0.2);" visible="false">
+                     <children>
+                        <JFXSpinner startingAngle="0.0" style="-fx-radius: 30;" />
+                        <Label text="正在加载数据，请稍后" />
+                     </children>
+                     <cursor>
+                        <Cursor fx:constant="WAIT" />
+                     </cursor>
+                  </VBox>
+               </children>
+            </StackPane>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

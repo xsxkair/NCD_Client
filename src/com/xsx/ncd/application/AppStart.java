@@ -2,7 +2,12 @@ package com.xsx.ncd.application;
 
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.xsx.ncd.define.SoftInfo;
+import com.xsx.ncd.entity.NcdSoft;
 import com.xsx.ncd.handlers.LoginHandler;
+import com.xsx.ncd.repository.NcdSoftRepository;
 import com.xsx.ncd.spring.SpringFacktory;
 
 import javafx.application.Application;
@@ -113,6 +118,7 @@ public class AppStart extends Application{
 		@Override
 		protected Boolean call() {
 			// TODO Auto-generated method stub
+			//≥ı ºªØspring
 			try {
     			SpringFacktory.SpringFacktoryInit();
     			return true;
@@ -122,8 +128,7 @@ public class AppStart extends Application{
 				e.printStackTrace();
 	    		return false;
 			}
-    		
-			
+
 		}
 	}
 }

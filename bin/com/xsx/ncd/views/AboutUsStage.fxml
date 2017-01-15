@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane prefHeight="281.0" prefWidth="457.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8">
+   <children>
+      <Label layoutX="198.0" layoutY="25.0" text="NCD" textFill="#183166">
+         <font>
+            <Font name="Kunstler Script" size="42.0" />
+         </font>
+      </Label>
+      <Label layoutX="198.0" layoutY="89.0" text="NCD YGFXY Client v1.00" textFill="#5382a1">
+         <font>
+            <Font name="System Bold" size="17.0" />
+         </font>
+      </Label>
+      <Label layoutX="35.0" layoutY="205.0" text="武汉纽康度生物科技股份有限公司">
+         <font>
+            <Font size="13.0" />
+         </font>
+      </Label>
+      <ImageView fitHeight="89.0" fitWidth="116.0" layoutX="35.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../../../../../../MyWork/荧光分析仪/mycode/荧光分析仪2/logo.png" />
+         </image>
+      </ImageView>
+      <Label layoutX="35.0" layoutY="176.0" text="027-12345678" />
+      <Label layoutX="35.0" layoutY="244.0" text="Copyright © 2012, 2014, Oracle and/or its affiliates. All rights reserved." />
+   </children>
+</AnchorPane>

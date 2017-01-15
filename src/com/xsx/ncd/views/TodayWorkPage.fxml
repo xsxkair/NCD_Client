@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXSpinner?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Pagination?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 
 <AnchorPane prefHeight="765.0" prefWidth="1240.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
    <children>
@@ -25,11 +26,14 @@
          </columnResizePolicy>
       </TableView>
       <Pagination fx:id="GB_Pagination" maxPageIndicatorCount="20" styleClass="bullet" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-      <StackPane fx:id="GB_FreshPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <VBox fx:id="GB_FreshPane" alignment="CENTER" layoutX="10.0" layoutY="10.0" spacing="10.0" style="-fx-background-color: rgba(0, 0, 0, 0.2);" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Region style="-fx-background-color: rgba(0, 0, 0, 0.4);" />
-            <JFXSpinner />
+            <JFXSpinner startingAngle="0.0" style="-fx-radius: 50;" />
+            <Label text="正在加载数据，请稍后" />
          </children>
-      </StackPane>
+         <cursor>
+            <Cursor fx:constant="WAIT" />
+         </cursor>
+      </VBox>
    </children>
 </AnchorPane>

@@ -2,6 +2,7 @@ package com.xsx.ncd.handlers;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 
@@ -11,14 +12,21 @@ import org.springframework.stereotype.Component;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
+import com.xsx.ncd.define.SoftInfo;
+import com.xsx.ncd.entity.Device;
 import com.xsx.ncd.entity.Manager;
+import com.xsx.ncd.entity.NcdSoft;
+import com.xsx.ncd.handlers.ReportOverViewPage.QueryTodayReportNumByStatusService.QueryReportTask;
 import com.xsx.ncd.repository.ManagerRepository;
+import com.xsx.ncd.repository.NcdSoftRepository;
 import com.xsx.ncd.spring.ManagerSession;
 import com.xsx.ncd.spring.SpringFacktory;
 
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -48,11 +56,12 @@ public class LoginHandler {
 	
 	@Autowired
 	private ManagerRepository managerRepository;
-	
 	@Autowired
 	private ManagerSession managerSession;
 	@Autowired
 	private MainContainHandler mainContainHandler;
+	@Autowired
+	private NcdSoftRepository ncdSoftRepository;
 	
 	@PostConstruct
 	public void UI_Init() {
@@ -99,9 +108,18 @@ public class LoginHandler {
 		
 		s_Scene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
 		s_Scene.getStylesheets().add(this.getClass().getResource("/com/xsx/ncd/views/login.css").toExternalForm());
+
 	}
 	
 	public void startLoginActivity() {
+		
+		NcdSoft ncdSoft = ncdSoftRepository.findNcdSoftByName(SoftInfo.softName);
+
+		if(ncdSoft != null && ncdSoft.getVersion() > SoftInfo.softVersion){
+			System.out.println("系统有更新");
+			System.exit(0);
+		}
+			
 		s_Stage = new Stage();
 		 
 		s_Stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -113,7 +131,6 @@ public class LoginHandler {
 				System.exit(0);
 			}
 		});
-		
 		
 		UserNameText.setText(null);
 		UserPasswordText.setText(null);
@@ -137,6 +154,7 @@ public class LoginHandler {
 			s_Stage.close();
 			
 			managerSession.setAccount(tempuser.getAccount());
+			managerSession.setFatherAccount(tempuser.getFatheraccount());
 			
 			mainContainHandler.startWorkActivity();
 

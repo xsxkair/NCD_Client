@@ -199,36 +199,28 @@ public class ReportListHandler {
 			@Override
 			public void changed(ObservableValue<? extends Pane> observable, Pane oldValue, Pane newValue) {
 				// TODO Auto-generated method stub
-				if(newValue != null){
-					if(newValue.equals(reportpane)){
+				if(reportpane.equals(newValue)){	
+					//管理员
+					Manager admin;
 						
-						//查询当前审核人
-						Manager manager = managerRepository.findManagerByAccount(managerSession.getAccount());
-						if(manager == null)
-							return;
+					if(managerSession.getFatherAccount() == null)
+						admin = managerRepository.findManagerByAccount(managerSession.getAccount());
+					else
+						admin = managerRepository.findManagerByAccount(managerSession.getFatherAccount());
 						
-						//管理员
-						Manager admin;
+					if(admin == null)
+						return;
 						
-						if(manager.getFatheraccount() == null)
-							admin = manager;
-						else
-							admin = managerRepository.findManagerByAccount(manager.getFatheraccount());
+					//查询管理员所管理的所有设备id
+					List<Device> deviceList = deviceRepository.findByManagerAccount(admin.getAccount());
 						
-						if(admin == null)
-							return;
-						
-						//查询管理员所管理的所有设备id
-						List<Device> deviceList = deviceRepository.findByManagerAccount(admin.getAccount());
-						
-						GB_TestDeviceFilterCombox.getItems().add("ALL");
-						for (Device device : deviceList) {
-							GB_TestDeviceFilterCombox.getItems().add(device.getDid());
-						}
-						
-						
-						StartReportService();
+					GB_TestDeviceFilterCombox.getItems().add("ALL");
+					for (Device device : deviceList) {
+						GB_TestDeviceFilterCombox.getItems().add(device.getDid());
 					}
+						
+						
+					StartReportService();
 				}
 			}
 		});

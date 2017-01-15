@@ -95,9 +95,14 @@ public class MainContainHandler {
 	private CardRepertoryHandler cardRepertoryHandler;
 	@Autowired
 	private CardInOutHandler cardInOutHandler;
+	@Autowired
+	private CardRecordHandler cardRecordHandler;
 	
 	@Autowired
 	private LoginHandler loginHandler;
+	
+	@Autowired
+	private AboutUsHandler aboutUsHandler;
 	
 	@PostConstruct
 	public void UI_Init() {
@@ -189,13 +194,18 @@ public class MainContainHandler {
 	}
 	
 	@FXML
-	public void ShowInOutRecordAction(){
-		cardRepertoryHandler.ShowCardRecordPage();
+	public void GB_ShowCardRepertoryAction(){
+		cardRepertoryHandler.ShowCardRepertoryPage();
 	}
 	
 	@FXML
 	public void GB_CardInOutAction(){
 		cardInOutHandler.ShowCardInOutPage();
+	}
+	
+	@FXML
+	public void GB_ShowCardInOutRecordAction(){
+		cardRecordHandler.ShowCardRecordPage();
 	}
 	
 	@FXML
@@ -205,7 +215,7 @@ public class MainContainHandler {
 	
 	@FXML
 	public void AboutMeAction(){
-		//AboutStage.GetInstance().ShowAbout();
+		aboutUsHandler.ShowAbout();
 	}
 	
 	@FXML

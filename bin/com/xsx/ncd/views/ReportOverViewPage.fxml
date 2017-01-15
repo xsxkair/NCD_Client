@@ -1,70 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXRadioButton?>
-<?import com.jfoenix.controls.JFXTogglePane?>
+<?import com.jfoenix.controls.*?>
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import com.jfoenix.controls.JFXSpinner?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="765.0" prefWidth="1240.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="765.0" prefWidth="1240.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <ScrollPane fitToWidth="true" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <content>
-            <VBox spacing="50.0">
+            <VBox spacing="20.0">
                <children>
                   <FlowPane hgap="100.0">
                      <children>
                         <StackPane>
                            <children>
                               <PieChart fx:id="GB_ReportPieChart" legendVisible="false" prefHeight="300.0" prefWidth="300.0" stylesheets="@ReportOverView.css" title="今日测试审核图" />
-                              <StackPane fx:id="GB_FreshPane1" prefHeight="150.0" prefWidth="200.0" visible="false">
+                              <VBox fx:id="GB_FreshPane1" alignment="CENTER" spacing="10.0" style="-fx-background-color: rgba(0, 0, 0, 0.2);" visible="false">
                                  <children>
-                                    <Region prefHeight="696.0" prefWidth="1200.0" style="-fx-background-color: rgba(0, 0, 0, 0.4);" />
-                                    <ProgressIndicator fx:id="GB_RefreshBar1" maxHeight="100.0" maxWidth="100.0" prefHeight="100.0" prefWidth="100.0" progress="0.0" />
+                                    <JFXSpinner startingAngle="0.0" style="-fx-radius: 30;" />
+                                    <Label text="正在加载数据，请稍后" />
                                  </children>
-                              </StackPane>
+                                 <cursor>
+                                    <Cursor fx:constant="WAIT" />
+                                 </cursor>
+                              </VBox>
                            </children>
                         </StackPane>
                         <StackPane>
                            <children>
                               <PieChart fx:id="GB_ItemPieChart" legendVisible="false" prefHeight="300.0" prefWidth="300.0" stylesheets="@ReportOverView.css" title="今日试剂用量图" />
-                              <StackPane fx:id="GB_FreshPane2" prefHeight="150.0" prefWidth="200.0" visible="false">
+                              <VBox fx:id="GB_FreshPane2" alignment="CENTER" spacing="10.0" style="-fx-background-color: rgba(0, 0, 0, 0.2);" visible="false">
                                  <children>
-                                    <Region prefHeight="696.0" prefWidth="1200.0" style="-fx-background-color: rgba(0, 0, 0, 0.4);" />
-                                    <ProgressIndicator fx:id="GB_RefreshBar2" maxHeight="100.0" maxWidth="100.0" prefHeight="100.0" prefWidth="100.0" progress="0.0" />
+                                    <JFXSpinner startingAngle="0.0" style="-fx-radius: 30;" />
+                                    <Label text="正在加载数据，请稍后" />
                                  </children>
-                              </StackPane>
+                                 <cursor>
+                                    <Cursor fx:constant="WAIT" />
+                                 </cursor>
+                              </VBox>
                            </children>
                         </StackPane>
                         <StackPane>
                            <children>
                               <PieChart fx:id="GB_DevicePieChart" legendVisible="false" prefHeight="300.0" prefWidth="300.0" stylesheets="@ReportOverView.css" title="今日设备活跃图" />
-                              <StackPane fx:id="GB_FreshPane3" prefHeight="150.0" prefWidth="200.0" visible="false">
+                              <VBox fx:id="GB_FreshPane3" alignment="CENTER" spacing="10.0" style="-fx-background-color: rgba(0, 0, 0, 0.2);" visible="false">
                                  <children>
-                                    <Region prefHeight="696.0" prefWidth="1200.0" style="-fx-background-color: rgba(0, 0, 0, 0.4);" />
-                                    <ProgressIndicator fx:id="GB_RefreshBar3" maxHeight="100.0" maxWidth="100.0" prefHeight="100.0" prefWidth="100.0" progress="0.0" />
+                                    <JFXSpinner startingAngle="0.0" style="-fx-radius: 30;" />
+                                    <Label text="正在加载数据，请稍后" />
                                  </children>
-                              </StackPane>
+                                 <cursor>
+                                    <Cursor fx:constant="WAIT" />
+                                 </cursor>
+                              </VBox>
                            </children>
                         </StackPane>
                      </children>
-                     <VBox.margin>
-                        <Insets left="20.0" right="20.0" />
-                     </VBox.margin>
                   </FlowPane>
                   <StackPane>
                      <children>
@@ -74,20 +85,12 @@
                                  <children>
                                     <HBox alignment="CENTER" spacing="20.0">
                                        <children>
-                                          <Label text="日       期：" textFill="#221beb">
+                                          <Label text="视        图：" textFill="#221beb">
                                              <font>
                                                 <Font name="System Bold" size="15.0" />
                                              </font>
                                           </Label>
-                                          <JFXToggleNode styleClass="toggle-icon1">
-											<Icon awesomeIcon="PHONE" size="2em" style=";" styleClass="icon" />
-										  </JFXToggleNode>
-										  <JFXToggleNode styleClass="toggle-icon2">
-											<Icon awesomeIcon="HEART" size="2em" style=";" styleClass="icon" />
-										  </JFXToggleNode>
-										  <JFXToggleNode styleClass="toggle-icon3">
-											<Icon awesomeIcon="KEY" size="2em" style=";" styleClass="icon" />
-										  </JFXToggleNode>
+                                          <HBox fx:id="GB_DateGroupHbox" alignment="CENTER_LEFT" spacing="10.0" />
                                        </children>
                                     </HBox>
                                     <HBox alignment="CENTER" spacing="20.0">
@@ -97,25 +100,16 @@
                                                 <Font name="System Bold" size="15.0" />
                                              </font>
                                           </Label>
-                                          <HBox alignment="CENTER_LEFT" spacing="10.0">
-                                             <children>
-                                                <JFXRadioButton fx:id="GB_GroupByItem" text="项    目">
-                                                   <toggleGroup>
-                                                      <ToggleGroup fx:id="GB_GroupType" />
-                                                   </toggleGroup>
-                                                </JFXRadioButton>
-                                                <JFXRadioButton fx:id="GB_GroupByDevice" text="设    备" toggleGroup="$GB_GroupType" />
-                                             </children>
-                                          </HBox>
+                                          <HBox fx:id="GB_GroupTypeHbox" alignment="CENTER_LEFT" spacing="10.0" />
                                        </children>
                                     </HBox>
-                                    <Button mnemonicParsing="false" onAction="#QueryReportSummyDataAction" prefHeight="35.0" prefWidth="70.0" style="-fx-background-color: #8080C0;" text="查询" />
+                                    <Button mnemonicParsing="false" onAction="#QueryReportSummyDataAction" prefHeight="35.0" prefWidth="70.0" style="-fx-background-color: #8080C0;" text="查询">
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor></Button>
                                  </children>
-                                 <VBox.margin>
-                                    <Insets left="10.0" right="10.0" />
-                                 </VBox.margin>
                               </HBox>
-                              <LineChart fx:id="GB_ReportDetailChart">
+                              <LineChart fx:id="GB_ReportDetailChart" animated="false" prefHeight="500.0">
                                 <xAxis>
                                   <CategoryAxis side="BOTTOM" />
                                 </xAxis>
@@ -125,20 +119,20 @@
                               </LineChart>
                            </children>
                         </VBox>
-                        <StackPane fx:id="GB_FreshPane4" prefHeight="150.0" prefWidth="200.0" visible="false">
+                        <VBox fx:id="GB_FreshPane4" alignment="CENTER" spacing="10.0" style="-fx-background-color: rgba(0, 0, 0, 0.2);" visible="false">
                            <children>
-                              <Region prefHeight="696.0" prefWidth="1200.0" style="-fx-background-color: rgba(0, 0, 0, 0.4);" />
-                              <ProgressIndicator fx:id="GB_RefreshBar4" maxHeight="150.0" maxWidth="150.0" prefHeight="120.0" prefWidth="120.0" progress="0.0" />
+                              <JFXSpinner startingAngle="0.0" style="-fx-radius: 50;" />
+                              <Label text="正在加载数据，请稍后" />
                            </children>
-                        </StackPane>
+                           <cursor>
+                              <Cursor fx:constant="WAIT" />
+                           </cursor>
+                        </VBox>
                      </children>
-                     <VBox.margin>
-                        <Insets bottom="100.0" />
-                     </VBox.margin>
                   </StackPane>
                </children>
                <padding>
-                  <Insets bottom="100.0" top="30.0" />
+                  <Insets bottom="20.0" left="10.0" right="10.0" top="20.0" />
                </padding>
             </VBox>
          </content>
