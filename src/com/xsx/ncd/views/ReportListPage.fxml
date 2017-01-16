@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXSpinner?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
@@ -7,14 +8,13 @@
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Pagination?>
-<?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="765.0" prefWidth="1240.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
@@ -95,12 +95,12 @@
       <TableView fx:id="GB_TableView" editable="true" prefHeight="200.0" prefWidth="200.0" styleClass="edge-to-edge" AnchorPane.bottomAnchor="55.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="101.0">
         <columns>
           <TableColumn fx:id="TableColumn1" prefWidth="50.0" text="索引" />
-            <TableColumn fx:id="TableColumn2" prefWidth="100.0" text="测试项目" />
-            <TableColumn fx:id="TableColumn3" prefWidth="100.0" text="测试时间" />
-            <TableColumn fx:id="TableColumn4" prefWidth="75.0" text="测试结果" />
-            <TableColumn fx:id="TableColumn5" prefWidth="117.0" text="测试人" />
-            <TableColumn fx:id="TableColumn6" prefWidth="158.0" text="测试设备" />
-            <TableColumn fx:id="TableColumn7" prefWidth="75.0" text="测试样品" />
+            <TableColumn fx:id="TableColumn2" prefWidth="100.0" text="项目名称" />
+            <TableColumn fx:id="TableColumn3" prefWidth="100.0" text="检测时间" />
+            <TableColumn fx:id="TableColumn4" prefWidth="75.0" text="结       果" />
+            <TableColumn fx:id="TableColumn5" prefWidth="117.0" text="操作人" />
+            <TableColumn fx:id="TableColumn6" prefWidth="158.0" text="设备编号" />
+            <TableColumn fx:id="TableColumn7" prefWidth="75.0" text="样品编号" />
             <TableColumn fx:id="TableColumn8" prefWidth="75.0" text="报告结果" />
         </columns>
          <columnResizePolicy>
@@ -108,11 +108,14 @@
          </columnResizePolicy>
       </TableView>
       <Pagination fx:id="GB_Pagination" maxPageIndicatorCount="20" styleClass="bullet" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-      <StackPane fx:id="GB_FreshPane" layoutX="10.0" layoutY="10.0" prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <VBox fx:id="GB_FreshPane" alignment="CENTER" layoutX="20.0" layoutY="20.0" spacing="10.0" style="-fx-background-color: rgba(0, 0, 0, 0.2);" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Region fx:id="GB_Viel" prefHeight="696.0" prefWidth="1200.0" style="-fx-background-color: rgba(0, 0, 0, 0.4);" />
-            <ProgressIndicator fx:id="GB_RefreshBar" maxHeight="150.0" maxWidth="150.0" prefHeight="150.0" prefWidth="150.0" progress="0.0" />
+            <JFXSpinner startingAngle="0.0" style="-fx-radius: 50;" />
+            <Label text="正在加载数据，请稍后" />
          </children>
-      </StackPane>
+         <cursor>
+            <Cursor fx:constant="WAIT" />
+         </cursor>
+      </VBox>
    </children>
 </AnchorPane>

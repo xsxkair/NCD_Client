@@ -56,6 +56,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Path;
 import javafx.scene.text.Font;
@@ -70,31 +71,22 @@ public class DeviceDetailHandler {
 	
 	private Device S_Device ;
 	
-	@FXML
-	ImageView GB_DeviceImg;
+	@FXML ImageView GB_DeviceImg;
 	
-	@FXML
-	Label GB_DeviceIDLabel;
-	@FXML
-	Label GB_DevicerNameLabel;
-	@FXML
-	Label GB_DevicerAgeLabel;
-	@FXML
-	Label GB_DevicerSexLabel;
-	@FXML
-	Label GB_DevicerPhoneLabel;
-	@FXML
-	Label GB_DevicerJobLabel;
-	@FXML
-	Label GB_DevicerDescLabel;
-	@FXML
-	Label GB_DevicerAddrLabel;
+	@FXML Label GB_DeviceIDLabel;
+	@FXML Label GB_DevicerNameLabel;
+	@FXML Label GB_DevicerAgeLabel;
+	@FXML Label GB_DevicerSexLabel;
+	@FXML Label GB_DevicerPhoneLabel;
+	@FXML Label GB_DevicerJobLabel;
+	@FXML Label GB_DevicerDescLabel;
+	@FXML Label GB_DevicerAddrLabel;
 	
-	@FXML
-	LineChart<String, Number> GB_DeviceLineChart;
+	@FXML LineChart<String, Number> GB_DeviceLineChart;
 	private Series<String, Number> chartseries;
 	@FXML CategoryAxis GB_DeviceXaxis;
 	@FXML NumberAxis GB_DeviceYaxis;
+	@FXML VBox GB_FreshPane;
 	
 	private ContextMenu myContextMenu;
 	private MenuItem myMenuItem1;
@@ -104,6 +96,8 @@ public class DeviceDetailHandler {
 	private WorkPageSession workPageSession;
 	@Autowired
 	private DeviceRepository deviceRepository;
+	
+	private QueryDeviceActivenessService s_QueryDeviceActivenessService;
 	
 	@PostConstruct
 	public void UI_Init(){
@@ -133,7 +127,12 @@ public class DeviceDetailHandler {
         		
         		UpDeviceInfo();
         		
-        		UpDeviceActiveness();
+        		s_QueryDeviceActivenessService.restart();
+			}
+        	else if (rootpane.equals(oldValue)) {
+        		s_QueryDeviceActivenessService.cancel();
+				S_Device = null;
+				chartseries.getData().clear();
 			}
         });
 
@@ -160,7 +159,7 @@ public class DeviceDetailHandler {
   				// TODO Auto-generated method stub
   				UpDeviceInfo();
         		
-        		UpDeviceActiveness();
+  				s_QueryDeviceActivenessService.restart();
   			}
   		});
       		
@@ -173,6 +172,37 @@ public class DeviceDetailHandler {
   				workPageSession.setWorkPane(fatherPane);
   			}
   		});	
+        
+        s_QueryDeviceActivenessService = new QueryDeviceActivenessService();
+        GB_FreshPane.visibleProperty().bind(s_QueryDeviceActivenessService.runningProperty());
+        s_QueryDeviceActivenessService.valueProperty().addListener((o, oldValue, newValue)->{
+        	chartseries.getData().clear();
+        	
+        	if(newValue != null){
+        		for (Object[] objects : newValue) {
+        			String timelabel = (String) objects[0];
+        			Long num = (Long) objects[1];
+        			
+        			if(timelabel != null){
+        				Data<String, Number> point = new Data<String, Number>(timelabel, num.intValue());
+        				StackPane pointui = new StackPane();
+        				pointui.getStyleClass().add("chartpoint");
+        				point.setNode(pointui);
+        				
+        				Label tiplabel = new Label("日期："+timelabel+"\n"+"数目："+num.intValue());
+        				tiplabel.setFont(new Font("System", 16));
+        				
+        				Tooltip tooltip = new Tooltip();
+        				tooltip.setGraphic(tiplabel);
+        		        Tooltip.install(pointui, tooltip);
+
+        				chartseries.getData().add(point);
+        			}
+        		}
+        		
+        		chartseries.getNode().getStyleClass().add("chartstyle");
+        	}
+        });
         
         AnchorPane.setTopAnchor(rootpane, 0.0);
         AnchorPane.setBottomAnchor(rootpane, 0.0);
@@ -220,36 +250,24 @@ public class DeviceDetailHandler {
 
 	}
 	
-	private void UpDeviceActiveness() {
-		chartseries.getData().clear();
-		
-		List<Object[]> countinfo = deviceRepository.queryDeviceActiveness(S_Device);
-		
-		if(countinfo == null)
-			return;
+	//查询当前设备的活跃度
+	class QueryDeviceActivenessService extends Service<List<Object[]>>{
 
-		for (Object[] objects : countinfo) {
-			String timelabel = (String) objects[0];
-			Long num = (Long) objects[1];
-			
-			if(timelabel != null){
-				Data<String, Number> point = new Data<String, Number>(timelabel, num.intValue());
-				StackPane pointui = new StackPane();
-				pointui.getStyleClass().add("chartpoint");
-				point.setNode(pointui);
-				
-				Label tiplabel = new Label("日期："+timelabel+"\n"+"数目："+num.intValue());
-				tiplabel.setFont(new Font("System", 16));
-				
-				Tooltip tooltip = new Tooltip();
-				tooltip.setGraphic(tiplabel);
-		        Tooltip.install(pointui, tooltip);
-
-				chartseries.getData().add(point);
-			}
+		@Override
+		protected Task<List<Object[]>> createTask() {
+				// TODO Auto-generated method stub
+			return new QueryReportTask();
 		}
-		
-		chartseries.getNode().getStyleClass().add("chartstyle");
+			
+		class QueryReportTask extends Task<List<Object[]>>{
+				
+			@Override
+			protected List<Object[]> call(){
+					// TODO Auto-generated method stub
 
-	}
+					return deviceRepository.queryDeviceActiveness(S_Device);
+				}
+			}
+		}	
+	
 }

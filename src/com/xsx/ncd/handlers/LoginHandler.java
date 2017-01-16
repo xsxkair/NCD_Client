@@ -113,34 +113,37 @@ public class LoginHandler {
 	
 	public void startLoginActivity() {
 		
-		NcdSoft ncdSoft = ncdSoftRepository.findNcdSoftByName(SoftInfo.softName);
+/*		NcdSoft ncdSoft = ncdSoftRepository.findNcdSoftByName(SoftInfo.softName);
 
 		if(ncdSoft != null && ncdSoft.getVersion() > SoftInfo.softVersion){
 			System.out.println("系统有更新");
-			System.exit(0);
-		}
+			//System.exit(0);
+		}*/
+		
+		if(s_Stage == null){
+			s_Stage = new Stage();
+			 
+			s_Stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+					
+				@Override
+				public void handle(WindowEvent event) {
+						// TODO Auto-generated method stub
+					s_Stage.hide();
+				}
+			});
 			
-		s_Stage = new Stage();
-		 
-		s_Stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-				
-			@Override
-			public void handle(WindowEvent event) {
-					// TODO Auto-generated method stub
-				s_Stage.close();
-				System.exit(0);
-			}
-		});
-		
-		UserNameText.setText(null);
-		UserPasswordText.setText(null);
-		
-		s_Stage.getIcons().add(new Image(this.getClass().getResourceAsStream("/RES/logo.png")));
-	    s_Stage.initModality(Modality.APPLICATION_MODAL);
-	        
-	    s_Stage.setResizable(false);
-	    s_Stage.setScene(s_Scene);
-	     
+			s_Stage.getIcons().add(new Image(this.getClass().getResourceAsStream("/RES/logo.png")));
+			   // s_Stage.initModality(Modality.APPLICATION_MODAL);
+			s_Stage.setTitle("登录");
+			        
+			s_Stage.setResizable(true);
+			s_Stage.setScene(s_Scene);
+		}
+		else {
+			UserNameText.setText(null);
+			UserPasswordText.setText(null);
+		}
+ 
 		s_Stage.show();
 	}
 	

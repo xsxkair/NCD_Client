@@ -17,7 +17,7 @@ public interface DeviceRepository extends JpaRepository<Device, Integer>, JpaSpe
 	
 	public List<Device> findByManagerAccount(String account);
 	
-	@Query("SELECT DATE_FORMAT(t.testtime,'%Y年%m月%d') ,COUNT(t.id) "
-			+"FROM TestData t where t.device=:device GROUP BY DATE_FORMAT(t.testtime,'%Y年%m月%d')" )
+	@Query("SELECT DATE_FORMAT(t.testtime,'%Y-%m') ,COUNT(t.id) "
+			+"FROM TestData t where t.device=:device GROUP BY DATE_FORMAT(t.testtime,'%Y-%m')" )
 	public List<Object[]> queryDeviceActiveness(@Param("device") Device device);
 }
