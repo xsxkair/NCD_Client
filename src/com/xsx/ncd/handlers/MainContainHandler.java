@@ -24,9 +24,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -39,33 +41,24 @@ public class MainContainHandler {
 	
 	private Scene s_Scene;
 	
-	@FXML
-	AnchorPane GB_RootPane;
+	@FXML AnchorPane GB_RootPane;
 	
-	@FXML
-	ImageView GB_WorkSpaceIcoView;
+	@FXML HBox GB_TodayHbox;
+	@FXML ImageView GB_WorkSpaceIcoView;
 	
-	@FXML
-	Label GB_SignedManagerLable;
-	@FXML
-	ImageView GB_SignedManagerIcoView;
+	@FXML Label GB_SignedManagerLable;
+	@FXML ImageView GB_SignedManagerIcoView;
 	
-	@FXML
-	MenuBar GB_MenuBar;
-	@FXML
-	Menu GB_ReportMenu;
-	@FXML
-	Menu GB_DeviceMenu;
-	@FXML
-	Menu GB_CardMenu;
-	@FXML
-	Menu GB_CheckMenu;
-	@FXML
-	Menu GB_MyInfoMenu;
-	@FXML
-	Menu GB_SystemSetMenu;
-	@FXML
-	Menu GB_AboutMenu;
+	@FXML MenuBar GB_MenuBar;
+	@FXML Menu GB_ReportMenu;
+	@FXML Menu GB_DeviceMenu;
+	@FXML Menu GB_CardMenu;
+	@FXML Menu GB_CheckMenu;
+	@FXML Menu GB_ToolMenu;
+	@FXML MenuItem GB_ConnectDeviceMenuItem;
+	@FXML Menu GB_MyInfoMenu;
+	@FXML Menu GB_SystemSetMenu;
+	@FXML Menu GB_AboutMenu;
 	
 	@Autowired
 	private ManagerRepository managerRepository;
@@ -97,7 +90,7 @@ public class MainContainHandler {
 	private CardInOutHandler cardInOutHandler;
 	@Autowired
 	private CardRecordHandler cardRecordHandler;
-	
+	@Autowired private DeviceTestHandler deviceTestHandler;
 	@Autowired
 	private LoginHandler loginHandler;
 	
@@ -143,13 +136,17 @@ public class MainContainHandler {
 		Manager manager = managerRepository.findManagerByAccount(managerSession.getAccount());
 
 		GB_SignedManagerLable.setText(manager.getName());
-						
-		GB_MenuBar.getMenus().clear();
-		if(manager.getFatheraccount() != null){
-			GB_MenuBar.getMenus().addAll(GB_CardMenu, GB_CheckMenu, GB_MyInfoMenu, GB_SystemSetMenu, GB_AboutMenu);
+		
+		//生物研发
+		if(manager.getType().equals(3)){
+			GB_MenuBar.getMenus().removeAll(GB_ReportMenu, GB_DeviceMenu, GB_CardMenu, GB_CheckMenu);
 		}
-		else {
-			GB_MenuBar.getMenus().addAll(GB_ReportMenu, GB_DeviceMenu, GB_CardMenu, GB_CheckMenu, GB_MyInfoMenu, GB_SystemSetMenu, GB_AboutMenu);
+		//用户
+		else if(manager.getType().equals(4)){
+			//子用户
+			if(manager.getFatheraccount() != null){
+				GB_MenuBar.getMenus().removeAll(GB_ReportMenu, GB_DeviceMenu);
+			}
 		}
 		
 		workPageSession.getWorkPane().set(workSpaceHandler.GetPane());
@@ -208,6 +205,10 @@ public class MainContainHandler {
 		cardRecordHandler.ShowCardRecordPage();
 	}
 	
+	@FXML
+	public void GB_DeviceTestAction(){
+		deviceTestHandler.showDeviceTestPage();
+	}
 	@FXML
 	public void ShowMyInfoAction(){
 		managerInfoHandler.ShowMyInfoPage();

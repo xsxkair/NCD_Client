@@ -39,6 +39,11 @@
                 <MenuItem mnemonicParsing="false" text="Action 1" />
               </items>
             </Menu>
+            <Menu fx:id="GB_ToolMenu" mnemonicParsing="false" style="-fx-font-size: 14;" text="工具">
+               <items>
+                  <MenuItem fx:id="GB_ConnectDeviceMenuItem" mnemonicParsing="false" onAction="#GB_DeviceTestAction" text="连接设备" />
+               </items>
+            </Menu>
             <Menu fx:id="GB_MyInfoMenu" mnemonicParsing="false" style="-fx-font-size: 14;" text="我的信息">
               <items>
                   <MenuItem mnemonicParsing="false" onAction="#ShowMyInfoAction" text="我的信息" />
@@ -86,7 +91,7 @@
             </Label>
          </children>
       </HBox>
-      <HBox alignment="CENTER" onMouseClicked="#GB_MyWorkSpaceAction" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <HBox fx:id="GB_TodayHbox" alignment="CENTER" onMouseClicked="#GB_MyWorkSpaceAction" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <Label prefHeight="39.0" text="工作台" textFill="#c2671f">
                <graphic>

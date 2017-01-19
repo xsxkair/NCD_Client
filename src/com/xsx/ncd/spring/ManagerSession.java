@@ -8,6 +8,8 @@ public class ManagerSession {
 	private String account = null;
 	
 	private String fatherAccount = null;
+	
+	private Integer userType = null;
 
 	public String getAccount() {
 		return account;
@@ -23,6 +25,14 @@ public class ManagerSession {
 
 	public void setFatherAccount(String fatherAccount) {
 		this.fatherAccount = fatherAccount;
+	}
+
+	public Integer getUserType() {
+		return userType;
+	}
+
+	public void setUserType(Integer userType) {
+		this.userType = userType;
 	}
 	
 	

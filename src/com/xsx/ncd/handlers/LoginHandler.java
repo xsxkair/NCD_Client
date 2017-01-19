@@ -158,7 +158,7 @@ public class LoginHandler {
 			
 			managerSession.setAccount(tempuser.getAccount());
 			managerSession.setFatherAccount(tempuser.getFatheraccount());
-			
+			managerSession.setUserType(tempuser.getType());
 			mainContainHandler.startWorkActivity();
 
 		}
