@@ -99,7 +99,7 @@ public class DeviceHandler {
 						if((devicetime == null) || ((currenttime > devicetime) && (currenttime - devicetime > 120000))){
 							image = new Image(this.getClass().getResourceAsStream("/RES/deviceico_off.png"));
 						}
-						else if(device.getStatus().equals("OK")){
+						else if("OK".equals(device.getStatus())){
 							image = new Image(this.getClass().getResourceAsStream("/RES/deviceico_ok.png"));
 						}
 						else {

@@ -30,6 +30,16 @@ public class Manager {
 	private String job;
 	
 	private String dsc;
+	
+	private Integer type;					//账号类型， 
+											//0 -- 系统运维人员，拥有所有权限
+											//1 -- 超级账号,不能上传客户的软件，其他权限全有
+											//2 -- 销售，权限：添加和修改类别为3的用户
+											//3 -- 纽康度生物研发，只能处理自己管辖的设备的报告
+											//4 -- 普通用户（父账户为null，表示一级普通用户，
+											//不为null，为二级普通用户，为一级的子用户）
+	
+	private String adduser;					//添加当前账户的人
 
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Id
@@ -114,9 +124,26 @@ public class Manager {
 		this.dsc = dsc;
 	}
 
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
+	public String getAdduser() {
+		return adduser;
+	}
+
+	public void setAdduser(String adduser) {
+		this.adduser = adduser;
+	}
+
 	@Override
 	public String toString() {
-		return "姓名：" + name ;
+		return "Manager [id=" + id + ", account=" + account + ", password=" + password + ", fatheraccount="
+				+ fatheraccount + ", name=" + name + "]";
 	}
 	
 	
