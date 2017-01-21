@@ -1,14 +1,9 @@
 package com.xsx.ncd.handlers;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -17,60 +12,31 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.org.xsx.beans.DataPointUI;
-import com.org.xsx.dao.TestDataDao;
 import com.xsx.ncd.define.DeviceTestTableItem;
-import com.xsx.ncd.entity.Device;
-import com.xsx.ncd.entity.Manager;
-import com.xsx.ncd.handlers.DeviceHandler.ReadDeviceInfoService.ReadDeviceInfoTask;
+import com.xsx.ncd.entity.LabTestData;
+import com.xsx.ncd.repository.LabTestDataRepository;
 import com.xsx.ncd.spring.WorkPageSession;
 import com.xsx.ncd.tool.ClientSocket;
 
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.concurrent.ScheduledService;
+import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.chart.LineChart;
-import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Data;
 import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.effect.DropShadow;
-import javafx.scene.effect.Effect;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
-import javafx.util.Duration;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -87,10 +53,11 @@ public class DeviceTestHandler {
 	@FXML Button GB_SaveDataButton;
 	private Integer testCount = null;
 	private Integer testDelayTime = null;
+	int testIndex = 0;
 	
 	@FXML TableView<DeviceTestTableItem> GB_TableView;
-	@FXML TableColumn<DeviceTestTableItem, String> GB_TableColumn0;
-	@FXML TableColumn<DeviceTestTableItem, Float> GB_TableColumn1;
+	@FXML TableColumn GB_TableColumn0;
+	@FXML TableColumn GB_TableColumn1;
 	
 	@FXML TextArea GB_LogTextArea;
 	
@@ -99,8 +66,8 @@ public class DeviceTestHandler {
 	
 	private TestService S_TestService = null;
 	
-	@Autowired
-	WorkPageSession workPageSession;
+	@Autowired WorkPageSession workPageSession;
+	@Autowired private LabTestDataRepository labTestDataRepository;
 
 	@PostConstruct
 	private void UI_Init(){
@@ -116,10 +83,10 @@ public class DeviceTestHandler {
 			e.printStackTrace();
 		};
 		
-		GB_TableColumn0.setCellValueFactory(new PropertyValueFactory<DeviceTestTableItem, String>("testDesc"));
-		GB_TableColumn0.setCellFactory(TextFieldTableCell.forTableColumn());
+		GB_TableColumn0.setCellValueFactory(new PropertyValueFactory("testDesc"));
+		//GB_TableColumn0.setCellFactory(TextFieldTableCell.forTableColumn());
 		
-        GB_TableColumn1.setCellValueFactory(new PropertyValueFactory<DeviceTestTableItem, Float>("tcValue"));
+        GB_TableColumn1.setCellValueFactory(new PropertyValueFactory("tcValue"));
 	
         S_TestService = new TestService();
         S_TestService.messageProperty().addListener((o, oldValue, newValue)->{
@@ -171,9 +138,10 @@ public class DeviceTestHandler {
 			return;
 		
 		GB_Chart.getData().clear();
+		GB_TableView.getItems().clear();
 		for (int i=0; i<testCount.intValue(); i++) {
 			GB_Chart.getData().add(new Series<>());
-			
+			GB_TableView.getItems().add(new DeviceTestTableItem(new LabTestData()));
 		}
 		Series<Number,Number>[] series = new Series[testCount];
 		
@@ -187,7 +155,7 @@ public class DeviceTestHandler {
 		if(testDelayTime <= 0)
 			testDelayTime = 1;
 		
-		S_TestService.start();
+		S_TestService.restart();
 	}
 	
 	@FXML
@@ -325,7 +293,7 @@ public class DeviceTestHandler {
 	}
 	*/
 	
-	class TestService extends ScheduledService<Void>{
+	class TestService extends Service<Void>{
 		
 		@Override
 		protected Task<Void> createTask() {
@@ -345,17 +313,20 @@ public class DeviceTestHandler {
 				
 				String str;
 				int retryNum = 0;
-				int testIndex = 0;
 				
 				JSONObject  jsonarray;
 				Map typeMap = new HashMap();
 				typeMap.put("data", int[].class);
 	        	typeMap.put("status", int.class);
 	        	ArrayList<Integer> tempdata = new ArrayList<>();
+	        	DeviceTestTableItem labTestDataItem = null;
 				
-				while((testIndex++) < testCount){
-					
+	        	testIndex = 0;
+
+				while(true){
+
 					//启动测试
+					retryNum = 0;
 					while((retryNum++) < retryMaxNum){
 						str = ClientSocket.ComWithServer(GB_DeviceIPField.getText(), "Start Test");
 						
@@ -370,17 +341,25 @@ public class DeviceTestHandler {
 						else {
 							updateMessage("无响应 -- "+retryNum);
 						}
+						
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
 					if(retryNum > retryMaxNum){
-						this.cancel();
 						return null;
 					}
 					
 					//读曲线数据
 					retryNum = 0;
-					while((retryNum++) < retryMaxNum){
-						str = ClientSocket.ComWithServer(GB_DeviceIPField.getText(), "Read Test Data99");
+					tempdata.clear();
+					while(retryNum < retryMaxNum){
+						str = ClientSocket.ComWithServer(GB_DeviceIPField.getText(), "Read Test Data");
 						if(str != null){
+
 							jsonarray = JSONObject.fromObject(str);
 							Map output1 = (Map)JSONObject.toBean(jsonarray, Map.class, typeMap);
 
@@ -388,8 +367,10 @@ public class DeviceTestHandler {
 							int status = (int) output1.get("status");
 
 							tempdata.addAll(data);
+							
 							Platform.runLater(() -> {
 								int serieldatasize;
+								
 								Series<Number, Number> mySeries = GB_Chart.getData().get(testIndex);
 								serieldatasize = mySeries.getData().size();
 								for (int i=0; i<data.size(); i++) {
@@ -404,45 +385,50 @@ public class DeviceTestHandler {
 									}
 								}
 							});
+							
 							if(status == 0){
-								JSONArray jsonList = JSONArray.fromObject( tempdata );  
-								GB_TestData.get(GB_CurrentCount).getMy_TestDataBean().setTestdata(jsonList.toString());
-								TestDataDao.SaveTestData(GB_TestData.get(GB_CurrentCount).getMy_TestDataBean());
+								JSONArray jsonList = JSONArray.fromObject( tempdata );
+								labTestDataItem = GB_TableView.getItems().get(testIndex);
+								labTestDataItem.setTestDesc(""+testIndex);
+								labTestDataItem.setTcValue(new Float(testIndex));
+								labTestDataItem.getLabTestData().setSerie(jsonList.toString());
 								
-								GB_CurrentCount++;
-
-								if(GB_TestCount > GB_CurrentCount){
-
-									GB_TestStatus.set(1);
-									try {
-										Thread.sleep(GB_TestRelay*1000);
-									} catch (InterruptedException e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
-									}
+								try {
+									labTestDataRepository.save(labTestDataItem.getLabTestData());
+								} catch (Exception e) {
+									// TODO: handle exception
+									e.printStackTrace();
 								}
-								else{
-									Platform.runLater(() -> {
-										GB_TestStatus.set(0);
-									});
-								}
-										
+								
+								break;
 							}
 						}
 						else{
-							GB_LogTextArea.appendText("无响应-----"+retrycount+"\n");
-							retrycount++;
-							if(retrycount >= 10){
-								Platform.runLater(() -> {
-									GB_TestStatus.set(0);
-									GB_TestCountFiled.setText(null);
-								});
-							}
+							updateMessage("无响应 -- "+retryNum);
+							retryNum++;
+						}
+						
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
 						}
 					}
 					if(retryNum > retryMaxNum){
-						this.cancel();
 						return null;
+					}
+					
+					testIndex++;
+					
+					if(testIndex >= testCount)
+						break;
+
+					try {
+						Thread.sleep(testDelayTime*1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
 				}
 				

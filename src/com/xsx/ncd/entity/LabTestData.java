@@ -1,6 +1,7 @@
 package com.xsx.ncd.entity;
 
 import javax.annotation.Generated;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -55,6 +56,8 @@ public class LabTestData {
 	public void setTesttime(java.sql.Timestamp testtime) {
 		this.testtime = testtime;
 	}
+	
+	@Column(length=2000)
 	public String getSerie() {
 		return serie;
 	}
