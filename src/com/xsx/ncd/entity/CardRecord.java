@@ -4,20 +4,18 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Table(name="CARDRECORD")
 @Entity
 public class CardRecord {
 	private Integer id;
-	private Card card;
+	private Integer cardid;
 	private Integer num;					//数目，入库为正，出库为负
 	private java.sql.Timestamp dotime;		//出入库时间
-	private Manager manager;				//操作人
+	private Integer userid;				//操作人
 	private String name;					//出库领料人
-	private Device device;					//出库设备
+	private Integer deviceid;					//出库设备
 	
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Id
@@ -27,14 +25,12 @@ public class CardRecord {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	
-	@JoinColumn(name="Card_id")
-	@ManyToOne
-	public Card getCard() {
-		return card;
+
+	public Integer getCardid() {
+		return cardid;
 	}
-	public void setCard(Card card) {
-		this.card = card;
+	public void setCardid(Integer cardid) {
+		this.cardid = cardid;
 	}
 	public Integer getNum() {
 		return num;
@@ -49,13 +45,11 @@ public class CardRecord {
 		this.dotime = dotime;
 	}
 	
-	@JoinColumn(name="Manager_id")
-	@ManyToOne
-	public Manager getManager() {
-		return manager;
+	public Integer getUserid() {
+		return userid;
 	}
-	public void setManager(Manager manager) {
-		this.manager = manager;
+	public void setUserid(Integer userid) {
+		this.userid = userid;
 	}
 	public String getName() {
 		return name;
@@ -63,13 +57,11 @@ public class CardRecord {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	@JoinColumn(name="Device_id")
-	@ManyToOne
-	public Device getDevice() {
-		return device;
+	public Integer getDeviceid() {
+		return deviceid;
 	}
-	public void setDevice(Device device) {
-		this.device = device;
+	public void setDeviceid(Integer deviceid) {
+		this.deviceid = deviceid;
 	}
+
 }

@@ -8,16 +8,19 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
+import javax.jws.soap.SOAPBinding.Use;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.jfoenix.controls.JFXToggleNode;
 import com.xsx.ncd.entity.Device;
+import com.xsx.ncd.entity.User;
 import com.xsx.ncd.repository.CardRepository;
 import com.xsx.ncd.repository.DeviceRepository;
 import com.xsx.ncd.repository.TestDataRepository;
-import com.xsx.ncd.spring.ManagerSession;
+import com.xsx.ncd.repository.UserRepository;
+import com.xsx.ncd.spring.UserSession;
 import com.xsx.ncd.spring.WorkPageSession;
 
 import javafx.collections.FXCollections;
@@ -84,7 +87,9 @@ public class ReportOverViewPage {
 	@Autowired
 	private DeviceRepository deviceRepository;
 	@Autowired
-	private ManagerSession managerSession;
+	private UserRepository userRepository;
+	@Autowired
+	private UserSession userSession;
 	@Autowired
 	private CardRepository cardRepository;
 	@Autowired
@@ -368,10 +373,21 @@ public class ReportOverViewPage {
 			@Override
 			protected List<Object[]> call(){
 				// TODO Auto-generated method stub
-				List<Device> devices = deviceRepository.findByManagerAccount(managerSession.getAccount());
-				List<Object[]> objects = testDataRepository.queryTodayReportGroupByResult( devices);
+				List<Device> devices;
+				User admin = null;
 				
-				return objects;
+				if(userSession.getFatherAccount() == null)
+					devices = deviceRepository.findByUserid(userSession.getUser().getId());
+				else{
+					admin = userRepository.findByAccount(userSession.getFatherAccount());
+					devices = deviceRepository.findByUserid(admin.getId());
+				}
+
+				//List<Object[]> objects = testDataRepository.queryTodayReportGroupByResult( devices);
+				
+				//return objects;
+				
+				return null;
 			}
 		}
 	}
@@ -389,9 +405,19 @@ public class ReportOverViewPage {
 			@Override
 			protected List<Object[]> call(){
 				// TODO Auto-generated method stub
-				List<Device> devices = deviceRepository.findByManagerAccount(managerSession.getAccount());
-				List<Object[]> objects = testDataRepository.queryTodayReportGroupByItem( devices);
-				return objects;
+				List<Device> devices;
+				User admin = null;
+				
+				if(userSession.getFatherAccount() == null)
+					devices = deviceRepository.findByUserid(userSession.getUser().getId());
+				else{
+					admin = userRepository.findByAccount(userSession.getFatherAccount());
+					devices = deviceRepository.findByUserid(admin.getId());
+				}
+				//List<Object[]> objects = testDataRepository.queryTodayReportGroupByItem( devices);
+				//return objects;
+				//
+				return null;
 			}
 		}
 	}
@@ -410,10 +436,20 @@ public class ReportOverViewPage {
 			@Override
 			protected List<Object[]> call(){
 				// TODO Auto-generated method stub
-				List<Device> devices = deviceRepository.findByManagerAccount(managerSession.getAccount());
-				List<Object[]> objects = testDataRepository.queryTodayReportGroupByDevice( devices);
+				List<Device> devices;
+				User admin = null;
 				
-				return objects;
+				if(userSession.getFatherAccount() == null)
+					devices = deviceRepository.findByUserid(userSession.getUser().getId());
+				else{
+					admin = userRepository.findByAccount(userSession.getFatherAccount());
+					devices = deviceRepository.findByUserid(admin.getId());
+				}
+				//List<Object[]> objects = testDataRepository.queryTodayReportGroupByDevice( devices);
+				
+				//return objects;
+				
+				return null;
 			}
 		}
 	}
@@ -440,9 +476,17 @@ public class ReportOverViewPage {
 				
 				groupType = GB_GroupTypeToggleGroup.getSelectedToggle().getUserData().toString();
 				
-				List<Device> devices = deviceRepository.findByManagerAccount(managerSession.getAccount());
+				List<Device> devices;
+				User admin = null;
 				
-				if(groupType.equals("项目分组")){
+				if(userSession.getFatherAccount() == null)
+					devices = deviceRepository.findByUserid(userSession.getUser().getId());
+				else{
+					admin = userRepository.findByAccount(userSession.getFatherAccount());
+					devices = deviceRepository.findByUserid(admin.getId());
+				}
+				
+				/*if(groupType.equals("项目分组")){
 					if(viewTimeType.equals("年"))
 						dataList = testDataRepository.queryReportSummyByYearItem(devices);
 					else if (viewTimeType.equals("月"))
@@ -457,9 +501,10 @@ public class ReportOverViewPage {
 						dataList = testDataRepository.queryReportSummyByMonthDevice(devices);
 					else if(viewTimeType.equals("日"))
 						dataList = testDataRepository.queryReportSummyByDayDevice(devices);
-				}
+				}*/
 				
-				return dataList;
+				//return dataList;
+				return null;
 			}
 		}
 	}

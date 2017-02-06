@@ -1,21 +1,18 @@
 package com.xsx.ncd.entity;
 
-import javax.annotation.Generated;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Table(name="LABTESTDATA")
 @Entity
 public class LabTestData {
 	private Integer id;
-	private Device device;
-	private Manager manager;
+	private Integer deviceid;
+	private Integer userid;
 	private java.sql.Timestamp testtime;	//≤‚ ‘ ±º‰
 	private String serie;					//≤‚ ‘«˙œﬂ
 	private String dsc;
@@ -33,22 +30,17 @@ public class LabTestData {
 		this.id = id;
 	}
 	
-	@JoinColumn(name="DEVICE_id")
-	@ManyToOne
-	public Device getDevice() {
-		return device;
+	public Integer getDeviceid() {
+		return deviceid;
 	}
-	public void setDevice(Device device) {
-		this.device = device;
+	public void setDeviceid(Integer deviceid) {
+		this.deviceid = deviceid;
 	}
-	
-	@JoinColumn(name="MANAGER_id")
-	@ManyToOne
-	public Manager getManager() {
-		return manager;
+	public Integer getUserid() {
+		return userid;
 	}
-	public void setManager(Manager manager) {
-		this.manager = manager;
+	public void setUserid(Integer userid) {
+		this.userid = userid;
 	}
 	public java.sql.Timestamp getTesttime() {
 		return testtime;

@@ -3,7 +3,10 @@ package com.xsx.ncd.handlers;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -21,14 +24,17 @@ import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
+import com.sun.org.apache.bcel.internal.generic.NEW;
 import com.xsx.ncd.define.ReportTableItem;
+import com.xsx.ncd.entity.Card;
 import com.xsx.ncd.entity.Device;
-import com.xsx.ncd.entity.Manager;
+import com.xsx.ncd.entity.User;
 import com.xsx.ncd.entity.TestData;
+import com.xsx.ncd.repository.CardRepository;
 import com.xsx.ncd.repository.DeviceRepository;
-import com.xsx.ncd.repository.ManagerRepository;
+import com.xsx.ncd.repository.UserRepository;
 import com.xsx.ncd.repository.TestDataRepository;
-import com.xsx.ncd.spring.ManagerSession;
+import com.xsx.ncd.spring.UserSession;
 import com.xsx.ncd.spring.SystemSetData;
 import com.xsx.ncd.spring.WorkPageSession;
 
@@ -86,10 +92,10 @@ public class TodayWorkHandler {
 	MenuItem myMenuItem4 = new MenuItem("打印报告");
 	
 	@Autowired
-	private ManagerRepository managerRepository;
+	private UserRepository managerRepository;
 	
 	@Autowired
-	private ManagerSession managerSession;
+	private UserSession managerSession;
 	
 	@Autowired
 	private DeviceRepository deviceRepository;
@@ -103,6 +109,8 @@ public class TodayWorkHandler {
 	private WorkPageSession workPageSession;
 	@Autowired
 	private ReportDetailHandler reportDetailHandler;
+	@Autowired
+	private CardRepository cardRepository;
 	
 	private QueryReportService queryReportService;
 
@@ -145,28 +153,21 @@ public class TodayWorkHandler {
         myContextMenu = new ContextMenu(myMenuItem1, myMenuItem2, myMenuItem3, myMenuItem4);
         
         queryReportService = new QueryReportService();
-        queryReportService.valueProperty().addListener(new ChangeListener<Page<TestData>>() {
+        queryReportService.valueProperty().addListener((o, oldValue, newValue)->{
+        	if(newValue != null){
+				GB_Pagination.setPageCount(((Long) newValue[0]).intValue());
 
-			@Override
-			public void changed(ObservableValue<? extends Page<TestData>> arg0, Page<TestData> arg1,
-					Page<TestData> arg2) {
-				// TODO Auto-generated method stub
-				if(arg2 != null){
-					GB_Pagination.setPageCount(arg2.getTotalPages());
+				List<Object[]> datas = (List<Object[]>) newValue[1];
+				List<ReportTableItem> reportTableItems = new ArrayList<>();
 
-					List<TestData> datas = arg2.getContent();
-					
-					List<ReportTableItem> reportTableItems = new ArrayList<>();
-					for (TestData testData : datas) {
-						reportTableItems.add(new ReportTableItem(datas.indexOf(testData)+1+GB_Pagination.getCurrentPageIndex()*systemSetData.getPageSize(), testData));
-					}
-					
-					GB_TableView.getItems().clear();
-					GB_TableView.getItems().addAll(reportTableItems);
+				for (Object[] object : datas) {
+					reportTableItems.add(new ReportTableItem(datas.indexOf(object)+1+GB_Pagination.getCurrentPageIndex()*systemSetData.getPageSize(), (TestData)object[0], (Device)object[1], (Card)object[2], null));
 				}
 				
+				GB_TableView.getItems().clear();
+				GB_TableView.getItems().addAll(reportTableItems);
 			}
-		});
+        });
         
         GB_FreshPane.visibleProperty().bind(queryReportService.runningProperty());
 
@@ -277,7 +278,7 @@ public class TodayWorkHandler {
 					
 					if((row != null)&&(row.getIndex() < tableView.getItems().size())){
 						if(event.getClickCount() == 2){
-							reportDetailHandler.startReportDetailActivity(tableView.getItems().get(row.getIndex()).getTestdata());
+							//reportDetailHandler.startReportDetailActivity(tableView.getItems().get(row.getIndex()).getTestdata());
 						}
 						else if(event.getButton().equals(MouseButton.SECONDARY)){
 							myContextMenu.show(cell, event.getScreenX(), event.getScreenY());
@@ -291,43 +292,39 @@ public class TodayWorkHandler {
 	}
 	
 	
-	class QueryReportService extends Service<Page<TestData>>{
+	class QueryReportService extends Service<Object[]>{
 
 		@Override
-		protected Task<Page<TestData>> createTask() {
+		protected Task<Object[]> createTask() {
 			// TODO Auto-generated method stub
 			return new QueryReportTask();
 		}
 		
-		class QueryReportTask extends Task<Page<TestData>>{
+		class QueryReportTask extends Task<Object[]>{
 
 			@Override
-			protected Page<TestData> call(){
+			protected Object[] call(){
 				// TODO Auto-generated method stub
 				return QueryTodayNotDoReport();
 			}
 			
-			public Page<TestData> QueryTodayNotDoReport(){
+			public Object[] QueryTodayNotDoReport(){
+				Object[] results = new Object[5];
+				//管理员
+				User admin;
 				
 				//查询当前审核人
-				Manager manager = managerRepository.findManagerByAccount(managerSession.getAccount());
-				if(manager == null)
-					return null;
-				
-				//管理员
-				Manager admin;
-				
-				if(manager.getFatheraccount() == null)
-					admin = manager;
+				if(managerSession.getFatherAccount() == null)
+					admin = managerRepository.findByAccount(managerSession.getAccount());
 				else
-					admin = managerRepository.findManagerByAccount(manager.getFatheraccount());
+					admin = managerRepository.findByAccount(managerSession.getFatherAccount());
 				
 				if(admin == null)
 					return null;
 				
 				//查询管理员所管理的所有设备id
-				List<Device> deviceList = deviceRepository.findByManagerAccount(admin.getAccount());
-
+				List<Integer> deviceList = deviceRepository.queryDeviceIdByUserid(admin.getId());
+/*
 				//查询数据
 				
 				//分页条件
@@ -337,13 +334,7 @@ public class TodayWorkHandler {
 				
 				//通常使用 Specification 的匿名内部类
 				Specification<TestData> specification = new Specification<TestData>() {
-						/**
-						 * @param *root: 代表查询的实体类. 
-						 * @param query: 可以从中可到 Root 对象, 即告知 JPA Criteria 查询要查询哪一个实体类. 还可以
-						 * 来添加查询条件, 还可以结合 EntityManager 对象得到最终查询的 TypedQuery 对象. 
-						 * @param *cb: CriteriaBuilder 对象. 用于创建 Criteria 相关对象的工厂. 当然可以从中获取到 Predicate 对象
-						 * @return: *Predicate 类型, 代表一个查询条件. 
-						 */
+
 						@Override
 						public Predicate toPredicate(Root<TestData> root,
 								CriteriaQuery<?> query, CriteriaBuilder cb) {
@@ -354,15 +345,32 @@ public class TodayWorkHandler {
 							predicate = cb.equal(path1, "未审核");
 
 							//设备id
-							Path<String> path3 = root.get("device");
+							Path<Integer> path3 = root.get("deviceid");
 							predicate = cb.and(path3.in(deviceList), predicate);
 							return predicate;
 						}
 					};
 					
 				Page<TestData> page = testDataRepository.findAll(specification, pageable);
+				
+				results[0] = page.getTotalPages();
 
-				return page;
+				List<TestData> datas = page.getContent();
+				
+				List<Object[]> dataSet = new ArrayList();
+				
+				for (TestData testData : datas) {
+					Card card = cardRepository.findOne(testData.getCardid());
+					Device device = deviceRepository.findOne(testData.getDeviceid());
+					
+					dataSet.add(new Object[]{testData,card,device});
+					
+				}
+				
+				results[1] = dataSet;
+				*/
+				
+				return testDataRepository.QueryTodayReport(deviceList, GB_Pagination.getCurrentPageIndex()*systemSetData.getPageSize(), systemSetData.getPageSize());
 			}
 		}
 	}

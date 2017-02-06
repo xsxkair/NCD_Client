@@ -10,10 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.xsx.ncd.entity.Device;
-import com.xsx.ncd.entity.Manager;
+import com.xsx.ncd.entity.User;
 import com.xsx.ncd.repository.DeviceRepository;
-import com.xsx.ncd.repository.ManagerRepository;
-import com.xsx.ncd.spring.ManagerSession;
+import com.xsx.ncd.repository.UserRepository;
+import com.xsx.ncd.spring.UserSession;
 import com.xsx.ncd.spring.WorkPageSession;
 
 import javafx.beans.property.SimpleObjectProperty;
@@ -48,10 +48,10 @@ public class DeviceHandler {
 	private WorkPageSession workPageSession;
 	
 	@Autowired
-	private ManagerRepository managerRepository;
+	private UserRepository managerRepository;
 	
 	@Autowired
-	private ManagerSession managerSession;
+	private UserSession managerSession;
 	
 	@Autowired
 	private DeviceRepository deviceRepository;
@@ -169,24 +169,19 @@ public class DeviceHandler {
 			
 			private List<Device> ReadDeviceInfoFun(){
 				
-				//查询当前审核人
-				Manager manager = managerRepository.findManagerByAccount(managerSession.getAccount());
-				if(manager == null)
-					return null;
-				
 				//管理员
-				Manager admin;
+				User admin;
 				
-				if(manager.getFatheraccount() == null)
-					admin = manager;
+				if(managerSession.getFatherAccount() == null)
+					admin = managerRepository.findByAccount(managerSession.getAccount());
 				else
-					admin = managerRepository.findManagerByAccount(manager.getFatheraccount());
+					admin = managerRepository.findByAccount(managerSession.getFatherAccount());
 				
 				if(admin == null)
 					return null;
 				
 				//查询管理员所管理的所有设备id
-				List<Device> deviceList = deviceRepository.findByManagerAccount(admin.getAccount());
+				List<Device> deviceList = deviceRepository.findByUserid(admin.getId());
 				
 				return deviceList;
 			}

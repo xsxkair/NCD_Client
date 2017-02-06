@@ -9,9 +9,9 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.xsx.ncd.entity.Manager;
-import com.xsx.ncd.repository.ManagerRepository;
-import com.xsx.ncd.spring.ManagerSession;
+import com.xsx.ncd.entity.User;
+import com.xsx.ncd.repository.UserRepository;
+import com.xsx.ncd.spring.UserSession;
 import com.xsx.ncd.spring.WorkPageSession;
 
 import javafx.beans.value.ChangeListener;
@@ -56,15 +56,20 @@ public class MainContainHandler {
 	@FXML Menu GB_CheckMenu;
 	@FXML Menu GB_ToolMenu;
 	@FXML MenuItem GB_ConnectDeviceMenuItem;
-	@FXML Menu GB_MyInfoMenu;
+	
+	@FXML Menu GB_UserManagementMenu;
+	@FXML MenuItem MyInfoMenuItem;
+	@FXML MenuItem AdminManagementItem;
+	@FXML MenuItem SalerManagementMenuItem;
+	@FXML MenuItem LabberManagementMenuItem;
+	@FXML MenuItem ReportterManagementMenuItem;
+	@FXML MenuItem ChildReportterManagementMenuItem;
+	
 	@FXML Menu GB_SystemSetMenu;
 	@FXML Menu GB_AboutMenu;
 	
 	@Autowired
-	private ManagerRepository managerRepository;
-	
-	@Autowired
-	private ManagerSession managerSession;
+	private UserSession userSession;
 	
 	@Autowired
 	private WorkPageSession workPageSession;
@@ -73,7 +78,7 @@ public class MainContainHandler {
 	private TodayWorkHandler workSpaceHandler;
 	
 	@Autowired
-	private ManagerInfoHandler managerInfoHandler;
+	private MyInfoHandler managerInfoHandler;
 	
 	@Autowired
 	private DeviceHandler deviceHandler;
@@ -133,21 +138,34 @@ public class MainContainHandler {
 	}
 	
 	public void startWorkActivity() {
-		Manager manager = managerRepository.findManagerByAccount(managerSession.getAccount());
+		User user = userSession.getUser();
 
-		GB_SignedManagerLable.setText(manager.getName());
+		GB_SignedManagerLable.setText(user.getName());
 		
+		//数据库管理员
+		if(user.getType().equals(0)){
+			
+		}
+		//超级管理员
+		else if(user.getType().equals(1)){
+
+		}
+		//销售
+		else if(user.getType().equals(2)){
+
+		}		
 		//生物研发
-		if(manager.getType().equals(3)){
-			GB_MenuBar.getMenus().removeAll(GB_ReportMenu, GB_DeviceMenu, GB_CardMenu, GB_CheckMenu);
+		else if(user.getType().equals(3)){
+
 		}
-		//用户
-		else if(manager.getType().equals(4)){
-			//子用户
-			if(manager.getFatheraccount() != null){
-				GB_MenuBar.getMenus().removeAll(GB_ReportMenu, GB_DeviceMenu);
-			}
+		//一级用户
+		else if(user.getType().equals(4)){
+
 		}
+		//二级用户
+		else if(user.getType().equals(5)){
+
+		}		
 		
 		workPageSession.getWorkPane().set(workSpaceHandler.GetPane());
 
@@ -209,9 +227,36 @@ public class MainContainHandler {
 	public void GB_DeviceTestAction(){
 		deviceTestHandler.showDeviceTestPage();
 	}
+	
+	//我的信息
 	@FXML
-	public void ShowMyInfoAction(){
+	public void MyInfoAction(){
 		managerInfoHandler.ShowMyInfoPage();
+	}
+	//管理员管理
+	@FXML
+	public void AdminManagementAction(){
+		
+	}
+	//销售人员管理
+	@FXML
+	public void SalerManagementAction(){
+		
+	}
+	//实验室人员管理
+	@FXML
+	public void LabberManagementAction(){
+		
+	}
+	//审核人管理
+	@FXML
+	public void ReportterManagementAction(){
+		
+	}
+	//子审核人管理
+	@FXML
+	public void ChildReportterManagementAction(){
+			
 	}
 	
 	@FXML
@@ -226,7 +271,7 @@ public class MainContainHandler {
 	
 	@FXML
 	public void GB_SignOutAction(){
-		managerSession.setAccount(null);
+		userSession.setUser(null);
 		workPageSession.setWorkPane(null);
 		s_Stage.close();
 		loginHandler.startLoginActivity();

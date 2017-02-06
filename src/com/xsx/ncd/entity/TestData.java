@@ -5,8 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Table(name="TESTDATA")
@@ -15,9 +13,9 @@ public class TestData {
 	
 	private Integer id;
 	private String cnum;						//编号
-	private Card card;
-	private Device device;
-	private Manager manager;
+	private Integer cardid;
+	private Integer deviceid;
+	private Integer userid;
 	private String t_name;					//测试人姓名
 	private String sid;						//样品id -- 测试时输入
 	private java.sql.Timestamp testtime;	//测试时间
@@ -56,34 +54,31 @@ public class TestData {
 	public void setCnum(String cnum) {
 		this.cnum = cnum;
 	}
-	
-	@JoinColumn(name="Card_id")
-	@ManyToOne
-	public Card getCard() {
-		return card;
+
+	public Integer getCardid() {
+		return cardid;
 	}
-	public void setCard(Card card) {
-		this.card = card;
+
+	public void setCardid(Integer cardid) {
+		this.cardid = cardid;
 	}
-	
-	@JoinColumn(name="DEVICE_id")
-	@ManyToOne
-	public Device getDevice() {
-		return device;
+
+	public Integer getDeviceid() {
+		return deviceid;
 	}
-	public void setDevice(Device device) {
-		this.device = device;
+
+	public void setDeviceid(Integer deviceid) {
+		this.deviceid = deviceid;
 	}
-	
-	@JoinColumn(name="MANAGER_id")
-	@ManyToOne
-	public Manager getManager() {
-		return manager;
+
+	public Integer getUserid() {
+		return userid;
 	}
-	public void setManager(Manager manager) {
-		this.manager = manager;
+
+	public void setUserid(Integer userid) {
+		this.userid = userid;
 	}
-	
+
 	public String getT_name() {
 		return t_name;
 	}
@@ -216,11 +211,5 @@ public class TestData {
 	public void setHandletime(java.sql.Timestamp handletime) {
 		this.handletime = handletime;
 	}
-	@Override
-	public String toString() {
-		return "TestData [id=" + id + ", cnum=" + cnum + ", card=" + card + ", device=" + device + ", manager="
-				+ manager + "]";
-	}
-	
 	
 }

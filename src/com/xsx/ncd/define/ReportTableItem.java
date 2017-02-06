@@ -2,7 +2,10 @@ package com.xsx.ncd.define;
 
 
 
+import com.xsx.ncd.entity.Card;
+import com.xsx.ncd.entity.Device;
 import com.xsx.ncd.entity.TestData;
+import com.xsx.ncd.entity.User;
 
 public class ReportTableItem {
 	private Integer index;
@@ -12,14 +15,20 @@ public class ReportTableItem {
 	private String tester;
 	private String deviceid;
 	private String simpleid;
-	private String managername;
+	private String username;
 	private String reportresult;
 	
 	private TestData testdata;
+	private Device device;
+	private Card card;
+	private User user;
 
-	public ReportTableItem(Integer index, TestData testdata) {
+	public ReportTableItem(Integer index, TestData testdata, Device device, Card card, User user) {
 		this.index = index;
 		this.testdata = testdata;
+		this.device = device;
+		this.card = card;
+		this.user = user;
 	}
 
 	public Integer getIndex() {
@@ -31,7 +40,7 @@ public class ReportTableItem {
 	}
 
 	public String getTestitem() {
-		return testdata.getCard().getItem();
+		return this.card.getItem();
 	}
 
 	public void setTestitem(String testitem) {
@@ -47,7 +56,7 @@ public class ReportTableItem {
 	}
 
 	public String getTestresult() {
-		return testdata.getA_v()+testdata.getCard().getDanwei();
+		return testdata.getA_v() + this.card.getDanwei();
 	}
 
 	public void setTestresult(String testresult) {
@@ -63,7 +72,7 @@ public class ReportTableItem {
 	}
 
 	public String getDeviceid() {
-		return testdata.getDevice().getDid();
+		return this.device.getDid();
 	}
 
 	public void setDeviceid(String deviceid) {
@@ -78,12 +87,8 @@ public class ReportTableItem {
 		this.simpleid = simpleid;
 	}
 
-	public String getManagername() {
-		return testdata.getManager().getName();
-	}
-
-	public void setManagername(String managername) {
-		this.managername = managername;
+	public String getUsername() {
+		return this.user.getName();
 	}
 
 	public String getReportresult() {

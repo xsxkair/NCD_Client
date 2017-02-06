@@ -15,12 +15,12 @@ import org.springframework.stereotype.Component;
 import com.xsx.ncd.entity.Card;
 import com.xsx.ncd.entity.CardRecord;
 import com.xsx.ncd.entity.Device;
-import com.xsx.ncd.entity.Manager;
+import com.xsx.ncd.entity.User;
 import com.xsx.ncd.repository.CardRecordRepository;
 import com.xsx.ncd.repository.CardRepository;
 import com.xsx.ncd.repository.DeviceRepository;
-import com.xsx.ncd.repository.ManagerRepository;
-import com.xsx.ncd.spring.ManagerSession;
+import com.xsx.ncd.repository.UserRepository;
+import com.xsx.ncd.spring.UserSession;
 import com.xsx.ncd.spring.WorkPageSession;
 
 import javafx.beans.binding.BooleanBinding;
@@ -67,9 +67,9 @@ public class CardInOutHandler {
 	@Autowired
 	private CardRepository cardRepository;
 	@Autowired
-	private ManagerSession managerSession;
+	private UserSession managerSession;
 	@Autowired
-	private ManagerRepository managerRepository;
+	private UserRepository managerRepository;
 	
 	@PostConstruct
 	private void UI_Init() {
@@ -126,11 +126,11 @@ public class CardInOutHandler {
 		Card card = cardRepository.findCardByCid(GB_InPihaoTextField.getText());
 		if(card != null){
 			
-			Manager manager = managerRepository.findManagerByAccount(managerSession.getAccount());
+			User manager = managerRepository.findByAccount(managerSession.getAccount());
 			
 			CardRecord cardRecord = new CardRecord();
-			cardRecord.setCard(card);
-			cardRecord.setManager(manager);
+			cardRecord.setCardid(card.getId());
+			cardRecord.setUserid(manager.getId());
 			cardRecord.setNum(num);
 			cardRecord.setDotime(new java.sql.Timestamp(System.currentTimeMillis()));
 			
@@ -179,15 +179,15 @@ public class CardInOutHandler {
 		Card card = cardRepository.findCardByCid(GB_OutPihaoTextField.getText());
 		if(card != null){
 			
-			Manager manager = managerRepository.findManagerByAccount(managerSession.getAccount());
+			User manager = managerRepository.findByAccount(managerSession.getAccount());
 			
 			CardRecord cardRecord = new CardRecord();
-			cardRecord.setCard(card);
-			cardRecord.setManager(manager);
+			cardRecord.setCardid(card.getId());
+			cardRecord.setUserid(manager.getId());
 			cardRecord.setNum(num);
 			cardRecord.setDotime(new java.sql.Timestamp(System.currentTimeMillis()));
 			cardRecord.setName(GB_OutUserTextField.getText());
-			cardRecord.setDevice(device);
+			cardRecord.setDeviceid(device.getId());
 			
 			cardRecord = cardRecordRepository.save(cardRecord);
 			
@@ -209,13 +209,14 @@ public class CardInOutHandler {
 	private void UpOutDeviceListUI() {
 		
 		List<Device> devices = new ArrayList<>();
+		User admin = null;
 		
-		Manager manager = managerRepository.findManagerByAccount(managerSession.getAccount());
-		
-		if(manager.getFatheraccount() != null)
-			devices = deviceRepository.findByManagerAccount(manager.getFatheraccount());
+		if(managerSession.getFatherAccount() == null)
+			admin = managerRepository.findByAccount(managerSession.getAccount());
 		else
-			devices = deviceRepository.findByManagerAccount(managerSession.getAccount());
+			admin = managerRepository.findByAccount(managerSession.getFatherAccount());
+		
+		devices = deviceRepository.findByUserid(admin.getId());
 		
 		GB_OutDeviceComboBox.getItems().clear();
 		GB_OutDeviceComboBox.getItems().addAll(devices);

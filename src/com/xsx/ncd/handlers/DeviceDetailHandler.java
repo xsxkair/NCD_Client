@@ -21,7 +21,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
 import com.xsx.ncd.entity.Device;
-import com.xsx.ncd.entity.Manager;
+import com.xsx.ncd.entity.User;
 import com.xsx.ncd.entity.TestData;
 import com.xsx.ncd.handlers.ReportListHandler.QueryReportService.QueryReportTask;
 import com.xsx.ncd.repository.DeviceRepository;
@@ -265,7 +265,7 @@ public class DeviceDetailHandler {
 			protected List<Object[]> call(){
 					// TODO Auto-generated method stub
 
-					return deviceRepository.queryDeviceActiveness(S_Device);
+					return deviceRepository.queryDeviceActiveness(S_Device.getId());
 				}
 			}
 		}	

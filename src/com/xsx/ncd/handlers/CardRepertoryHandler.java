@@ -15,12 +15,12 @@ import org.springframework.stereotype.Component;
 
 import com.jfoenix.controls.JFXToggleNode;
 import com.xsx.ncd.entity.Device;
-import com.xsx.ncd.entity.Manager;
+import com.xsx.ncd.entity.User;
 import com.xsx.ncd.repository.CardRecordRepository;
 import com.xsx.ncd.repository.CardRepository;
 import com.xsx.ncd.repository.DeviceRepository;
-import com.xsx.ncd.repository.ManagerRepository;
-import com.xsx.ncd.spring.ManagerSession;
+import com.xsx.ncd.repository.UserRepository;
+import com.xsx.ncd.spring.UserSession;
 import com.xsx.ncd.spring.WorkPageSession;
 
 import javafx.beans.value.ChangeListener;
@@ -85,9 +85,9 @@ public class CardRepertoryHandler {
 	@Autowired
 	private CardRepository cardRepository;
 	@Autowired
-	private ManagerSession managerSession;
+	private UserSession managerSession;
 	@Autowired
-	private ManagerRepository managerRepository;
+	private UserRepository managerRepository;
 	
 	final static String[] colors = {
 		"#41a9c9", "#57b757", "#fba71b", "#f3622d", "#888888", "#c84164", "#9a42c8", "#4258c9"
@@ -238,10 +238,14 @@ public class CardRepertoryHandler {
 	private void UpDateDeviceListUI(){
 		List<Device> devices = null;
 		
+		User admin = null;
+		
 		if(managerSession.getFatherAccount() == null)
-			devices = deviceRepository.findByManagerAccount(managerSession.getAccount());
+			admin = managerRepository.findByAccount(managerSession.getAccount());
 		else
-			devices = deviceRepository.findByManagerAccount(managerSession.getFatherAccount());
+			admin = managerRepository.findByAccount(managerSession.getFatherAccount());
+		
+		devices = deviceRepository.findByUserid(admin.getId());
 		
 		GB_DeviceListPane.getChildren().clear();
 		for (Device device : devices) {
@@ -270,21 +274,21 @@ public class CardRepertoryHandler {
 
 			@Override
 			protected List<Object[]> call(){
-				List<Manager> managers = new ArrayList<>();
+				List<Integer> userids = new ArrayList<>();
 				
-				Manager manager = managerRepository.findManagerByAccount(managerSession.getAccount());
-				if(manager.getFatheraccount() == null){
-					managers.add(manager);
-					managers.addAll(managerRepository.queryChildAccountList(manager.getAccount()));
+				if(managerSession.getFatherAccount() == null){
+					userids.add(managerSession.getUser().getId());
+					userids.addAll(managerRepository.queryChildIdList(managerSession.getAccount()));
 				}
 				else{
-					managers.add(managerRepository.findManagerByAccount(manager.getFatheraccount()));
-					managers.addAll(managerRepository.queryChildAccountList(manager.getFatheraccount()));
+					userids.add(managerRepository.findByAccount(managerSession.getFatherAccount()).getId());
+					userids.addAll(managerRepository.queryChildIdList(managerSession.getFatherAccount()));
 				}
 
-				List<Object[]> objects = cardRecordRepository.QueryCardRepertoryNumByItem(managers);
+				//List<Object[]> objects = cardRecordRepository.QueryCardRepertoryNumByItem(userids);
 				
-				return objects;
+				//return objects;
+				return null;
 			}
 		}
 	}
@@ -302,7 +306,7 @@ public class CardRepertoryHandler {
 			@Override
 			protected List<Object[]> call(){
 				// TODO Auto-generated method stub
-				List<Object[]> objectList = null;
+				/*List<Object[]> objectList = null;
 				Map<String, Integer> sumMap = new HashMap<>();
 				Map<String, Integer> useMap = new HashMap<>();
 				Map<String, Integer> surplusMap = new HashMap<>();
@@ -341,6 +345,8 @@ public class CardRepertoryHandler {
 				}
 				
 				return objectList;
+				*/
+				return null;
 			}
 		}
 	}

@@ -25,13 +25,13 @@ import com.jfoenix.controls.JFXDatePicker;
 import com.xsx.ncd.define.CardRecordTableItem;
 import com.xsx.ncd.define.ReportTableItem;
 import com.xsx.ncd.entity.CardRecord;
-import com.xsx.ncd.entity.Manager;
+import com.xsx.ncd.entity.User;
 import com.xsx.ncd.handlers.ReportListHandler.TableColumnModel;
 import com.xsx.ncd.repository.CardRecordRepository;
 import com.xsx.ncd.repository.CardRepository;
 import com.xsx.ncd.repository.DeviceRepository;
-import com.xsx.ncd.repository.ManagerRepository;
-import com.xsx.ncd.spring.ManagerSession;
+import com.xsx.ncd.repository.UserRepository;
+import com.xsx.ncd.spring.UserSession;
 import com.xsx.ncd.spring.SystemSetData;
 import com.xsx.ncd.spring.WorkPageSession;
 
@@ -97,9 +97,9 @@ public class CardRecordHandler {
 	@Autowired
 	private CardRecordRepository cardRecordRepository;
 	@Autowired
-	private ManagerSession managerSession;
+	private UserSession managerSession;
 	@Autowired
-	private ManagerRepository managerRepository;
+	private UserRepository managerRepository;
 	@Autowired
 	private SystemSetData systemSetData;
 	
@@ -128,7 +128,7 @@ public class CardRecordHandler {
         GB_TableColumn5.setCellFactory(new TableColumnModel<CardRecordTableItem, String>());
         GB_TableColumn6.setCellValueFactory(new PropertyValueFactory<CardRecordTableItem, String>("userName"));
         GB_TableColumn6.setCellFactory(new TableColumnModel<CardRecordTableItem, String>());
-        GB_TableColumn7.setCellValueFactory(new PropertyValueFactory<CardRecordTableItem, String>("device"));
+        GB_TableColumn7.setCellValueFactory(new PropertyValueFactory<CardRecordTableItem, String>("deviceid"));
         GB_TableColumn7.setCellFactory(new TableColumnModel<CardRecordTableItem, String>());
         
         
@@ -146,7 +146,7 @@ public class CardRecordHandler {
 				
 				List<CardRecordTableItem> cardRecordTableItems = new ArrayList<>();
 				for (CardRecord cardRecord : datas) {
-					cardRecordTableItems.add(new CardRecordTableItem(cardRecord));
+					//cardRecordTableItems.add(new CardRecordTableItem(cardRecord));
 				}
 				
 				GB_CardTableView.getItems().addAll(cardRecordTableItems);
@@ -229,12 +229,12 @@ public class CardRecordHandler {
 			private Page<CardRecord> ReadDeviceInfoFun(){
 
 				//π‹¿Ì‘±
-				Manager admin;
+				User admin;
 				
 				if(managerSession.getFatherAccount() == null)
-					admin = managerRepository.findManagerByAccount(managerSession.getAccount());
+					admin = managerRepository.findByAccount(managerSession.getAccount());
 				else
-					admin = managerRepository.findManagerByAccount(managerSession.getFatherAccount());
+					admin = managerRepository.findByAccount(managerSession.getFatherAccount());
 				
 				if(admin == null)
 					return null;

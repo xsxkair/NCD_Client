@@ -31,59 +31,40 @@ public class TestDataRepositoryImpl implements MyTestDataDao{
   
         em.close(); 
         
-		/*StringBuffer hql = new StringBuffer("SELECT ");
-		
-		String datestr1 = null;			//日期select
-		String datestr2 = null;			//日期条件
-		String datestr3 = null;			//日期分组
-		
-		if(year != null){
-			if(month != null){
-				datestr1 = "DATE_FORMAT(TESTTIME,'第%e天')";
-				datestr2 = "DATE_FORMAT(TESTTIME,'%Y%c')='"+year+month+"'";
-				datestr3 = "DATE_FORMAT(TESTTIME,'%d')";
-			}
-			else {
-				datestr1 = "DATE_FORMAT(TESTTIME,'%c月')";
-				datestr2 = "DATE_FORMAT(TESTTIME,'%Y')='"+year+"'";
-				datestr3 = "DATE_FORMAT(TESTTIME,'%c')";
-			}
-		}
-		else {
-			datestr1 = "DATE_FORMAT(TESTTIME,'%Y年')";
-			datestr2 = null;
-			datestr3 = "DATE_FORMAT(TESTTIME,'%Y')";
-		}
-		
-		hql.append(datestr1);
-		hql.append(" ,CITEM, COUNT(CID) FROM TESTDATABEAN WHERE CITEM IN (");
-		for (String string : itemlist) {
-			hql.append("'"+string+"'");
-			if(itemlist.size() != (itemlist.indexOf(string)+1))
-				hql.append(",");
-		}
-		hql.append(")");
-		
-		hql.append(" AND DID IN (");
-		for (String string : deviceidlist) {
-			hql.append("'"+string+"'");
-			if(deviceidlist.size() != (deviceidlist.indexOf(string)+1))
-				hql.append(",");
-		}
-		hql.append(")");
-		
-		if(datestr2 != null){
-			hql.append(" AND ");
-			hql.append(datestr2);
-		}
-		
-		hql.append(" GROUP BY ");
-		hql.append(datestr3);
-		hql.append(" ,CITEM");
-		
-		List<Object[]> queryresult = HibernateDao.GetInstance().querysql(hql.toString(), null);
-		*/
 		return null;
+	}
+
+	@Override
+	public Object[] QueryTodayReport(List<Integer> deviceids, int firstResultIndex, int maxResult) {
+		// TODO Auto-generated method stub
+		Object[] result = new Object[2];
+		
+		StringBuffer sqlHead1 = new StringBuffer("select count(td.id) FROM TestData td ");
+		StringBuffer sqlHead2 = new StringBuffer("SELECT td,d,c,u FROM TestData td left join Device d on d.id=td.deviceid "
+        		+ "left join Card c on c.id=td.cardid "
+        		+ "left join User u on u.id=td.userid ");
+		//定义SQL   
+        StringBuffer sql1 =  new StringBuffer("where td.result='未审核' AND td.deviceid in(:devicelist) ");
+
+        //查询总数
+        sqlHead1.append(sql1);
+        Query query1 = em.createQuery(sqlHead1.toString());
+        query1.setParameter("devicelist", deviceids);
+        Long num = (Long) query1.getSingleResult();
+        result[0] = (num%maxResult == 0)?(num/maxResult):(num/maxResult+1);
+        
+        sqlHead2.append(sql1);
+        Query query2 =  em.createQuery(sqlHead2.toString());
+        query2.setParameter("devicelist", deviceids);
+        query2.setFirstResult(firstResultIndex);
+        query2.setMaxResults(maxResult);
+        
+        List<Object[]> datas = query2.getResultList();
+        result[1] = datas;
+        
+        em.close();
+        
+		return result;
 	}
 
 }

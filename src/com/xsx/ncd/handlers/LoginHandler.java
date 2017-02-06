@@ -14,12 +14,12 @@ import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import com.xsx.ncd.define.SoftInfo;
 import com.xsx.ncd.entity.Device;
-import com.xsx.ncd.entity.Manager;
+import com.xsx.ncd.entity.User;
 import com.xsx.ncd.entity.NcdSoft;
 import com.xsx.ncd.handlers.ReportOverViewPage.QueryTodayReportNumByStatusService.QueryReportTask;
-import com.xsx.ncd.repository.ManagerRepository;
+import com.xsx.ncd.repository.UserRepository;
 import com.xsx.ncd.repository.NcdSoftRepository;
-import com.xsx.ncd.spring.ManagerSession;
+import com.xsx.ncd.spring.UserSession;
 import com.xsx.ncd.spring.SpringFacktory;
 
 import javafx.beans.binding.BooleanBinding;
@@ -55,13 +55,11 @@ public class LoginHandler {
 	@FXML JFXButton LoginButton;
 	
 	@Autowired
-	private ManagerRepository managerRepository;
+	private UserRepository userRepository;
 	@Autowired
-	private ManagerSession managerSession;
+	private UserSession userSession;
 	@Autowired
 	private MainContainHandler mainContainHandler;
-	@Autowired
-	private NcdSoftRepository ncdSoftRepository;
 	
 	@PostConstruct
 	public void UI_Init() {
@@ -105,7 +103,7 @@ public class LoginHandler {
 		UserNameText.focusedProperty().addListener((o, oldVal, newVal) -> {
 			if (!newVal) UserNameText.validate();
 		});
-		
+
 		s_Scene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
 		s_Scene.getStylesheets().add(this.getClass().getResource("/com/xsx/ncd/views/login.css").toExternalForm());
 
@@ -120,29 +118,24 @@ public class LoginHandler {
 			//System.exit(0);
 		}*/
 		
-		if(s_Stage == null){
-			s_Stage = new Stage();
+		s_Stage = new Stage();
 			 
-			s_Stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+		s_Stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 					
-				@Override
-				public void handle(WindowEvent event) {
-						// TODO Auto-generated method stub
-					s_Stage.hide();
-				}
-			});
+			@Override
+			public void handle(WindowEvent event) {
+					// TODO Auto-generated method stub
+				s_Stage.close();
+				System.exit(0);
+			}
+		});
 			
-			s_Stage.getIcons().add(new Image(this.getClass().getResourceAsStream("/RES/logo.png")));
+		s_Stage.getIcons().add(new Image(this.getClass().getResourceAsStream("/RES/logo.png")));
 			   // s_Stage.initModality(Modality.APPLICATION_MODAL);
-			s_Stage.setTitle("µÇÂ¼");
+		s_Stage.setTitle("µÇÂ¼");
 			        
-			s_Stage.setResizable(true);
-			s_Stage.setScene(s_Scene);
-		}
-		else {
-			UserNameText.setText(null);
-			UserPasswordText.setText(null);
-		}
+		s_Stage.setResizable(true);
+		s_Stage.setScene(s_Scene);
  
 		s_Stage.show();
 	}
@@ -150,15 +143,13 @@ public class LoginHandler {
 	@FXML
 	public void LoginAction(ActionEvent e){
 		
-		Manager tempuser = managerRepository.findManagerByAccountAndPassword(UserNameText.getText(), UserPasswordText.getText());
+		User tempuser = userRepository.findByAccountAndPassword(UserNameText.getText(), UserPasswordText.getText());
 
 		if(tempuser != null){
-			
+			UserPasswordText.setText(null);
 			s_Stage.close();
 			
-			managerSession.setAccount(tempuser.getAccount());
-			managerSession.setFatherAccount(tempuser.getFatheraccount());
-			managerSession.setUserType(tempuser.getType());
+			userSession.setUser(tempuser);
 			mainContainHandler.startWorkActivity();
 
 		}

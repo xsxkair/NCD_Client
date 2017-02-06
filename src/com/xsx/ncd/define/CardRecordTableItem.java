@@ -1,6 +1,9 @@
 package com.xsx.ncd.define;
 
+import com.xsx.ncd.entity.Card;
 import com.xsx.ncd.entity.CardRecord;
+import com.xsx.ncd.entity.Device;
+import com.xsx.ncd.entity.User;
 
 public class CardRecordTableItem {
 	private String time;			//时间
@@ -9,12 +12,18 @@ public class CardRecordTableItem {
 	private String inOrOutNum;		//数目
 	private String managerName;		//操作人姓名
 	private String userName;			//领料人姓名
-	private String device;			//领料设备
+	private String deviceid;			//领料设备
 	
 	private CardRecord cardRecord;
+	private Device device;
+	private Card card;
+	private User user;
 	
-	public CardRecordTableItem(CardRecord cardRecord) {
+	public CardRecordTableItem(CardRecord cardRecord, Card card, User user, Device device) {
 		this.cardRecord = cardRecord;
+		this.device = device;
+		this.card = card;
+		this.user = user;
 	}
 
 	public String getTime() {
@@ -22,11 +31,11 @@ public class CardRecordTableItem {
 	}
 
 	public String getPiHao() {
-		return cardRecord.getCard().getCid();
+		return this.card.getCid();
 	}
 
 	public String getItem() {
-		return cardRecord.getCard().getItem();
+		return this.card.getItem();
 	}
 
 	public String getInOrOutNum() {
@@ -37,17 +46,17 @@ public class CardRecordTableItem {
 	}
 
 	public String getManagerName() {
-		return cardRecord.getManager().getName();
+		return this.user.getName();
 	}
 
 	public String getUserName() {
 		return cardRecord.getName();
 	}
 
-	public String getDevice() {
-		if(cardRecord.getDevice() == null)
+	public String getDeviceid() {
+		if(this.device == null)
 			return null;
 		else
-			return cardRecord.getDevice().getDid();
+			return this.device.getDid();
 	}
 }

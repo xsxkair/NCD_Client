@@ -44,9 +44,14 @@
                   <MenuItem fx:id="GB_ConnectDeviceMenuItem" mnemonicParsing="false" onAction="#GB_DeviceTestAction" text="连接设备" />
                </items>
             </Menu>
-            <Menu fx:id="GB_MyInfoMenu" mnemonicParsing="false" style="-fx-font-size: 14;" text="我的信息">
+            <Menu fx:id="GB_UserManagementMenu" mnemonicParsing="false" style="-fx-font-size: 14;" text="人员管理">
               <items>
-                  <MenuItem mnemonicParsing="false" onAction="#ShowMyInfoAction" text="我的信息" />
+                  <MenuItem fx:id="MyInfoMenuItem" mnemonicParsing="false" onAction="#MyInfoAction" text="我的信息" />
+                  <MenuItem fx:id="AdminManagementItem" mnemonicParsing="false" onAction="#AdminManagementAction" text="管理员管理" />
+                  <MenuItem fx:id="SalerManagementMenuItem" mnemonicParsing="false" onAction="#SalerManagementAction" text="销售人员管理" />
+                  <MenuItem fx:id="LabberManagementMenuItem" mnemonicParsing="false" onAction="#LabberManagementAction" text="实验室人员管理" />
+                  <MenuItem fx:id="ReportterManagementMenuItem" mnemonicParsing="false" onAction="#ReportterManagementAction" text="审核人管理" />
+                  <MenuItem fx:id="ChildReportterManagementMenuItem" mnemonicParsing="false" onAction="#ChildReportterManagementAction" text="下级审核人管理" />
               </items>
             </Menu>
             <Menu fx:id="GB_SystemSetMenu" mnemonicParsing="false" style="-fx-font-size: 14;" text="设置" />

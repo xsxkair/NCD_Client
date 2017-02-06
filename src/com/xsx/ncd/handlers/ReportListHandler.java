@@ -30,12 +30,12 @@ import org.springframework.stereotype.Component;
 import com.sun.javafx.scene.control.skin.PaginationSkin;
 import com.xsx.ncd.define.ReportTableItem;
 import com.xsx.ncd.entity.Device;
-import com.xsx.ncd.entity.Manager;
+import com.xsx.ncd.entity.User;
 import com.xsx.ncd.entity.TestData;
 import com.xsx.ncd.repository.DeviceRepository;
-import com.xsx.ncd.repository.ManagerRepository;
+import com.xsx.ncd.repository.UserRepository;
 import com.xsx.ncd.repository.TestDataRepository;
-import com.xsx.ncd.spring.ManagerSession;
+import com.xsx.ncd.spring.UserSession;
 import com.xsx.ncd.spring.SystemSetData;
 import com.xsx.ncd.spring.WorkPageSession;
 
@@ -139,11 +139,11 @@ public class ReportListHandler {
 	@Autowired
 	private TestDataRepository testDataRepository;
 	@Autowired
-	private ManagerRepository managerRepository;
+	private UserRepository managerRepository;
 	@Autowired
 	private DeviceRepository deviceRepository;
 	@Autowired
-	private ManagerSession managerSession;
+	private UserSession managerSession;
 	
 	@Autowired
 	private WorkPageSession workPageSession;
@@ -201,18 +201,18 @@ public class ReportListHandler {
 				// TODO Auto-generated method stub
 				if(reportpane.equals(newValue)){	
 					//管理员
-					Manager admin;
+					User admin;
 						
 					if(managerSession.getFatherAccount() == null)
-						admin = managerRepository.findManagerByAccount(managerSession.getAccount());
+						admin = managerRepository.findByAccount(managerSession.getAccount());
 					else
-						admin = managerRepository.findManagerByAccount(managerSession.getFatherAccount());
+						admin = managerRepository.findByAccount(managerSession.getFatherAccount());
 						
 					if(admin == null)
 						return;
 						
 					//查询管理员所管理的所有设备id
-					List<Device> deviceList = deviceRepository.findByManagerAccount(admin.getAccount());
+					List<Device> deviceList = deviceRepository.findByUserid(admin.getId());
 						
 					GB_TestDeviceFilterCombox.getItems().add("ALL");
 					for (Device device : deviceList) {
@@ -283,7 +283,7 @@ public class ReportListHandler {
 				
 				List<ReportTableItem> reportTableItems = new ArrayList<>();
 				for (TestData testData : datas) {
-					reportTableItems.add(new ReportTableItem(datas.indexOf(testData)+1+GB_Pagination.getCurrentPageIndex()*systemSetData.getPageSize(), testData));
+				//	reportTableItems.add(new ReportTableItem(datas.indexOf(testData)+1+GB_Pagination.getCurrentPageIndex()*systemSetData.getPageSize(), testData));
 				}
 				
 				GB_TableView.getItems().clear();
@@ -368,7 +368,7 @@ public class ReportListHandler {
 					
 					if((row != null)&&(row.getIndex() < GB_TableView.getItems().size())){
 						if(event.getClickCount() == 2){
-							reportDetailHandler.startReportDetailActivity(GB_TableView.getItems().get(row.getIndex()).getTestdata());
+							//reportDetailHandler.startReportDetailActivity(GB_TableView.getItems().get(row.getIndex()).getTestdata());
 						}
 						else if(event.getButton().equals(MouseButton.SECONDARY)){
 							myContextMenu.show(cell, event.getScreenX(), event.getScreenY());
@@ -548,41 +548,31 @@ public class ReportListHandler {
 			}
 			
 			private Page<TestData> ReadDeviceInfoFun(){
-				//查询当前审核人
-				Manager manager = managerRepository.findManagerByAccount(managerSession.getAccount());
-				if(manager == null)
-					return null;
-				
 				//管理员
-				Manager admin;
+				User admin;
 				
-				if(manager.getFatheraccount() == null)
-					admin = manager;
+				//查询当前审核人
+				if(managerSession.getFatherAccount() == null)
+					admin = managerRepository.findByAccount(managerSession.getAccount());
 				else
-					admin = managerRepository.findManagerByAccount(manager.getFatheraccount());
+					admin = managerRepository.findByAccount(managerSession.getFatherAccount());
 				
 				if(admin == null)
 					return null;
 				
 				//查询管理员所管理的所有设备id
-				List<Device> deviceList = deviceRepository.findByManagerAccount(admin.getAccount());
+				List<Integer> deviceList = deviceRepository.queryDeviceIdByUserid(admin.getId());
 				
 				//查询数据
 				
 				//分页条件
-				Order order = new Order(Direction.ASC, "uptime");
+/*				Order order = new Order(Direction.ASC, "uptime");
 				Sort sort = new Sort(order);
 				PageRequest pageable = new PageRequest(GB_Pagination.getCurrentPageIndex(), systemSetData.getPageSize(), sort);
 				
 				//通常使用 Specification 的匿名内部类
 				Specification<TestData> specification = new Specification<TestData>() {
-						/**
-						 * @param *root: 代表查询的实体类. 
-						 * @param query: 可以从中可到 Root 对象, 即告知 JPA Criteria 查询要查询哪一个实体类. 还可以
-						 * 来添加查询条件, 还可以结合 EntityManager 对象得到最终查询的 TypedQuery 对象. 
-						 * @param *cb: CriteriaBuilder 对象. 用于创建 Criteria 相关对象的工厂. 当然可以从中获取到 Predicate 对象
-						 * @return: *Predicate 类型, 代表一个查询条件. 
-						 */
+
 						@Override
 						public Predicate toPredicate(Root<TestData> root,
 								CriteriaQuery<?> query, CriteriaBuilder cb) {
@@ -673,6 +663,8 @@ public class ReportListHandler {
 				Page<TestData> page = testDataRepository.findAll(specification, pageable);
 
 				return page;
+*/			
+				return null;
 			}
 		}
 	}
