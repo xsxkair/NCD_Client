@@ -13,6 +13,7 @@ public class NcdSoft {
 	private String name;
 	private Integer version;
 	private String dsc;
+	private String MD5;
 	
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Id
@@ -39,6 +40,12 @@ public class NcdSoft {
 	}
 	public void setDsc(String dsc) {
 		this.dsc = dsc;
+	}
+	public String getMD5() {
+		return MD5;
+	}
+	public void setMD5(String mD5) {
+		MD5 = mD5;
 	}
 
 }

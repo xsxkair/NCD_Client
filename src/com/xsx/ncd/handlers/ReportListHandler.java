@@ -1,6 +1,8 @@
 
 package com.xsx.ncd.handlers;
 
+import static org.hamcrest.CoreMatchers.nullValue;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -29,6 +31,7 @@ import org.springframework.stereotype.Component;
 
 import com.sun.javafx.scene.control.skin.PaginationSkin;
 import com.xsx.ncd.define.ReportTableItem;
+import com.xsx.ncd.entity.Card;
 import com.xsx.ncd.entity.Device;
 import com.xsx.ncd.entity.User;
 import com.xsx.ncd.entity.TestData;
@@ -100,7 +103,7 @@ public class ReportListHandler {
 	@FXML
 	TextField GB_TesterFilterTextfield;
 	@FXML
-	ComboBox<String> GB_TestDeviceFilterCombox;
+	ComboBox<Device> GB_TestDeviceFilterCombox;
 	@FXML
 	TextField GB_TestSampleFilterTextField;
 	@FXML
@@ -190,7 +193,8 @@ public class ReportListHandler {
         TableColumn8.setCellValueFactory(new PropertyValueFactory<ReportTableItem, String>("reportresult"));
         TableColumn8.setCellFactory(new TableColumnModel<ReportTableItem, String>());
 
-        GB_ReportResultFilterCombox.getItems().addAll("ALL", "未审核", "合格", "不合格");
+        GB_ReportResultFilterCombox.getItems().add(null);
+        GB_ReportResultFilterCombox.getItems().addAll("未审核", "合格", "不合格");
         
         S_QueryReportService = new QueryReportService();
         
@@ -214,12 +218,9 @@ public class ReportListHandler {
 					//查询管理员所管理的所有设备id
 					List<Device> deviceList = deviceRepository.findByUserid(admin.getId());
 						
-					GB_TestDeviceFilterCombox.getItems().add("ALL");
-					for (Device device : deviceList) {
-						GB_TestDeviceFilterCombox.getItems().add(device.getDid());
-					}
-						
-						
+					GB_TestDeviceFilterCombox.getItems().add(null);
+					GB_TestDeviceFilterCombox.getItems().addAll(deviceList);
+	
 					StartReportService();
 				}
 			}
@@ -268,22 +269,22 @@ public class ReportListHandler {
 			}
 		});
 		
-		S_QueryReportService.valueProperty().addListener(new ChangeListener<Page<TestData>>() {
+		S_QueryReportService.valueProperty().addListener(new ChangeListener<Object[]>() {
 
 			@Override
-			public void changed(ObservableValue<? extends Page<TestData>> arg0, Page<TestData> arg1, Page<TestData> arg2) {
+			public void changed(ObservableValue<? extends Object[]> arg0, Object[] arg1, Object[] arg2) {
 				// TODO Auto-generated method stub
 				
 				if(arg2 == null)
 					return;
 				
-				GB_Pagination.setPageCount(arg2.getTotalPages());
-
-				List<TestData> datas = arg2.getContent();
-				
+				GB_Pagination.setPageCount(((Long) arg2[0]).intValue());
+				System.out.println(GB_Pagination.getPageCount());
+				List<Object[]> datas = (List<Object[]>) arg2[1];
 				List<ReportTableItem> reportTableItems = new ArrayList<>();
-				for (TestData testData : datas) {
-				//	reportTableItems.add(new ReportTableItem(datas.indexOf(testData)+1+GB_Pagination.getCurrentPageIndex()*systemSetData.getPageSize(), testData));
+
+				for (Object[] object : datas) {
+					reportTableItems.add(new ReportTableItem(datas.indexOf(object)+1+GB_Pagination.getCurrentPageIndex()*systemSetData.getPageSize(), (TestData)object[0], (Device)object[1], (Card)object[2], null));
 				}
 				
 				GB_TableView.getItems().clear();
@@ -531,23 +532,23 @@ public class ReportListHandler {
 	    
 	}
 	
-	class QueryReportService extends Service<Page<TestData>>{
+	class QueryReportService extends Service<Object[]>{
 		
 		@Override
-		protected Task<Page<TestData>> createTask() {
+		protected Task<Object[]> createTask() {
 			// TODO Auto-generated method stub
 			return new QueryReportTask();
 		}
 		
-		class QueryReportTask extends Task<Page<TestData>>{
+		class QueryReportTask extends Task<Object[]>{
 
 			@Override
-			protected Page<TestData> call(){
+			protected Object[] call(){
 				// TODO Auto-generated method stub
 				return ReadDeviceInfoFun();
 			}
 			
-			private Page<TestData> ReadDeviceInfoFun(){
+			private Object[] ReadDeviceInfoFun(){
 				//管理员
 				User admin;
 				
@@ -663,8 +664,24 @@ public class ReportListHandler {
 				Page<TestData> page = testDataRepository.findAll(specification, pageable);
 
 				return page;
-*/			
-				return null;
+*/				
+				java.sql.Date tempdate = null;
+				try {
+					tempdate = java.sql.Date.valueOf(GB_TestTimeFilterDateChoose.getValue());
+				} catch (Exception e2) {
+					// TODO: handle exception
+					tempdate = null;
+				}
+				
+				Integer deviceId = null;
+				if(GB_TestDeviceFilterCombox.getSelectionModel().getSelectedItem() != null)
+					deviceId = GB_TestDeviceFilterCombox.getSelectionModel().getSelectedItem().getId();
+				
+				Object[] data = testDataRepository.QueryReportList(GB_TestItemFilterTextfield.getText(), tempdate, GB_TesterFilterTextfield.getText(),
+						deviceId, deviceList, GB_TestSampleFilterTextField.getText(), 
+						GB_ReportResultFilterCombox.getValue(), GB_Pagination.getCurrentPageIndex()*systemSetData.getPageSize(), systemSetData.getPageSize());
+				
+				return data;
 			}
 		}
 	}

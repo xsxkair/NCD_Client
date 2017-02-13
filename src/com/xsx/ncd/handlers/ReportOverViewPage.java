@@ -373,21 +373,19 @@ public class ReportOverViewPage {
 			@Override
 			protected List<Object[]> call(){
 				// TODO Auto-generated method stub
-				List<Device> devices;
+				List<Integer> devices;
 				User admin = null;
 				
 				if(userSession.getFatherAccount() == null)
-					devices = deviceRepository.findByUserid(userSession.getUser().getId());
+					devices = deviceRepository.queryDeviceIdByUserid(userSession.getUser().getId());
 				else{
 					admin = userRepository.findByAccount(userSession.getFatherAccount());
-					devices = deviceRepository.findByUserid(admin.getId());
+					devices = deviceRepository.queryDeviceIdByUserid(admin.getId());
 				}
 
-				//List<Object[]> objects = testDataRepository.queryTodayReportGroupByResult( devices);
+				List<Object[]> objects = testDataRepository.queryTodayReportGroupByResult( devices);
 				
-				//return objects;
-				
-				return null;
+				return objects;
 			}
 		}
 	}
@@ -405,19 +403,19 @@ public class ReportOverViewPage {
 			@Override
 			protected List<Object[]> call(){
 				// TODO Auto-generated method stub
-				List<Device> devices;
+				List<Integer> devices;
 				User admin = null;
 				
 				if(userSession.getFatherAccount() == null)
-					devices = deviceRepository.findByUserid(userSession.getUser().getId());
+					devices = deviceRepository.queryDeviceIdByUserid(userSession.getUser().getId());
 				else{
 					admin = userRepository.findByAccount(userSession.getFatherAccount());
-					devices = deviceRepository.findByUserid(admin.getId());
+					devices = deviceRepository.queryDeviceIdByUserid(admin.getId());
 				}
-				//List<Object[]> objects = testDataRepository.queryTodayReportGroupByItem( devices);
-				//return objects;
-				//
-				return null;
+				
+				List<Object[]> objects = testDataRepository.queryTodayReportGroupByItem( devices);
+				
+				return objects;
 			}
 		}
 	}
@@ -436,20 +434,19 @@ public class ReportOverViewPage {
 			@Override
 			protected List<Object[]> call(){
 				// TODO Auto-generated method stub
-				List<Device> devices;
+				List<Integer> devices;
 				User admin = null;
 				
 				if(userSession.getFatherAccount() == null)
-					devices = deviceRepository.findByUserid(userSession.getUser().getId());
+					devices = deviceRepository.queryDeviceIdByUserid(userSession.getUser().getId());
 				else{
 					admin = userRepository.findByAccount(userSession.getFatherAccount());
-					devices = deviceRepository.findByUserid(admin.getId());
+					devices = deviceRepository.queryDeviceIdByUserid(admin.getId());
 				}
-				//List<Object[]> objects = testDataRepository.queryTodayReportGroupByDevice( devices);
 				
-				//return objects;
+				List<Object[]> objects = testDataRepository.queryTodayReportGroupByDevice( devices);
 				
-				return null;
+				return objects;
 			}
 		}
 	}
@@ -476,35 +473,19 @@ public class ReportOverViewPage {
 				
 				groupType = GB_GroupTypeToggleGroup.getSelectedToggle().getUserData().toString();
 				
-				List<Device> devices;
+				List<Integer> devices;
 				User admin = null;
 				
 				if(userSession.getFatherAccount() == null)
-					devices = deviceRepository.findByUserid(userSession.getUser().getId());
+					devices = deviceRepository.queryDeviceIdByUserid(userSession.getUser().getId());
 				else{
 					admin = userRepository.findByAccount(userSession.getFatherAccount());
-					devices = deviceRepository.findByUserid(admin.getId());
+					devices = deviceRepository.queryDeviceIdByUserid(admin.getId());
 				}
 				
-				/*if(groupType.equals("项目分组")){
-					if(viewTimeType.equals("年"))
-						dataList = testDataRepository.queryReportSummyByYearItem(devices);
-					else if (viewTimeType.equals("月"))
-						dataList = testDataRepository.queryReportSummyByMonthItem(devices);
-					else if(viewTimeType.equals("日"))
-						dataList = testDataRepository.queryReportSummyByDayItem(devices);
-				}
-				else {
-					if(viewTimeType.equals("年"))
-						dataList = testDataRepository.queryReportSummyByYearDevice(devices);
-					else if (viewTimeType.equals("月"))
-						dataList = testDataRepository.queryReportSummyByMonthDevice(devices);
-					else if(viewTimeType.equals("日"))
-						dataList = testDataRepository.queryReportSummyByDayDevice(devices);
-				}*/
-				
-				//return dataList;
-				return null;
+				dataList = testDataRepository.queryReportSummy(devices, groupType, viewTimeType);
+
+				return dataList;
 			}
 		}
 	}

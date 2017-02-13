@@ -171,32 +171,23 @@ public class TodayWorkHandler {
         
         GB_FreshPane.visibleProperty().bind(queryReportService.runningProperty());
 
-        workPageSession.getWorkPane().addListener(new ChangeListener<Pane>() {
-
-			@Override
-			public void changed(ObservableValue<? extends Pane> observable, Pane oldValue, Pane newValue) {
-				// TODO Auto-generated method stub
-				if(newValue != null && newValue.equals(rootpane)){
-					if(GB_Pagination.getCurrentPageIndex() != 0)
-						GB_Pagination.setCurrentPageIndex(0);
-					else
-						queryReportService.restart();
-				}
-				else{
-					if(queryReportService.isRunning())
-						queryReportService.cancel();
-				}
-			}
-		});
-
-		GB_Pagination.currentPageIndexProperty().addListener(new ChangeListener<Number>() {
-
-			@Override
-			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-				// TODO Auto-generated method stub
-				if(newValue != null){
+        workPageSession.getWorkPane().addListener((o, oldValue, newValue)->{
+        	
+        	if(newValue != null && newValue.equals(rootpane)){
+				if(GB_Pagination.getCurrentPageIndex() != 0)
+					GB_Pagination.setCurrentPageIndex(0);
+				else
 					queryReportService.restart();
-				}
+			}
+			else{
+				if(queryReportService.isRunning())
+					queryReportService.cancel();
+			}
+        });
+
+		GB_Pagination.currentPageIndexProperty().addListener((o, oldValue, newValue)->{
+			if(newValue != null){
+				queryReportService.restart();
 			}
 		});
 		
@@ -219,7 +210,8 @@ public class TodayWorkHandler {
 			@Override
 			public void handle(ActionEvent event) {
 				// TODO Auto-generated method stub
-
+				TableRow row = (TableRow) myContextMenu.getOwnerNode();
+				reportDetailHandler.startReportDetailActivity(GB_TableView.getItems().get(row.getIndex()).getTestdata().getId());
 			}
 		});
 			
@@ -278,10 +270,10 @@ public class TodayWorkHandler {
 					
 					if((row != null)&&(row.getIndex() < tableView.getItems().size())){
 						if(event.getClickCount() == 2){
-							//reportDetailHandler.startReportDetailActivity(tableView.getItems().get(row.getIndex()).getTestdata());
+							reportDetailHandler.startReportDetailActivity(tableView.getItems().get(row.getIndex()).getTestdata().getId());
 						}
 						else if(event.getButton().equals(MouseButton.SECONDARY)){
-							myContextMenu.show(cell, event.getScreenX(), event.getScreenY());
+							myContextMenu.show(row, event.getScreenX(), event.getScreenY());
 						}
 					}
 				}
@@ -324,51 +316,6 @@ public class TodayWorkHandler {
 				
 				//查询管理员所管理的所有设备id
 				List<Integer> deviceList = deviceRepository.queryDeviceIdByUserid(admin.getId());
-/*
-				//查询数据
-				
-				//分页条件
-				Order order = new Order(Direction.ASC, "uptime");
-				Sort sort = new Sort(order);
-				PageRequest pageable = new PageRequest(GB_Pagination.getCurrentPageIndex(), systemSetData.getPageSize(), sort);
-				
-				//通常使用 Specification 的匿名内部类
-				Specification<TestData> specification = new Specification<TestData>() {
-
-						@Override
-						public Predicate toPredicate(Root<TestData> root,
-								CriteriaQuery<?> query, CriteriaBuilder cb) {
-							Predicate predicate;
-
-							//未处理
-							Path<String> path1 = root.get("result");
-							predicate = cb.equal(path1, "未审核");
-
-							//设备id
-							Path<Integer> path3 = root.get("deviceid");
-							predicate = cb.and(path3.in(deviceList), predicate);
-							return predicate;
-						}
-					};
-					
-				Page<TestData> page = testDataRepository.findAll(specification, pageable);
-				
-				results[0] = page.getTotalPages();
-
-				List<TestData> datas = page.getContent();
-				
-				List<Object[]> dataSet = new ArrayList();
-				
-				for (TestData testData : datas) {
-					Card card = cardRepository.findOne(testData.getCardid());
-					Device device = deviceRepository.findOne(testData.getDeviceid());
-					
-					dataSet.add(new Object[]{testData,card,device});
-					
-				}
-				
-				results[1] = dataSet;
-				*/
 				
 				return testDataRepository.QueryTodayReport(deviceList, GB_Pagination.getCurrentPageIndex()*systemSetData.getPageSize(), systemSetData.getPageSize());
 			}
