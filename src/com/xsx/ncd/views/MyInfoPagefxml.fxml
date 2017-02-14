@@ -53,7 +53,7 @@
 							 <HBox alignment="CENTER_LEFT" spacing="20.0">
 							 	<Label>旧密码：</Label>
 							 	<JFXPasswordField fx:id="userOldPasswordTextField" focusColor="#405aa8ff" text="密码" unFocusColor="#4d4d4dff" />
-							 	<Label fx:id="modifyUserPasswordLog"></Label>
+							 	<Label fx:id="modifyUserPasswordLog" />
 							 </HBox>
 						 </VBox>
 						 
@@ -70,7 +70,7 @@
 						<Label>信息</Label>
 					</heading>
 					<body>
-						 <Label fx:id="dialogInfo"></Label>
+						 <Label fx:id="dialogInfo" />
 					</body>
 					<actions>
 						<JFXButton fx:id="acceptButton2" styleClass="dialog-accept">确认</JFXButton>
@@ -97,7 +97,7 @@
                   </HBox>
                   <HBox alignment="CENTER_LEFT" spacing="20.0">
                      <children>
-                        <VBox spacing="15.0">
+                        <VBox alignment="BASELINE_LEFT" spacing="20.0">
                            <children>
                               <Label nodeOrientation="LEFT_TO_RIGHT" text="姓       名：" />
                               <Label text="性       别：" />
@@ -107,7 +107,7 @@
                               <Label text="备       注：" />
                            </children>
                         </VBox>
-                        <VBox fx:id="infoEditBox">
+                        <VBox fx:id="infoEditBox" spacing="6.0">
                            <children>
                               <JFXTextField fx:id="userNameTextField" editable="false" focusColor="#405aa800" text="姓名" unFocusColor="#4d4d4d00" />
                               <JFXTextField fx:id="userSexTextField" editable="false" focusColor="#405aa800" text="性别" unFocusColor="#4d4d4d00" />

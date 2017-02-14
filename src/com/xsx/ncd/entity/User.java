@@ -142,9 +142,8 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "Manager [id=" + id + ", account=" + account + ", password=" + password + ", fatheraccount="
-				+ fatheraccount + ", name=" + name + "]";
+		if(this.type == 5)
+			return "ÉóºËÈË-"+name;
+		return "ĞÕÃû" + name;
 	}
-	
-	
 }

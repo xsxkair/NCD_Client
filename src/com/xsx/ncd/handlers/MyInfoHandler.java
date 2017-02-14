@@ -4,9 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
@@ -18,6 +15,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXDialog.DialogTransition;
+import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.svg.SVGGlyph;
 import com.jfoenix.svg.SVGGlyphLoader;
 import com.xsx.ncd.entity.User;
@@ -72,7 +70,7 @@ public class MyInfoHandler {
 	@FXML JFXTextField userPhoneTextField;
 	@FXML JFXTextField userJobTextField;
 	@FXML JFXTextField userDescTextField;
-	@FXML PasswordField userPasswordTextField;
+	@FXML JFXPasswordField userPasswordTextField;
 	@FXML HBox modifyButtonBox;
 	@FXML JFXButton modifyUserPasswordButton;
 	@FXML JFXButton modifyUserInfodButton;
@@ -122,7 +120,12 @@ public class MyInfoHandler {
         rootStackPane.getChildren().remove(modifyUserInfoDialog);
         rootStackPane.getChildren().remove(modifyUserPasswordDialog);
         rootStackPane.getChildren().remove(modifyLogDialog);
-
+        
+        Set<String> icoids = SVGGlyphLoader.getAllGlyphsIDs();
+        for (String string : icoids) {
+			System.out.println(string);
+		}
+        
         svgGlyph = SVGGlyphLoader.getIcoMoonGlyph("icomoon.svg.pencil2");
         svgGlyph.setPrefSize(16, 16);
         svgGlyph.setFill(Color.GREY);
@@ -178,13 +181,8 @@ public class MyInfoHandler {
 				showModifyLogsDialog("新密码长度小于6位！");
 			}
 			else {
-				user.setName(userNameTextField.getText());
-				user.setAge(userAgeTextField.getText());
-				user.setSex(userSexTextField.getText());
-				user.setPhone(userPhoneTextField.getText());
-				user.setJob(userJobTextField.getText());
-				user.setDsc(userDescTextField.getText());
-			
+				user.setPassword(userNewPasswordTextField0.getText());
+				
 				userRepository.save(user);
 				setEditable(false);
 			}

@@ -65,8 +65,8 @@ public class MainContainHandler {
 	@FXML MenuItem AdminManagementItem;
 	@FXML MenuItem SalerManagementMenuItem;
 	@FXML MenuItem LabberManagementMenuItem;
-	@FXML MenuItem ReportterManagementMenuItem;
-	@FXML MenuItem ChildReportterManagementMenuItem;
+	@FXML MenuItem ManagerMenuItem;
+	@FXML MenuItem ChildManagerMenuItem;
 	
 	@FXML Menu GB_SystemSetMenu;
 	@FXML Menu GB_AboutMenu;
@@ -82,6 +82,8 @@ public class MainContainHandler {
 	
 	@Autowired
 	private MyInfoHandler managerInfoHandler;
+	
+	@Autowired private ChildManagerHandler childManagerHandler;
 	
 	@Autowired
 	private DeviceHandler deviceHandler;
@@ -254,13 +256,13 @@ public class MainContainHandler {
 	}
 	//审核人管理
 	@FXML
-	public void ReportterManagementAction(){
+	public void ManagerAction(){
 		
 	}
 	//子审核人管理
 	@FXML
-	public void ChildReportterManagementAction(){
-			
+	public void ChildManagerAction(){
+		childManagerHandler.ShowChileManagerPage();	
 	}
 	
 	@FXML
