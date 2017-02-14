@@ -72,41 +72,41 @@ public class LoginHandler {
         
         try {
         	root = loader.load(in);
-		} catch (IOException e) {
+        	
+        	LoginButton.disableProperty().bind(new BooleanBinding() {
+    			{
+    				bind(UserNameText.textProperty());
+    				bind(UserPasswordText.textProperty());
+    			}
+    			@Override
+    			protected boolean computeValue() {
+    				// TODO Auto-generated method stub
+    				
+    				if(UserNameText.getText() != null && UserNameText.getText().length() > 0 &&
+    						UserPasswordText.getText() != null && UserPasswordText.getText().length() >0)
+    					return false;
+    				else
+    					return true;
+    			}
+    		});
+    		
+    		UserPasswordText.focusedProperty().addListener((o, oldVal, newVal) -> {
+
+    			if (!newVal) UserPasswordText.validate();
+    		});
+    		
+    		UserNameText.focusedProperty().addListener((o, oldVal, newVal) -> {
+    			if (!newVal) UserNameText.validate();
+    		});
+
+    		s_Scene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
+    		s_Scene.getStylesheets().add(this.getClass().getResource("/com/xsx/ncd/views/login.css").toExternalForm());
+    		
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return;
 		}
-
-		LoginButton.disableProperty().bind(new BooleanBinding() {
-			{
-				bind(UserNameText.textProperty());
-				bind(UserPasswordText.textProperty());
-			}
-			@Override
-			protected boolean computeValue() {
-				// TODO Auto-generated method stub
-				
-				if(UserNameText.getText() != null && UserNameText.getText().length() > 0 &&
-						UserPasswordText.getText() != null && UserPasswordText.getText().length() >0)
-					return false;
-				else
-					return true;
-			}
-		});
-		
-		UserPasswordText.focusedProperty().addListener((o, oldVal, newVal) -> {
-
-			if (!newVal) UserPasswordText.validate();
-		});
-		
-		UserNameText.focusedProperty().addListener((o, oldVal, newVal) -> {
-			if (!newVal) UserNameText.validate();
-		});
-
-		s_Scene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
-		s_Scene.getStylesheets().add(this.getClass().getResource("/com/xsx/ncd/views/login.css").toExternalForm());
-
 	}
 	
 	public void startLoginActivity() {

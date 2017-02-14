@@ -1,87 +1,136 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXDialog?>
+<?import com.jfoenix.controls.JFXDialogLayout?>
+<?import com.jfoenix.controls.JFXPasswordField?>
+<?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.PasswordField?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="765.0" prefWidth="1240.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Button maxHeight="1.0" maxWidth="1.0" minHeight="1.0" minWidth="1.0" mnemonicParsing="false" prefHeight="1.0" prefWidth="1.0" text="Button" />
-      <VBox AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <StackPane fx:id="rootStackPane" prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <HBox alignment="CENTER_LEFT" style="-fx-border-width: 0 0 1 0; -fx-border-color: grey;">
+            <JFXDialog fx:id="modifyUserInfoDialog">
+               <JFXDialogLayout>
+					<heading>
+						<Label>修改信息</Label>
+					</heading>
+					<body>
+						 <HBox alignment="CENTER_LEFT" spacing="20.0">
+						 	<Label>密码：</Label>
+						 	<JFXPasswordField fx:id="userPasswordTextField" focusColor="#405aa8ff" text="密码" unFocusColor="#4d4d4dff" />
+						 </HBox>
+					</body>
+					<actions>
+						<JFXButton fx:id="cancelButton0" styleClass="dialog-accept">取消</JFXButton>
+						<JFXButton fx:id="acceptButton0" styleClass="dialog-accept">确认</JFXButton>
+					</actions>
+				</JFXDialogLayout>
+            </JFXDialog>
+            <JFXDialog fx:id="modifyUserPasswordDialog">
+               <JFXDialogLayout>
+					<heading>
+						<Label>修改密码</Label>
+					</heading>
+					<body>
+						 <VBox alignment="CENTER_LEFT" spacing="20.0">
+						 	<HBox alignment="CENTER_LEFT" spacing="20.0">
+							 	<Label>新密码：</Label>
+							 	<JFXPasswordField fx:id="userNewPasswordTextField0" focusColor="#405aa8ff" text="密码" unFocusColor="#4d4d4dff" />
+							 </HBox>
+							 <HBox alignment="CENTER_LEFT" spacing="20.0">
+							 	<Label>新密码：</Label>
+							 	<JFXPasswordField fx:id="userNewPasswordTextField1" focusColor="#405aa8ff" text="密码" unFocusColor="#4d4d4dff" />
+							 </HBox>
+							 <HBox alignment="CENTER_LEFT" spacing="20.0">
+							 	<Label>旧密码：</Label>
+							 	<JFXPasswordField fx:id="userOldPasswordTextField" focusColor="#405aa8ff" text="密码" unFocusColor="#4d4d4dff" />
+							 	<Label fx:id="modifyUserPasswordLog"></Label>
+							 </HBox>
+						 </VBox>
+						 
+					</body>
+					<actions>
+						<JFXButton fx:id="cancelButton1" styleClass="dialog-accept">取消</JFXButton>
+						<JFXButton fx:id="acceptButton1" styleClass="dialog-accept">确认</JFXButton>
+					</actions>
+				</JFXDialogLayout>
+            </JFXDialog>
+            <JFXDialog fx:id="modifyLogDialog">
+               <JFXDialogLayout>
+					<heading>
+						<Label>信息</Label>
+					</heading>
+					<body>
+						 <Label fx:id="dialogInfo"></Label>
+					</body>
+					<actions>
+						<JFXButton fx:id="acceptButton2" styleClass="dialog-accept">确认</JFXButton>
+					</actions>
+				</JFXDialogLayout>
+            </JFXDialog>
+            <VBox>
                <children>
-                  <Label text="我的信息">
-                     <font>
-                        <Font name="System Bold" size="15.0" />
-                     </font>
-                  </Label>
-               </children>
-               <padding>
-                  <Insets bottom="5.0" left="10.0" top="20.0" />
-               </padding>
-            </HBox>
-            <GridPane>
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-              </rowConstraints>
-               <children>
-                  <GridPane>
-                    <columnConstraints>
-                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="608.0" minWidth="10.0" percentWidth="20.0" prefWidth="166.0" />
-                      <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="1074.0" minWidth="10.0" prefWidth="1074.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                    </rowConstraints>
+                  <HBox alignment="CENTER_LEFT" spacing="20.0" style="-fx-border-width: 0 0 1 0; -fx-border-color: grey;">
                      <children>
-                        <Label text="姓名" />
-                        <TextField fx:id="GB_AdminNameTextField" GridPane.columnIndex="1" />
-                        <Label text="性别" GridPane.rowIndex="1" />
-                        <TextField fx:id="GB_AdminSexTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <Label text="年龄" GridPane.rowIndex="2" />
-                        <TextField fx:id="GB_AdminAgeTextField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        <Label text="联系方式" GridPane.rowIndex="3" />
-                        <TextField fx:id="GB_AdminPhoneTextField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                        <Label text="职务" GridPane.rowIndex="4" />
-                        <TextField fx:id="GB_AdminJobTextField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                        <Label alignment="CENTER" contentDisplay="CENTER" text="备注" textOverrun="CLIP" GridPane.rowIndex="5" />
-                        <TextField fx:id="GB_AdminDescTextField" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                        <Label text="密码" GridPane.rowIndex="6" />
-                        <PasswordField fx:id="GB_AdminPasswordTextField" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                     </children>
-                  </GridPane>
-                  <HBox alignment="BOTTOM_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="50.0" GridPane.columnIndex="1">
-                     <children>
-                        <JFXButton fx:id="GB_AdminModifyButton" onAction="#GB_AdminModifyAction" style="-fx-background-color: yellow;" text="提交修改" />
+                        <Label text="我的信息">
+                           <font>
+                              <Font name="System Bold" size="15.0" />
+                           </font>
+                        </Label>
+                        <StackPane fx:id="modifyToggleNode" prefHeight="16.0" prefWidth="16.0">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor></StackPane>
                      </children>
                      <padding>
-                        <Insets left="30.0" />
+                        <Insets bottom="5.0" left="10.0" top="20.0" />
                      </padding>
                   </HBox>
+                  <HBox alignment="CENTER_LEFT" spacing="20.0">
+                     <children>
+                        <VBox spacing="15.0">
+                           <children>
+                              <Label nodeOrientation="LEFT_TO_RIGHT" text="姓       名：" />
+                              <Label text="性       别：" />
+                              <Label text="年       龄：" />
+                              <Label text="联系方式：" />
+                              <Label text="职       务：" />
+                              <Label text="备       注：" />
+                           </children>
+                        </VBox>
+                        <VBox fx:id="infoEditBox">
+                           <children>
+                              <JFXTextField fx:id="userNameTextField" editable="false" focusColor="#405aa800" text="姓名" unFocusColor="#4d4d4d00" />
+                              <JFXTextField fx:id="userSexTextField" editable="false" focusColor="#405aa800" text="性别" unFocusColor="#4d4d4d00" />
+                              <JFXTextField fx:id="userAgeTextField" editable="false" focusColor="#405aa800" text="年龄" unFocusColor="#4d4d4d00" />
+                              <JFXTextField fx:id="userPhoneTextField" editable="false" focusColor="#405aa800" text="联系方式" unFocusColor="#4d4d4d00" />
+                              <JFXTextField fx:id="userJobTextField" editable="false" focusColor="#405aa800" text="职务" unFocusColor="#4d4d4d00" />
+                              <JFXTextField fx:id="userDescTextField" editable="false" focusColor="#405aa800" text="备注" unFocusColor="#4d4d4d00" />
+                           </children>
+                        </VBox>
+                        <HBox fx:id="modifyButtonBox" alignment="BOTTOM_CENTER" spacing="30.0">
+                           <children>
+                              <JFXButton fx:id="modifyUserPasswordButton" onAction="#modifyUserPasswordAction" prefHeight="30.0" prefWidth="80.0" style="-fx-background-color: tomato;" text="修改密码" />
+                              <JFXButton fx:id="modifyUserInfodButton" onAction="#modifyUserInfoAction" prefHeight="30.0" prefWidth="80.0" style="-fx-background-color: cyan;" text="保存修改" />
+                           </children>
+                        </HBox>
+                     </children>
+                     <VBox.margin>
+                        <Insets left="50.0" top="20.0" />
+                     </VBox.margin>
+                  </HBox>
                </children>
-            </GridPane>
+            </VBox>
          </children>
-      </VBox>
+      </StackPane>
    </children>
 </AnchorPane>

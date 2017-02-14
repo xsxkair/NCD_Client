@@ -1,9 +1,13 @@
 package com.xsx.ncd.application;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.jfoenix.svg.SVGGlyphLoader;
 import com.xsx.ncd.define.SoftInfo;
 import com.xsx.ncd.entity.NcdSoft;
 import com.xsx.ncd.handlers.LoginHandler;
@@ -19,6 +23,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -118,9 +123,12 @@ public class AppStart extends Application{
 		@Override
 		protected Boolean call() {
 			// TODO Auto-generated method stub
-			//初始化spring
+
 			try {
+				
+				//初始化spring，创建bean
     			SpringFacktory.SpringFacktoryInit();
+    			
     			return true;
     			
 			} catch (Exception e) {

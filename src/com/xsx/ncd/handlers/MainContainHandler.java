@@ -1,6 +1,8 @@
 package com.xsx.ncd.handlers;
 
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -9,6 +11,7 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.jfoenix.svg.SVGGlyphLoader;
 import com.xsx.ncd.entity.User;
 import com.xsx.ncd.repository.UserRepository;
 import com.xsx.ncd.spring.UserSession;
@@ -181,6 +184,7 @@ public class MainContainHandler {
 		});
 
 	    s_Stage.setResizable(true);
+	    s_Stage.sizeToScene();
 	    s_Stage.setTitle("Ó«¹â·ÖÎöÒÇ  V2.3.0");
 
 	    s_Stage.getIcons().add(new Image(this.getClass().getResourceAsStream("/RES/logo.png")));

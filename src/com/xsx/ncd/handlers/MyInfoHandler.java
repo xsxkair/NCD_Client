@@ -1,16 +1,25 @@
 package com.xsx.ncd.handlers;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXDialog;
+import com.jfoenix.controls.JFXTextField;
+import com.jfoenix.controls.JFXDialog.DialogTransition;
+import com.jfoenix.svg.SVGGlyph;
+import com.jfoenix.svg.SVGGlyphLoader;
 import com.xsx.ncd.entity.User;
 import com.xsx.ncd.repository.UserRepository;
 import com.xsx.ncd.spring.UserSession;
@@ -24,6 +33,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -39,8 +49,11 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Window;
 
 @Component
@@ -48,22 +61,34 @@ public class MyInfoHandler {
 
 	private AnchorPane rootpane;
 	
-	@FXML
-	TextField GB_AdminNameTextField;
-	@FXML
-	TextField GB_AdminSexTextField;
-	@FXML
-	TextField GB_AdminAgeTextField;
-	@FXML
-	TextField GB_AdminPhoneTextField;
-	@FXML
-	TextField GB_AdminJobTextField;
-	@FXML
-	TextField GB_AdminDescTextField;
-	@FXML
-	PasswordField GB_AdminPasswordTextField;
-	@FXML
-	Button GB_AdminModifyButton;
+	@FXML StackPane rootStackPane;
+	
+	@FXML StackPane modifyToggleNode;
+	private SVGGlyph svgGlyph;
+	@FXML VBox infoEditBox;
+	@FXML JFXTextField userNameTextField;
+	@FXML JFXTextField userSexTextField;
+	@FXML JFXTextField userAgeTextField;
+	@FXML JFXTextField userPhoneTextField;
+	@FXML JFXTextField userJobTextField;
+	@FXML JFXTextField userDescTextField;
+	@FXML PasswordField userPasswordTextField;
+	@FXML HBox modifyButtonBox;
+	@FXML JFXButton modifyUserPasswordButton;
+	@FXML JFXButton modifyUserInfodButton;
+	@FXML JFXButton acceptButton0;
+	@FXML JFXButton cancelButton0;
+	@FXML JFXDialog modifyUserInfoDialog;
+	@FXML JFXDialog modifyUserPasswordDialog;
+	@FXML PasswordField userNewPasswordTextField0;
+	@FXML PasswordField userNewPasswordTextField1;
+	@FXML PasswordField userOldPasswordTextField;
+	@FXML JFXButton acceptButton1;
+	@FXML JFXButton cancelButton1;
+	@FXML JFXDialog modifyLogDialog;
+	@FXML Label dialogInfo;
+	@FXML Label modifyUserPasswordLog;
+	@FXML JFXButton acceptButton2;
 	
 	ContextMenu myContextMenu;
 	MenuItem RefreshMenuItem;
@@ -86,10 +111,111 @@ public class MyInfoHandler {
         loader.setController(this);
         try {
         	rootpane = loader.load(in);
+        	SVGGlyphLoader.clear();
+        	File file = new File(this.getClass().getResource("/RES/icomoon.svg").getFile());
+			SVGGlyphLoader.loadGlyphsFont(new FileInputStream(file),file.getName());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+        
+        rootStackPane.getChildren().remove(modifyUserInfoDialog);
+        rootStackPane.getChildren().remove(modifyUserPasswordDialog);
+        rootStackPane.getChildren().remove(modifyLogDialog);
+
+        svgGlyph = SVGGlyphLoader.getIcoMoonGlyph("icomoon.svg.pencil2");
+        svgGlyph.setPrefSize(16, 16);
+        svgGlyph.setFill(Color.GREY);
+        
+        modifyToggleNode.getChildren().setAll(svgGlyph);
+
+        modifyToggleNode.setOnMouseClicked(e->{
+        	if(svgGlyph.getFill().equals(Color.GREY))
+        		setEditable(true);
+        	else
+        		setEditable(false);
+        });
+        
+        //确认修改个人信息
+        acceptButton0.setOnMouseClicked((e)->{
+			modifyUserInfoDialog.close();
+			
+			User user = userRepository.findByAccount(userSession.getAccount());
+			
+			if(user.getPassword().equals(userPasswordTextField.getText())){
+				user.setName(userNameTextField.getText());
+				user.setAge(userAgeTextField.getText());
+				user.setSex(userSexTextField.getText());
+				user.setPhone(userPhoneTextField.getText());
+				user.setJob(userJobTextField.getText());
+				user.setDsc(userDescTextField.getText());
+			
+				userRepository.save(user);
+				setEditable(false);
+			}
+		});
+        
+        //取消修改个人信息
+        cancelButton0.setOnMouseClicked((e)->{
+			modifyUserInfoDialog.close();
+		});
+        
+        //确认修改密码
+        acceptButton1.setOnMouseClicked((e)->{
+        	modifyUserPasswordDialog.close();
+			
+			User user = userRepository.findByAccount(userSession.getAccount());
+			
+			if(!user.getPassword().equals(userOldPasswordTextField.getText()))
+				showModifyLogsDialog("原始密码错误！");
+			else if ((userNewPasswordTextField0.getText() == null) || (userNewPasswordTextField1.getText() == null)) {
+				showModifyLogsDialog("新密码为空！");
+			}
+			else if (!userNewPasswordTextField0.getText().equals(userNewPasswordTextField1.getText())) {
+				showModifyLogsDialog("新密码不一致！");
+			}
+			else if (userNewPasswordTextField0.getText().length() < 6) {
+				showModifyLogsDialog("新密码长度小于6位！");
+			}
+			else {
+				user.setName(userNameTextField.getText());
+				user.setAge(userAgeTextField.getText());
+				user.setSex(userSexTextField.getText());
+				user.setPhone(userPhoneTextField.getText());
+				user.setJob(userJobTextField.getText());
+				user.setDsc(userDescTextField.getText());
+			
+				userRepository.save(user);
+				setEditable(false);
+			}
+		});
+        
+        userNewPasswordTextField1.textProperty().addListener((o, oldValue, newValue)->{
+        	if (newValue.equals(null)) {
+        		modifyUserPasswordLog.setTextFill(Color.RED);
+        		modifyUserPasswordLog.setText("新密码不能为空！");
+			}
+        	else if (newValue.length() < 6) {
+        		modifyUserPasswordLog.setTextFill(Color.RED);
+        		modifyUserPasswordLog.setText("密码长度至少为6位！");
+			}
+        	else if (!newValue.equals(userNewPasswordTextField0.getText())) {
+        		modifyUserPasswordLog.setTextFill(Color.RED);
+        		modifyUserPasswordLog.setText("密码不一致！");
+			}
+        	else {
+        		modifyUserPasswordLog.setText(" ");
+			}
+        });
+        
+        //取消修改密码
+        cancelButton1.setOnMouseClicked((e)->{
+        	modifyUserPasswordDialog.close();
+		});
+        
+        acceptButton2.setOnMouseClicked((e)->{
+        	modifyLogDialog.close();
+		});
         
         RefreshMenuItem = new MenuItem("刷新");
         RefreshMenuItem.setOnAction(new EventHandler<ActionEvent>() {
@@ -97,33 +223,17 @@ public class MyInfoHandler {
 			@Override
 			public void handle(ActionEvent arg0) {
 				// TODO Auto-generated method stub
-				UpPageValue();
+				upUserInfo();
 			}
 		});
         myContextMenu = new ContextMenu(RefreshMenuItem);
         
         workPageSession.getWorkPane().addListener((o, oldValue, newValue)->{
-        	if((newValue != null) && (newValue.equals(rootpane)))
-        		UpPageValue();
-        });
- 
-        GB_AdminModifyButton.disableProperty().bind(new BooleanBinding() {
-        	{
-        		bind(GB_AdminNameTextField.textProperty());
-        		bind(GB_AdminPasswordTextField.textProperty());
+        	if((newValue != null) && (newValue.equals(rootpane))){
+        		setEditable(false);
+        		upUserInfo();
         	}
-
-			@Override
-			protected boolean computeValue() {
-				// TODO Auto-generated method stub
-				
-				if((GB_AdminNameTextField.getText() != null)&&(GB_AdminNameTextField.getText().length() > 0)
-						&&(GB_AdminPasswordTextField.getText() != null)&&(GB_AdminPasswordTextField.getText().length() > 0))
-					return false;
-				else
-					return true;
-			}
-		});
+        });
         
         rootpane.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
@@ -146,59 +256,60 @@ public class MyInfoHandler {
 		workPageSession.setWorkPane(rootpane);
 	}
 	
-	private void UpPageValue() {
-		UpAdminValue();
+	private void setEditable(boolean editable) {
+		for (Node node : infoEditBox.getChildren()) {
+			JFXTextField textField = (JFXTextField) node;
+			textField.setEditable(editable);
+			if(editable){
+				textField.setFocusColor(Color.web("#405aa8",1.0));
+				textField.setUnFocusColor(Color.web("#4d4d4d",1.0));
+			}
+			else {
+				textField.setFocusColor(Color.web("#405aa8",0));
+				textField.setUnFocusColor(Color.web("#4d4d4d",0));
+			}
+		}
+		modifyButtonBox.setVisible(editable);
+		
+		if(editable)
+			svgGlyph.setFill(Color.DEEPSKYBLUE);
+		else
+			svgGlyph.setFill(Color.GREY);
 	}
 	
-	private void UpAdminValue() {
-		User admin = userRepository.findByAccount(userSession.getAccount());
+	private void upUserInfo() {
+		User user = userRepository.findByAccount(userSession.getAccount());
 		
-		GB_AdminNameTextField.setText(admin.getName());
-		GB_AdminSexTextField.setText(admin.getSex());
-		GB_AdminAgeTextField.setText(admin.getAge());
-		GB_AdminPhoneTextField.setText(admin.getPhone());
-		GB_AdminJobTextField.setText(admin.getJob());
-		GB_AdminDescTextField.setText(admin.getDsc());
-		GB_AdminPasswordTextField.setText(admin.getPassword());
+		userNameTextField.setText(user.getName());
+		userSexTextField.setText(user.getSex());
+		userAgeTextField.setText(user.getAge());
+		userPhoneTextField.setText(user.getPhone());
+		userJobTextField.setText(user.getJob());
+		userDescTextField.setText(user.getDsc());
 	}
 	
 
 	@FXML
-	public void GB_AdminModifyAction(){
-		User admin = userRepository.findByAccount(userSession.getAccount());
+	public void modifyUserInfoAction(){
+
+		userPasswordTextField.clear();
+		modifyUserInfoDialog.setTransitionType(DialogTransition.CENTER);
+		modifyUserInfoDialog.show(rootStackPane);
 		
-		if(CheckRight(rootpane.getScene().getWindow(), admin.getPassword())){
-				
-			admin.setPassword(GB_AdminPasswordTextField.getText());
-			admin.setName(GB_AdminNameTextField.getText());
-			admin.setAge(GB_AdminAgeTextField.getText());
-			admin.setSex(GB_AdminSexTextField.getText());
-			admin.setPhone(GB_AdminPhoneTextField.getText());
-			admin.setJob(GB_AdminJobTextField.getText());
-			admin.setDsc(GB_AdminDescTextField.getText());
-		
-			userRepository.save(admin);
-		}
 	}
 	
-	private boolean CheckRight(Window owner, String promtext) {
-		
-		TextInputDialog inputDialog = new TextInputDialog("input admin password");
-		inputDialog.initOwner(owner);
-		Optional<String> result = inputDialog.showAndWait();
-		
-		if(result.isPresent()){
-			if(result.get().equals(promtext))
-				return true;
-			else {
-				Alert alert = new Alert(AlertType.ERROR, "Access denied!", ButtonType.OK);
-				alert.initOwner(owner);
-				alert.showAndWait();
-				
-				return false;
-			}
-		}
-		
-		return false;
+	@FXML
+	public void modifyUserPasswordAction(){
+
+		userNewPasswordTextField0.clear();
+		userNewPasswordTextField1.clear();
+		userOldPasswordTextField.clear();
+		modifyUserPasswordDialog.setTransitionType(DialogTransition.CENTER);
+		modifyUserPasswordDialog.show(rootStackPane);	
+	}
+	
+	private void showModifyLogsDialog(String logs) {
+		dialogInfo.setText(logs);
+		modifyLogDialog.show(rootStackPane);
 	}
 }

@@ -42,18 +42,14 @@ public class AboutUsHandler {
 		
 		if(s_Stage == null){
 			s_Stage = new Stage();
-			//s_Stage.initModality(Modality.APPLICATION_MODAL);
+			s_Stage.initModality(Modality.APPLICATION_MODAL);
 		        
 			s_Stage.setResizable(false);
+
 			s_Stage.setScene(new Scene(root));
 		        
 			s_Stage.setOnCloseRequest(e->{
 				s_Stage.hide();
-			});
-		        
-			s_Stage.focusedProperty().addListener((o, oldValue, newValue)->{
-				if(false == newValue)
-		        		s_Stage.hide();
 			});
 		}
    
