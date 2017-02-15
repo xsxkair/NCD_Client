@@ -10,12 +10,12 @@ import javax.persistence.Table;
 @Entity
 public class CardRecord {
 	private Integer id;
-	private Integer cardid;
+	private String cid;
 	private Integer num;					//数目，入库为正，出库为负
 	private java.sql.Timestamp dotime;		//出入库时间
-	private Integer userid;				//操作人
+	private String account;				//操作人
 	private String name;					//出库领料人
-	private Integer deviceid;					//出库设备
+	private String did;					//出库设备
 	
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Id
@@ -26,12 +26,6 @@ public class CardRecord {
 		this.id = id;
 	}
 
-	public Integer getCardid() {
-		return cardid;
-	}
-	public void setCardid(Integer cardid) {
-		this.cardid = cardid;
-	}
 	public Integer getNum() {
 		return num;
 	}
@@ -44,24 +38,29 @@ public class CardRecord {
 	public void setDotime(java.sql.Timestamp dotime) {
 		this.dotime = dotime;
 	}
-	
-	public Integer getUserid() {
-		return userid;
-	}
-	public void setUserid(Integer userid) {
-		this.userid = userid;
-	}
 	public String getName() {
 		return name;
 	}
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Integer getDeviceid() {
-		return deviceid;
+	public String getCid() {
+		return cid;
 	}
-	public void setDeviceid(Integer deviceid) {
-		this.deviceid = deviceid;
+	public void setCid(String cid) {
+		this.cid = cid;
+	}
+	public String getAccount() {
+		return account;
+	}
+	public void setAccount(String account) {
+		this.account = account;
+	}
+	public String getDid() {
+		return did;
+	}
+	public void setDid(String did) {
+		this.did = did;
 	}
 
 }

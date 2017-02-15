@@ -265,7 +265,7 @@ public class DeviceDetailHandler {
 			protected List<Object[]> call(){
 					// TODO Auto-generated method stub
 
-					return deviceRepository.queryDeviceActiveness(S_Device.getId());
+					return deviceRepository.queryDeviceActiveness(S_Device.getDid());
 				}
 			}
 		}	

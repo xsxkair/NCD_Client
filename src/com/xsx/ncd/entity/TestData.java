@@ -13,9 +13,9 @@ public class TestData {
 	
 	private Integer id;
 	private String cnum;						//编号
-	private Integer cardid;
-	private Integer deviceid;
-	private Integer userid;
+	private String cid;
+	private String did;
+	private String account;
 	private String t_name;					//测试人姓名
 	private String sid;						//样品id -- 测试时输入
 	private java.sql.Timestamp testtime;	//测试时间
@@ -55,28 +55,28 @@ public class TestData {
 		this.cnum = cnum;
 	}
 
-	public Integer getCardid() {
-		return cardid;
+	public String getCid() {
+		return cid;
 	}
 
-	public void setCardid(Integer cardid) {
-		this.cardid = cardid;
+	public void setCid(String cid) {
+		this.cid = cid;
 	}
 
-	public Integer getDeviceid() {
-		return deviceid;
+	public String getDid() {
+		return did;
 	}
 
-	public void setDeviceid(Integer deviceid) {
-		this.deviceid = deviceid;
+	public void setDid(String did) {
+		this.did = did;
 	}
 
-	public Integer getUserid() {
-		return userid;
+	public String getAccount() {
+		return account;
 	}
 
-	public void setUserid(Integer userid) {
-		this.userid = userid;
+	public void setAccount(String account) {
+		this.account = account;
 	}
 
 	public String getT_name() {

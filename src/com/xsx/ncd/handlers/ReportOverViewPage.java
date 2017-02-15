@@ -373,19 +373,21 @@ public class ReportOverViewPage {
 			@Override
 			protected List<Object[]> call(){
 				// TODO Auto-generated method stub
-				List<Integer> devices;
+				List<String> devices;
 				User admin = null;
 				
 				if(userSession.getFatherAccount() == null)
-					devices = deviceRepository.queryDeviceIdByUserid(userSession.getUser().getId());
+					devices = deviceRepository.queryDidByAccount(userSession.getAccount());
 				else{
 					admin = userRepository.findByAccount(userSession.getFatherAccount());
-					devices = deviceRepository.queryDeviceIdByUserid(admin.getId());
+					devices = deviceRepository.queryDidByAccount(admin.getAccount());
 				}
-
-				List<Object[]> objects = testDataRepository.queryTodayReportGroupByResult( devices);
 				
-				return objects;
+				if(devices.size() == 0)
+					return null;
+				else {
+					return testDataRepository.queryTodayReportGroupByResult( devices);
+				}
 			}
 		}
 	}
@@ -403,19 +405,21 @@ public class ReportOverViewPage {
 			@Override
 			protected List<Object[]> call(){
 				// TODO Auto-generated method stub
-				List<Integer> devices;
+				List<String> devices;
 				User admin = null;
 				
 				if(userSession.getFatherAccount() == null)
-					devices = deviceRepository.queryDeviceIdByUserid(userSession.getUser().getId());
+					devices = deviceRepository.queryDidByAccount(userSession.getAccount());
 				else{
 					admin = userRepository.findByAccount(userSession.getFatherAccount());
-					devices = deviceRepository.queryDeviceIdByUserid(admin.getId());
+					devices = deviceRepository.queryDidByAccount(admin.getAccount());
 				}
 				
-				List<Object[]> objects = testDataRepository.queryTodayReportGroupByItem( devices);
-				
-				return objects;
+				if(devices.size() == 0)
+					return null;
+				else {
+					return testDataRepository.queryTodayReportGroupByItem( devices);
+				}
 			}
 		}
 	}
@@ -434,19 +438,20 @@ public class ReportOverViewPage {
 			@Override
 			protected List<Object[]> call(){
 				// TODO Auto-generated method stub
-				List<Integer> devices;
+				List<String> devices;
 				User admin = null;
 				
 				if(userSession.getFatherAccount() == null)
-					devices = deviceRepository.queryDeviceIdByUserid(userSession.getUser().getId());
+					devices = deviceRepository.queryDidByAccount(userSession.getAccount());
 				else{
 					admin = userRepository.findByAccount(userSession.getFatherAccount());
-					devices = deviceRepository.queryDeviceIdByUserid(admin.getId());
+					devices = deviceRepository.queryDidByAccount(admin.getAccount());
 				}
-				
-				List<Object[]> objects = testDataRepository.queryTodayReportGroupByDevice( devices);
-				
-				return objects;
+				if(devices.size() == 0)
+					return null;
+				else {
+					return testDataRepository.queryTodayReportGroupByDevice( devices);
+				}
 			}
 		}
 	}
@@ -473,19 +478,21 @@ public class ReportOverViewPage {
 				
 				groupType = GB_GroupTypeToggleGroup.getSelectedToggle().getUserData().toString();
 				
-				List<Integer> devices;
+				List<String> devices;
 				User admin = null;
 				
 				if(userSession.getFatherAccount() == null)
-					devices = deviceRepository.queryDeviceIdByUserid(userSession.getUser().getId());
+					devices = deviceRepository.queryDidByAccount(userSession.getAccount());
 				else{
 					admin = userRepository.findByAccount(userSession.getFatherAccount());
-					devices = deviceRepository.queryDeviceIdByUserid(admin.getId());
+					devices = deviceRepository.queryDidByAccount(admin.getAccount());
 				}
 				
-				dataList = testDataRepository.queryReportSummy(devices, groupType, viewTimeType);
-
-				return dataList;
+				if(devices.size() == 0)
+					return null;
+				else {
+					return testDataRepository.queryReportSummy( devices, groupType, viewTimeType);
+				}
 			}
 		}
 	}

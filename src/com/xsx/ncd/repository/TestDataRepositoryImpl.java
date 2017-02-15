@@ -17,66 +17,55 @@ public class TestDataRepositoryImpl implements MyTestDataDao{
 	private EntityManager em;
 	
 	@Override
-	public List<Object[]> QueryReportSummyChartData(Integer year, Integer month, String groupType) {
-		// TODO Auto-generated method stub
-		System.out.println(em);
-		
-		//定义SQL   
-        String sql = "SELECT did FROM device";   
-        //创建原生SQL查询QUERY实例   
-        Query query =  em.createNativeQuery(sql);
-        //执行查询，返回的是对象数组(Object[])列表,   
-        //每一个对象数组存的是相应的实体属性   
-        List objecArraytList = query.getResultList();   
-        for (Object object : objecArraytList) {
-        	System.out.println(object);
-		}  
-  
-        em.close(); 
-        
-		return null;
-	}
-
-	@Override
-	public Object[] QueryTodayReport(List<Integer> deviceids, int firstResultIndex, int maxResult) {
+	public Object[] QueryTodayReport(List<String> deviceids, int firstResultIndex, int maxResult) {
 		// TODO Auto-generated method stub
 		Object[] result = new Object[2];
 		
 		StringBuffer sqlHead1 = new StringBuffer("select count(td.id) FROM TestData td ");
-		StringBuffer sqlHead2 = new StringBuffer("SELECT td,d,c,u FROM TestData td left join Device d on d.id=td.deviceid "
-        		+ "left join Card c on c.id=td.cardid "
-        		+ "left join User u on u.id=td.userid ");
+		StringBuffer sqlHead2 = new StringBuffer("SELECT td,d,c,u FROM TestData td left join Device d on d.did=td.did "
+        		+ "left join Card c on c.cid=td.cid "
+        		+ "left join User u on u.account=td.account ");
 		//定义SQL   
-        StringBuffer sql1 =  new StringBuffer("where td.result='未审核' AND td.deviceid in(:devicelist) ");
+        StringBuffer sql1 =  new StringBuffer("where td.result='未审核' AND td.did in(:devicelist) ");
 
         //查询总数
-        sqlHead1.append(sql1);
-        Query query1 = em.createQuery(sqlHead1.toString());
-        query1.setParameter("devicelist", deviceids);
-        Long num = (Long) query1.getSingleResult();
-        result[0] = (num%maxResult == 0)?(num/maxResult):(num/maxResult+1);
+        try {
+        	sqlHead1.append(sql1);
+            Query query1 = em.createQuery(sqlHead1.toString());
+            query1.setParameter("devicelist", deviceids);
+            Long num = (Long) query1.getSingleResult();
+            result[0] = (num%maxResult == 0)?(num/maxResult):(num/maxResult+1);
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
         
-        sqlHead2.append(sql1);
-        Query query2 =  em.createQuery(sqlHead2.toString());
-        query2.setParameter("devicelist", deviceids);
-        query2.setFirstResult(firstResultIndex);
-        query2.setMaxResults(maxResult);
-        
-        List<Object[]> datas = query2.getResultList();
-        result[1] = datas;
-        
+        try {
+        	sqlHead2.append(sql1);
+            Query query2 =  em.createQuery(sqlHead2.toString());
+            query2.setParameter("devicelist", deviceids);
+            query2.setFirstResult(firstResultIndex);
+            query2.setMaxResults(maxResult);
+           
+            List<Object[]> datas = query2.getResultList();
+            result[1] = datas;
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+
         em.close();
         
 		return result;
 	}
 
 	@Override
-	public List<Object[]> queryTodayReportGroupByResult(List<Integer> devices) {
+	public List<Object[]> queryTodayReportGroupByResult(List<String> devices) {
 		// TODO Auto-generated method stub
 		java.sql.Date tempdate = new java.sql.Date(System.currentTimeMillis());
 		
 		StringBuffer sqlHead1 = new StringBuffer("SELECT t.result,COUNT(t.id) FROM TestData t where DATE(t.testtime)=:testdate "
-				+ "and t.deviceid in (:devicelist) GROUP BY (t.result)");
+				+ "and t.did in (:devicelist) GROUP BY (t.result)");
         
         Query query = em.createQuery(sqlHead1.toString());
         
@@ -91,13 +80,13 @@ public class TestDataRepositoryImpl implements MyTestDataDao{
 	}
 
 	@Override
-	public List<Object[]> queryTodayReportGroupByItem(List<Integer> devices) {
+	public List<Object[]> queryTodayReportGroupByItem(List<String> devices) {
 		// TODO Auto-generated method stub
 		java.sql.Date tempdate = new java.sql.Date(System.currentTimeMillis());
 
-		StringBuffer sqlHead1 = new StringBuffer("SELECT c.item, COUNT(t.id) FROM TestData t left join Card c on c.id=t.cardid "
+		StringBuffer sqlHead1 = new StringBuffer("SELECT c.item, COUNT(t.id) FROM TestData t left join Card c on c.cid=t.cid "
 				+ "where DATE(t.testtime)=:testdate "
-				+ "and t.deviceid in (:devicelist) GROUP BY (c.item)");
+				+ "and t.did in (:devicelist) GROUP BY (c.item)");
         
         Query query = em.createQuery(sqlHead1.toString());
         
@@ -112,13 +101,13 @@ public class TestDataRepositoryImpl implements MyTestDataDao{
 	}
 
 	@Override
-	public List<Object[]> queryTodayReportGroupByDevice(List<Integer> devices) {
+	public List<Object[]> queryTodayReportGroupByDevice(List<String> devices) {
 		// TODO Auto-generated method stub
 		java.sql.Date tempdate = new java.sql.Date(System.currentTimeMillis());
 
-		StringBuffer sqlHead1 = new StringBuffer("SELECT d.did, COUNT(t.id) FROM TestData t left join Device d on d.id=t.deviceid "
+		StringBuffer sqlHead1 = new StringBuffer("SELECT d.did, COUNT(t.id) FROM TestData t left join Device d on d.did=t.did "
 				+ "where DATE(t.testtime)=:testdate "
-				+ "and t.deviceid in (:devicelist) GROUP BY (d.did)");
+				+ "and t.did in (:devicelist) GROUP BY (d.did)");
         
         Query query = em.createQuery(sqlHead1.toString());
         
@@ -133,7 +122,7 @@ public class TestDataRepositoryImpl implements MyTestDataDao{
 	}
 
 	@Override
-	public List<Object[]> queryReportSummy(List<Integer> devices, String isItem, String dateType) {
+	public List<Object[]> queryReportSummy(List<String> devices, String isItem, String dateType) {
 		// TODO Auto-generated method stub
 
 		StringBuffer sql = new StringBuffer("SELECT ");
@@ -160,10 +149,10 @@ public class TestDataRepositoryImpl implements MyTestDataDao{
 		
 		sql.append("count(t.id) ");
 		
-		sql.append("from TestData t left join Device d on d.id=t.deviceid "
-				+ "left join Card c on c.id=t.cardid "
-        		+ "left join User u on u.id=t.userid "
-        		+ "where t.deviceid in (:devicelist) Group By ");
+		sql.append("from TestData t left join Device d on d.did=t.did "
+				+ "left join Card c on c.cid=t.cid "
+        		+ "left join User u on u.account=t.account "
+        		+ "where t.did in (:devicelist) Group By ");
 		
 		//项目分组
 		if(isItem.equals("项目分组"))
@@ -197,23 +186,23 @@ public class TestDataRepositoryImpl implements MyTestDataDao{
 	}
 
 	@Override
-	public Object[] QueryReportList(String item, java.sql.Date testDate, String testerName, Integer deviceId,
-			List<Integer> devices, String sampleId, String result, int firstResultIndex, int maxResult) {
+	public Object[] QueryReportList(String item, java.sql.Date testDate, String testerName, String deviceId,
+			List<String> devices, String sampleId, String result, int firstResultIndex, int maxResult) {
 		// TODO Auto-generated method stub
 		Object[] reportObject = new Object[2];
 		
 		StringBuffer sqlHead1 = new StringBuffer("select count(t.id) FROM TestData t ");
 		StringBuffer sqlHead2 = new StringBuffer("SELECT t,d,c,u FROM TestData t ");
 		//定义SQL   
-        StringBuffer sql =  new StringBuffer("left join Device d on d.id=t.deviceid "
-        		+ "left join Card c on c.id=t.cardid "
-        		+ "left join User u on u.id=t.userid "
+        StringBuffer sql =  new StringBuffer("left join Device d on d.did=t.did "
+        		+ "left join Card c on c.cid=t.cid "
+        		+ "left join User u on u.account=t.account "
         		+ "where ");
         
         if(deviceId != null)
-        	sql.append("t.deviceid=:deviceid ");
+        	sql.append("t.did = :deviceid ");
         else
-        	sql.append("t.deviceid in(:devicelist) ");
+        	sql.append("t.did in(:devicelist) ");
         
         if(item != null)
         	sql.append("AND c.item like :item  ");

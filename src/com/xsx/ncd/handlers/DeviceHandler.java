@@ -147,8 +147,8 @@ public class DeviceHandler {
 
 	}
 	
-	public AnchorPane GetPane(){
-		return devicepane;
+	public void showDeviceListPane(){
+		workPageSession.setWorkPane(devicepane);
 	}
 	
 	class ReadDeviceInfoService extends ScheduledService<List<Device>>{
@@ -181,7 +181,7 @@ public class DeviceHandler {
 					return null;
 				
 				//查询管理员所管理的所有设备id
-				List<Device> deviceList = deviceRepository.findByUserid(admin.getId());
+				List<Device> deviceList = deviceRepository.findByAccount(admin.getAccount());
 				
 				return deviceList;
 			}

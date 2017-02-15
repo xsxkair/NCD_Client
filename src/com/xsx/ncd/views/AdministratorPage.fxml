@@ -22,7 +22,7 @@
             <JFXDialog fx:id="addUserDialog">
                <JFXDialogLayout>
 					<heading>
-						<Label>添加审核人</Label>
+						<Label>添加管理员</Label>
 					</heading>
 					<body>
 						<VBox spacing="20.0">
@@ -73,7 +73,7 @@
             <JFXDialog fx:id="editUserDialog">
                <JFXDialogLayout>
 					<heading>
-						<Label>修改审核人</Label>
+						<Label>修改管理员信息</Label>
 					</heading>
 					<body>
 						<VBox spacing="20.0">
@@ -136,7 +136,7 @@
                <children>
                   <HBox alignment="CENTER_LEFT" style="-fx-border-width: 0 0 1 0; -fx-border-color: grey;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
-                        <Label text="审核人">
+                        <Label text="管理员">
                            <font>
                               <Font name="System Bold" size="15.0" />
                            </font>

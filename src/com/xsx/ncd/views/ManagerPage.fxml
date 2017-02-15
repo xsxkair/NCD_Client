@@ -73,7 +73,7 @@
             <JFXDialog fx:id="editUserDialog">
                <JFXDialogLayout>
 					<heading>
-						<Label>修改审核人</Label>
+						<Label>修改审核人信息</Label>
 					</heading>
 					<body>
 						<VBox spacing="20.0">

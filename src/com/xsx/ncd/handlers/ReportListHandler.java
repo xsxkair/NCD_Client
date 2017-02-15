@@ -216,7 +216,7 @@ public class ReportListHandler {
 						return;
 						
 					//查询管理员所管理的所有设备id
-					List<Device> deviceList = deviceRepository.findByUserid(admin.getId());
+					List<Device> deviceList = deviceRepository.findByAccount(admin.getAccount());
 						
 					GB_TestDeviceFilterCombox.getItems().add(null);
 					GB_TestDeviceFilterCombox.getItems().addAll(deviceList);
@@ -311,9 +311,8 @@ public class ReportListHandler {
         
 	}
 
-	public AnchorPane GetReportPane(){	
-		
-		return reportpane;
+	public void showReportListPage() {
+		workPageSession.setWorkPane(reportpane);
 	}
 	
 	private void StartReportService(){
@@ -560,10 +559,12 @@ public class ReportListHandler {
 				
 				if(admin == null)
 					return null;
-				
+
 				//查询管理员所管理的所有设备id
-				List<Integer> deviceList = deviceRepository.queryDeviceIdByUserid(admin.getId());
+				List<String> deviceList = deviceRepository.queryDidByAccount(admin.getAccount());
 				
+				if(deviceList.size() == 0)
+					return null;
 				//查询数据
 				
 				//分页条件
@@ -673,9 +674,9 @@ public class ReportListHandler {
 					tempdate = null;
 				}
 				
-				Integer deviceId = null;
+				String deviceId = null;
 				if(GB_TestDeviceFilterCombox.getSelectionModel().getSelectedItem() != null)
-					deviceId = GB_TestDeviceFilterCombox.getSelectionModel().getSelectedItem().getId();
+					deviceId = GB_TestDeviceFilterCombox.getSelectionModel().getSelectedItem().getDid();
 				
 				Object[] data = testDataRepository.QueryReportList(GB_TestItemFilterTextfield.getText(), tempdate, GB_TesterFilterTextfield.getText(),
 						deviceId, deviceList, GB_TestSampleFilterTextField.getText(), 

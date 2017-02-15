@@ -31,6 +31,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
@@ -46,6 +47,7 @@ public class MainContainHandler {
 	
 	@FXML AnchorPane GB_RootPane;
 	
+	@FXML FlowPane GB_MenuFlowPane;
 	@FXML HBox GB_TodayHbox;
 	@FXML ImageView GB_WorkSpaceIcoView;
 	
@@ -80,9 +82,11 @@ public class MainContainHandler {
 	@Autowired
 	private TodayWorkHandler workSpaceHandler;
 	
-	@Autowired
-	private MyInfoHandler managerInfoHandler;
-	
+	@Autowired private MyInfoHandler managerInfoHandler;
+	@Autowired private AdministratorHandler administratorHandler;
+	@Autowired private SalerHandler salerHandler;
+	@Autowired private NcdLaberHandler ncdLaberHandler;
+	@Autowired private ManagerHandler managerHandler;
 	@Autowired private ChildManagerHandler childManagerHandler;
 	
 	@Autowired
@@ -149,31 +153,48 @@ public class MainContainHandler {
 		
 		//数据库管理员
 		if(user.getType().equals(0)){
+			//不需要管理库存
+			GB_MenuBar.getMenus().remove(GB_CardMenu);
+			//不需要管理子级审核人
+			GB_UserManagementMenu.getItems().remove(ChildManagerMenuItem);
 			
+			//进入报告查询界面
+			reportListHandler.showReportListPage();
 		}
 		//超级管理员
 		else if(user.getType().equals(1)){
-
+			//不需要管理子级审核人
+			GB_UserManagementMenu.getItems().remove(ChildManagerMenuItem);
+			
+			//进入报告查询界面
+			reportListHandler.showReportListPage();
 		}
 		//销售
 		else if(user.getType().equals(2)){
-
-		}		
+			GB_MenuFlowPane.getChildren().remove(GB_TodayHbox);
+			GB_MenuBar.getMenus().removeAll(GB_ReportMenu, GB_CardMenu, GB_CheckMenu);
+			GB_UserManagementMenu.getItems().removeAll(AdminManagementItem, SalerManagementMenuItem, LabberManagementMenuItem, ManagerMenuItem,
+					ChildManagerMenuItem);
+			
+			deviceHandler.showDeviceListPane();
+		}
 		//生物研发
 		else if(user.getType().equals(3)){
-
+			//不需要管理子级审核人
+			GB_UserManagementMenu.getItems().remove(ChildManagerMenuItem);
+			
+			//进入报告查询界面
+			reportListHandler.showReportListPage();
 		}
 		//一级用户
 		else if(user.getType().equals(4)){
-
+			workSpaceHandler.showTodayReportPage();
 		}
 		//二级用户
 		else if(user.getType().equals(5)){
-
-		}		
+			workSpaceHandler.showTodayReportPage();
+		}
 		
-		workPageSession.getWorkPane().set(workSpaceHandler.GetPane());
-
 		s_Stage = new Stage();
 		s_Stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			
@@ -196,7 +217,7 @@ public class MainContainHandler {
 	
 	@FXML
 	public void GB_MyWorkSpaceAction(){
-		workPageSession.setWorkPane(workSpaceHandler.GetPane());
+		workSpaceHandler.showTodayReportPage();
 	}
 	
 	@FXML
@@ -206,12 +227,12 @@ public class MainContainHandler {
 	
 	@FXML
 	public void QueryReportAction(){
-		workPageSession.setWorkPane(reportListHandler.GetReportPane());
+		reportListHandler.showReportListPage();
 	}
 	
 	@FXML
 	public void ShowDevicesAction(){
-		workPageSession.setWorkPane(deviceHandler.GetPane());
+		deviceHandler.showDeviceListPane();
 	}
 	
 	@FXML
@@ -242,22 +263,22 @@ public class MainContainHandler {
 	//管理员管理
 	@FXML
 	public void AdminManagementAction(){
-		
+		administratorHandler.ShowChileManagerPage();
 	}
 	//销售人员管理
 	@FXML
 	public void SalerManagementAction(){
-		
+		salerHandler.ShowChileManagerPage();
 	}
 	//实验室人员管理
 	@FXML
 	public void LabberManagementAction(){
-		
+		ncdLaberHandler.ShowChileManagerPage();
 	}
 	//审核人管理
 	@FXML
 	public void ManagerAction(){
-		
+		managerHandler.ShowChileManagerPage();
 	}
 	//子审核人管理
 	@FXML

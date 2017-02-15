@@ -11,9 +11,9 @@ import javax.persistence.Table;
 public class Card {
 	
 	private Integer id;
-	private String cid;	
+	private String cid;
 	private String item;
-	private String normal;
+	private Integer channel;
 	private Float low;
 	private Float high;
 	private String danwei;
@@ -22,13 +22,17 @@ public class Card {
 	private Integer waitt;
 	private String c_l;
 	private java.sql.Date outdate;			//过期时间
-	private String fend;
+	private String fend1;
+	private String fend2;
 	private String qu1_a;
 	private String qu1_b;
 	private String qu1_c;
 	private String qu2_a;
 	private String qu2_b;
 	private String qu2_c;
+	private String qu3_a;
+	private String qu3_b;
+	private String qu3_c;
 	
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Id
@@ -56,12 +60,12 @@ public class Card {
 		this.item = item;
 	}
 
-	public String getNormal() {
-		return normal;
+	public Integer getChannel() {
+		return channel;
 	}
 
-	public void setNormal(String normal) {
-		this.normal = normal;
+	public void setChannel(Integer channel) {
+		this.channel = channel;
 	}
 
 	public Float getLow() {
@@ -128,12 +132,20 @@ public class Card {
 		this.outdate = outdate;
 	}
 
-	public String getFend() {
-		return fend;
+	public String getFend1() {
+		return fend1;
 	}
 
-	public void setFend(String fend) {
-		this.fend = fend;
+	public void setFend1(String fend1) {
+		this.fend1 = fend1;
+	}
+
+	public String getFend2() {
+		return fend2;
+	}
+
+	public void setFend2(String fend2) {
+		this.fend2 = fend2;
 	}
 
 	public String getQu1_a() {
@@ -182,6 +194,30 @@ public class Card {
 
 	public void setQu2_c(String qu2_c) {
 		this.qu2_c = qu2_c;
+	}
+
+	public String getQu3_a() {
+		return qu3_a;
+	}
+
+	public void setQu3_a(String qu3_a) {
+		this.qu3_a = qu3_a;
+	}
+
+	public String getQu3_b() {
+		return qu3_b;
+	}
+
+	public void setQu3_b(String qu3_b) {
+		this.qu3_b = qu3_b;
+	}
+
+	public String getQu3_c() {
+		return qu3_c;
+	}
+
+	public void setQu3_c(String qu3_c) {
+		this.qu3_c = qu3_c;
 	}
 
 	@Override

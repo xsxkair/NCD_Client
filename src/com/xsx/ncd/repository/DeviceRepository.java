@@ -15,13 +15,12 @@ public interface DeviceRepository extends JpaRepository<Device, Integer>, JpaSpe
 	
 	public Device findById(Integer id);
 	
-	//通过审核人的id查找其管辖的设备
-	@Query("select d.id from Device d where d.userid=:userid")
-	public List<Integer> queryDeviceIdByUserid(@Param("userid")Integer userid);
+	@Query("SELECT d.did FROM Device d where d.account = :account" )
+	public List<String> queryDidByAccount(@Param("account") String account);
 	
-	public List<Device> findByUserid(Integer userid);
+	public List<Device> findByAccount(String account);
 	
 	@Query("SELECT DATE_FORMAT(t.testtime,'%Y-%m') ,COUNT(t.id) "
-			+"FROM TestData t where t.deviceid=:deviceid GROUP BY DATE_FORMAT(t.testtime,'%Y-%m')" )
-	public List<Object[]> queryDeviceActiveness(@Param("deviceid") Integer deviceid);
+			+"FROM TestData t where t.did=:deviceid GROUP BY DATE_FORMAT(t.testtime,'%Y-%m')" )
+	public List<Object[]> queryDeviceActiveness(@Param("deviceid") String deviceid);
 }

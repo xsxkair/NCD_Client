@@ -137,9 +137,9 @@ public class ReportDetailHandler {
         		Integer testDataId = (Integer) rootpane.getUserData();
         		
         		TestData testData = testDataRepository.findOne(testDataId);
-        		Card card = cardRepository.findOne(testData.getCardid());
-        		Device device = deviceRepository.findOne(testData.getDeviceid());
-        		User user = userRepository.findOne(testData.getUserid());
+        		Card card = cardRepository.findCardByCid(testData.getCid());
+        		Device device = deviceRepository.findDeviceByDid(testData.getDid());
+        		User user = userRepository.findByAccount(testData.getAccount());
         		
         		//清空曲线
     			series.getData().clear();
@@ -167,7 +167,7 @@ public class ReportDetailHandler {
     			S_CardTempLabel.setText("试剂卡温度："+testData.getO_t()+" ℃");
     			S_EnTempLabel.setText("环境温度："+testData.getE_t()+" ℃");
     			S_TesttimeLabel.setText("测试时间："+ testData.getTesttime());
-    			S_TestResultLabel.setText(testData.getA_v()+" " + card.getDanwei() + " ( 参考值："+card.getNormal()+" " + card.getDanwei() + " )");
+    			S_TestResultLabel.setText(testData.getA_v()+" " + card.getDanwei());
     			
     			//测试信息
     			JSONArray jsonArray = null;
@@ -274,8 +274,7 @@ public class ReportDetailHandler {
 		testData.setR_desc(S_ReportDescTextArea.getText());
 		testData.setHandletime(new Timestamp(System.currentTimeMillis()));
 		
-		User user = userRepository.findByAccount(userSession.getAccount());
-		testData.setUserid(userSession.getUser().getId());
+		testData.setAccount(userSession.getAccount());
 		
 		testDataRepository.save(testData);
 		

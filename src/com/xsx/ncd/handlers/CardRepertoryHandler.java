@@ -245,7 +245,7 @@ public class CardRepertoryHandler {
 		else
 			admin = managerRepository.findByAccount(managerSession.getFatherAccount());
 		
-		devices = deviceRepository.findByUserid(admin.getId());
+		devices = deviceRepository.findByAccount(admin.getAccount());
 		
 		GB_DeviceListPane.getChildren().clear();
 		for (Device device : devices) {

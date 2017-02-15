@@ -125,12 +125,9 @@ public class CardInOutHandler {
 		
 		Card card = cardRepository.findCardByCid(GB_InPihaoTextField.getText());
 		if(card != null){
-			
-			User manager = managerRepository.findByAccount(managerSession.getAccount());
-			
 			CardRecord cardRecord = new CardRecord();
-			cardRecord.setCardid(card.getId());
-			cardRecord.setUserid(manager.getId());
+			cardRecord.setCid(card.getCid());
+			cardRecord.setAccount(managerSession.getAccount());
 			cardRecord.setNum(num);
 			cardRecord.setDotime(new java.sql.Timestamp(System.currentTimeMillis()));
 			
@@ -178,16 +175,13 @@ public class CardInOutHandler {
 		
 		Card card = cardRepository.findCardByCid(GB_OutPihaoTextField.getText());
 		if(card != null){
-			
-			User manager = managerRepository.findByAccount(managerSession.getAccount());
-			
 			CardRecord cardRecord = new CardRecord();
-			cardRecord.setCardid(card.getId());
-			cardRecord.setUserid(manager.getId());
+			cardRecord.setCid(card.getCid());
+			cardRecord.setAccount(managerSession.getAccount());
 			cardRecord.setNum(num);
 			cardRecord.setDotime(new java.sql.Timestamp(System.currentTimeMillis()));
 			cardRecord.setName(GB_OutUserTextField.getText());
-			cardRecord.setDeviceid(device.getId());
+			cardRecord.setDid(device.getDid());
 			
 			cardRecord = cardRecordRepository.save(cardRecord);
 			
@@ -216,7 +210,7 @@ public class CardInOutHandler {
 		else
 			admin = managerRepository.findByAccount(managerSession.getFatherAccount());
 		
-		devices = deviceRepository.findByUserid(admin.getId());
+		devices = deviceRepository.findByAccount(admin.getAccount());
 		
 		GB_OutDeviceComboBox.getItems().clear();
 		GB_OutDeviceComboBox.getItems().addAll(devices);

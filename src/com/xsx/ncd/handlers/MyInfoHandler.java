@@ -121,11 +121,6 @@ public class MyInfoHandler {
         rootStackPane.getChildren().remove(modifyUserPasswordDialog);
         rootStackPane.getChildren().remove(modifyLogDialog);
         
-        Set<String> icoids = SVGGlyphLoader.getAllGlyphsIDs();
-        for (String string : icoids) {
-			System.out.println(string);
-		}
-        
         svgGlyph = SVGGlyphLoader.getIcoMoonGlyph("icomoon.svg.pencil2");
         svgGlyph.setPrefSize(16, 16);
         svgGlyph.setFill(Color.GREY);

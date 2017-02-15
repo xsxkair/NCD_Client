@@ -21,7 +21,7 @@ public class Device {
 	private String phone;				//联系方式
 	private String job;					//职务
 	private String dsc;					//备注
-	private Integer userid;			//
+	private String account;
 	
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Id
@@ -113,12 +113,13 @@ public class Device {
 		this.dsc = dsc;
 	}
 	
-	public Integer getUserid() {
-		return userid;
+
+	public String getAccount() {
+		return account;
 	}
 
-	public void setUserid(Integer userid) {
-		this.userid = userid;
+	public void setAccount(String account) {
+		this.account = account;
 	}
 
 	@Override

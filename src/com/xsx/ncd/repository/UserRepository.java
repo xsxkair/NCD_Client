@@ -19,4 +19,17 @@ public interface UserRepository extends JpaRepository<User, Integer>{
 	
 	@Query("select u.id from User u where u.fatheraccount=:father")
 	public List<Integer> queryChildIdList(@Param("father") String fatheraccount);
+	
+	@Query("select u from User u where u.type=1")
+	public List<User> queryAllAdministrator();
+	
+	@Query("select u from User u where u.type=2")
+	public List<User> queryAllSaler();
+	
+	@Query("select u from User u where u.type=3")
+	public List<User> queryAllNcdLaber();
+	
+	
+	@Query("select u from User u where u.type=4")
+	public List<User> queryAllManager();
 }

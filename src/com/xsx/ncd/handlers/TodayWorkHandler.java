@@ -223,8 +223,8 @@ public class TodayWorkHandler {
         AnchorPane.setRightAnchor(rootpane, 0.0);
 	}
 	
-	public AnchorPane GetPane() {
-		return rootpane;
+	public void showTodayReportPage() {
+		workPageSession.setWorkPane(rootpane);
 	}
 	
 	class TableColumnModel<T,S> implements Callback<TableColumn<T, S>, TableCell<T, S>> {
@@ -315,9 +315,12 @@ public class TodayWorkHandler {
 					return null;
 				
 				//查询管理员所管理的所有设备id
-				List<Integer> deviceList = deviceRepository.queryDeviceIdByUserid(admin.getId());
-				
-				return testDataRepository.QueryTodayReport(deviceList, GB_Pagination.getCurrentPageIndex()*systemSetData.getPageSize(), systemSetData.getPageSize());
+				List<String> deviceList = deviceRepository.queryDidByAccount(admin.getAccount());
+
+				if(deviceList.size() == 0)
+					return null;
+				else
+					return testDataRepository.QueryTodayReport(deviceList, GB_Pagination.getCurrentPageIndex()*systemSetData.getPageSize(), systemSetData.getPageSize());
 			}
 		}
 	}

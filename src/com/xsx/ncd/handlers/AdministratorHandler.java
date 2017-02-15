@@ -36,7 +36,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
 @Component
-public class ChildManagerHandler {
+public class AdministratorHandler {
 
 	private AnchorPane rootpane;
 	
@@ -107,8 +107,8 @@ public class ChildManagerHandler {
 	public void UI_Init(){
 
 		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(this.getClass().getResource("/com/xsx/ncd/views/ChildManagerPage.fxml"));
-        InputStream in = this.getClass().getResourceAsStream("/com/xsx/ncd/views/ChildManagerPage.fxml");
+		loader.setLocation(this.getClass().getResource("/com/xsx/ncd/views/AdministratorPage.fxml"));
+        InputStream in = this.getClass().getResourceAsStream("/com/xsx/ncd/views/AdministratorPage.fxml");
         loader.setController(this);
         try {
         	rootpane = loader.load(in);
@@ -206,11 +206,11 @@ public class ChildManagerHandler {
 					tempUser.setDsc(userDescTextField1.getText());
 					tempUser.setFatheraccount(admin.getAccount());
 					tempUser.setAdduser(admin.getAccount());
-					tempUser.setType(5);
+					tempUser.setType(1);
 					
 					User user = userRepository.findByAccount(tempUser.getAccount());
 					if(user != null)
-						showModifyLogsDialog("审核人已存在！");
+						showModifyLogsDialog("账号已存在！");
 					else
 						userRepository.save(tempUser);
 					}
@@ -302,7 +302,7 @@ public class ChildManagerHandler {
 	private void upUserList() {
 		managerrListView.getItems().clear();
 		
-		managerrListView.getItems().addAll(userRepository.queryChildAccountList(userSession.getAccount()));
+		managerrListView.getItems().addAll(userRepository.queryAllAdministrator());
 
 		managerrListView.getSelectionModel().selectFirst();
 	}
