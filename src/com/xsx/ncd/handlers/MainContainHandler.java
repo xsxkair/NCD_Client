@@ -108,6 +108,7 @@ public class MainContainHandler {
 	@Autowired
 	private CardRecordHandler cardRecordHandler;
 	@Autowired private DeviceTestHandler deviceTestHandler;
+	@Autowired private SoftHandler softHandler;
 	@Autowired
 	private LoginHandler loginHandler;
 	
@@ -267,7 +268,7 @@ public class MainContainHandler {
 	//上传客户端软件
 	@FXML
 	public void GB_SoftManagementAction(){
-		deviceTestHandler.showDeviceTestPage();
+		softHandler.ShowSoftPage();
 	}
 	
 	//我的信息
