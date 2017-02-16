@@ -236,21 +236,17 @@ public class CardRepertoryHandler {
 	}
 	
 	private void UpDateDeviceListUI(){
-		List<Device> devices = null;
-		
-		User admin = null;
+		List<String> devices = null;
 		
 		if(managerSession.getFatherAccount() == null)
-			admin = managerRepository.findByAccount(managerSession.getAccount());
+			devices = deviceRepository.queryDidByAccount(managerSession.getAccount());
 		else
-			admin = managerRepository.findByAccount(managerSession.getFatherAccount());
-		
-		devices = deviceRepository.findByAccount(admin.getAccount());
+			devices = deviceRepository.queryDidByAccount(managerSession.getFatherAccount());
 		
 		GB_DeviceListPane.getChildren().clear();
-		for (Device device : devices) {
+		for (String device : devices) {
 			JFXToggleNode node = new JFXToggleNode();		
-			Label label = new Label(device.getDid());
+			Label label = new Label(device);
 			node.setGraphic(label);
 			node.setToggleGroup(GB_DeviceListToggeGroup);
 			node.setUserData(device);
@@ -258,7 +254,8 @@ public class CardRepertoryHandler {
 			GB_DeviceListPane.getChildren().add(node);
 		}
 		
-		GB_DeviceListToggeGroup.selectToggle((Toggle) GB_DeviceListPane.getChildren().get(0));
+		if(devices.size() > 0)
+			GB_DeviceListToggeGroup.selectToggle((Toggle) GB_DeviceListPane.getChildren().get(0));
 	}
 
 	//×Ü¿â´æÍ¼
@@ -274,21 +271,20 @@ public class CardRepertoryHandler {
 
 			@Override
 			protected List<Object[]> call(){
-				List<Integer> userids = new ArrayList<>();
+				List<String> userids = new ArrayList<>();
 				
 				if(managerSession.getFatherAccount() == null){
-					userids.add(managerSession.getUser().getId());
-					userids.addAll(managerRepository.queryChildIdList(managerSession.getAccount()));
+					userids.add(managerSession.getAccount());
+					userids.addAll(managerRepository.queryChildAccountList(managerSession.getAccount()));
 				}
 				else{
-					userids.add(managerRepository.findByAccount(managerSession.getFatherAccount()).getId());
-					userids.addAll(managerRepository.queryChildIdList(managerSession.getFatherAccount()));
+					userids.add(managerSession.getFatherAccount());
+					userids.addAll(managerRepository.queryChildAccountList(managerSession.getFatherAccount()));
 				}
 
-				//List<Object[]> objects = cardRecordRepository.QueryCardRepertoryNumByItem(userids);
+				List<Object[]> objects = cardRecordRepository.QueryCardRepertoryNumByItem(userids);
 				
-				//return objects;
-				return null;
+				return objects;
 			}
 		}
 	}
@@ -306,24 +302,21 @@ public class CardRepertoryHandler {
 			@Override
 			protected List<Object[]> call(){
 				// TODO Auto-generated method stub
-				/*List<Object[]> objectList = null;
+				List<Object[]> objectList = null;
 				Map<String, Integer> sumMap = new HashMap<>();
 				Map<String, Integer> useMap = new HashMap<>();
 				Map<String, Integer> surplusMap = new HashMap<>();
 				
-				objectList = cardRecordRepository.QueryCardRepertoryGroupByDeviceAndItem((Device) GB_DeviceListToggeGroup.getSelectedToggle().getUserData());
-				System.out.println(objectList.size());
+				objectList = cardRecordRepository.QueryCardRepertoryGroupByDeviceAndItem((String) GB_DeviceListToggeGroup.getSelectedToggle().getUserData());
+
 				for (Object[] objects : objectList) {
-					System.out.println(objects[0]+"-"+objects[1]+"-"+objects[2]);//+"-"+objects[3]+"-"+objects[4]+"-"+objects[5]);
 					sumMap.put(objects[1].toString(), ((Long)objects[2]).intValue());
 					surplusMap.put(objects[1].toString(), 0);
 				}
 				
-				System.out.println("xsx");
-				objectList = cardRecordRepository.QueryCardUseNumGroupByDeviceAndItem((Device) GB_DeviceListToggeGroup.getSelectedToggle().getUserData());
-				System.out.println(objectList.size());
+				objectList = cardRecordRepository.QueryCardUseNumGroupByDeviceAndItem((String) GB_DeviceListToggeGroup.getSelectedToggle().getUserData());
+
 				for (Object[] objects : objectList) {
-					System.out.println(objects[0]+"-"+objects[1]+"-"+objects[2]);//+"-"+objects[3]+"-"+objects[4]+"-"+objects[5]);
 					useMap.put(objects[1].toString(), ((Long)objects[2]).intValue());
 					surplusMap.put(objects[1].toString(), 0);
 				}
@@ -345,8 +338,6 @@ public class CardRepertoryHandler {
 				}
 				
 				return objectList;
-				*/
-				return null;
 			}
 		}
 	}

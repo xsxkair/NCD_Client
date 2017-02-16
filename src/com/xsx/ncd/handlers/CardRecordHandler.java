@@ -8,6 +8,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -24,7 +25,10 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDatePicker;
 import com.xsx.ncd.define.CardRecordTableItem;
 import com.xsx.ncd.define.ReportTableItem;
+import com.xsx.ncd.entity.Card;
 import com.xsx.ncd.entity.CardRecord;
+import com.xsx.ncd.entity.Device;
+import com.xsx.ncd.entity.TestData;
 import com.xsx.ncd.entity.User;
 import com.xsx.ncd.handlers.ReportListHandler.TableColumnModel;
 import com.xsx.ncd.repository.CardRecordRepository;
@@ -139,17 +143,21 @@ public class CardRecordHandler {
         	GB_CardTableView.getItems().clear();
         	
         	if(newValue != null){
-        		
-        		GB_Pagination.setPageCount(newValue.getTotalPages());
+				if(newValue[0] != null)
+					GB_Pagination.setPageCount(((Long) newValue[0]).intValue());
+				else
+					GB_Pagination.setPageCount(0);
+				
+				if(newValue[1] != null){
+					List<Object[]> datas = (List<Object[]>) newValue[1];
+					List<CardRecordTableItem> cardRecordTableItems = new ArrayList<>();
 
-				List<CardRecord> datas = newValue.getContent();
-				
-				List<CardRecordTableItem> cardRecordTableItems = new ArrayList<>();
-				for (CardRecord cardRecord : datas) {
-					//cardRecordTableItems.add(new CardRecordTableItem(cardRecord));
+					for (Object[] object : datas) {
+						cardRecordTableItems.add(new CardRecordTableItem((CardRecord)object[0], (Device)object[1], (Card)object[2], (User)object[3]));
+					}
+					
+					GB_CardTableView.getItems().addAll(cardRecordTableItems);
 				}
-				
-				GB_CardTableView.getItems().addAll(cardRecordTableItems);
         	}
         });
         
@@ -210,94 +218,55 @@ public class CardRecordHandler {
 	    }
 	}
 
-	class QueryCardRecordService extends Service<Page<CardRecord>>{
+	class QueryCardRecordService extends Service<Object[]>{
 		
 		@Override
-		protected Task<Page<CardRecord>> createTask() {
+		protected Task<Object[]> createTask() {
 			// TODO Auto-generated method stub
 			return new QueryReportTask();
 		}
 		
-		class QueryReportTask extends Task<Page<CardRecord>>{
+		class QueryReportTask extends Task<Object[]>{
 
 			@Override
-			protected Page<CardRecord> call(){
+			protected Object[] call(){
 				// TODO Auto-generated method stub
 				return ReadDeviceInfoFun();
 			}
 			
-			private Page<CardRecord> ReadDeviceInfoFun(){
-
-				//管理员
-				User admin;
+			private Object[] ReadDeviceInfoFun(){
 				
-				if(managerSession.getFatherAccount() == null)
-					admin = managerRepository.findByAccount(managerSession.getAccount());
-				else
-					admin = managerRepository.findByAccount(managerSession.getFatherAccount());
+				List<String> userids = new ArrayList<>();
+				java.sql.Date startTime = null;
+				java.sql.Date endTime = null;
 				
-				if(admin == null)
-					return null;
+				if(managerSession.getFatherAccount() == null){
+					userids.add(managerSession.getAccount());
+					userids.addAll(managerRepository.queryChildAccountList(managerSession.getAccount()));
+				}
+				else{
+					userids.add(managerSession.getFatherAccount());
+					userids.addAll(managerRepository.queryChildAccountList(managerSession.getFatherAccount()));
+				}
 				
-				//分页条件
-				Order order = new Order(Direction.ASC, "dotime");
-				Sort sort = new Sort(order);
-				PageRequest pageable = new PageRequest(GB_Pagination.getCurrentPageIndex(), systemSetData.getPageSize(), sort);
+				try {
+					endTime = java.sql.Date.valueOf(GB_EndDateField.getValue());
+				} catch (Exception e) {
+					// TODO: handle exception
+					endTime = null;
+				}
 				
-				//通常使用 Specification 的匿名内部类
-				Specification<CardRecord> specification = new Specification<CardRecord>() {
-						/**
-						 * @param *root: 代表查询的实体类. 
-						 * @param query: 可以从中可到 Root 对象, 即告知 JPA Criteria 查询要查询哪一个实体类. 还可以
-						 * 来添加查询条件, 还可以结合 EntityManager 对象得到最终查询的 TypedQuery 对象. 
-						 * @param *cb: CriteriaBuilder 对象. 用于创建 Criteria 相关对象的工厂. 当然可以从中获取到 Predicate 对象
-						 * @return: *Predicate 类型, 代表一个查询条件. 
-						 */
-						@Override
-						public Predicate toPredicate(Root<CardRecord> root,
-								CriteriaQuery<?> query, CriteriaBuilder cb) {
-							Predicate predicate = null;
-							
-							//日期
-							java.sql.Date startTime = null;
-							java.sql.Date endTime = null;
-							
-							try {
-								endTime = java.sql.Date.valueOf(GB_EndDateField.getValue());
-							} catch (Exception e) {
-								// TODO: handle exception
-								endTime = null;
-							}
-							
-							try {
-								startTime = java.sql.Date.valueOf(GB_StartDateField.getValue());
-							} catch (Exception e) {
-								// TODO: handle exception
-								startTime = null;
-							}
-							
-							System.out.println(startTime+"--"+endTime);
-							
-							if(startTime == null){
-								if(endTime == null)
-									return null;
-								
-								predicate = cb.lessThanOrEqualTo(root.get("dotime").as(java.sql.Date.class), endTime);
-							}
-							else if (endTime == null) {
-								predicate = cb.greaterThanOrEqualTo(root.get("dotime").as(java.sql.Date.class), startTime);
-							}
-							else {
-								predicate = cb.between(root.get("dotime").as(java.sql.Date.class), startTime, endTime);
-							}
-
-							return predicate;
-						}
-					};
-					
-				Page<CardRecord> page = cardRecordRepository.findAll(specification, pageable);
-
-				return page;
+				try {
+					startTime = java.sql.Date.valueOf(GB_StartDateField.getValue());
+				} catch (Exception e) {
+					// TODO: handle exception
+					startTime = null;
+				}
+				
+				Object[] data = cardRecordRepository.queryCardRecord(userids, startTime, endTime, 
+						GB_Pagination.getCurrentPageIndex()*systemSetData.getPageSize(), systemSetData.getPageSize());
+				
+				return data;	
 			}
 		}
 	}

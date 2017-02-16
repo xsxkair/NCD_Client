@@ -1,15 +1,10 @@
 package com.xsx.ncd.repository;
 
-import static org.hamcrest.CoreMatchers.nullValue;
-
-import java.sql.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-
-import com.xsx.ncd.entity.Device;
 
 public class TestDataRepositoryImpl implements MyTestDataDao{
 

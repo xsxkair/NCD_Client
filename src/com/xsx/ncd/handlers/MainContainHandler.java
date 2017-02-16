@@ -59,8 +59,11 @@ public class MainContainHandler {
 	@FXML Menu GB_DeviceMenu;
 	@FXML Menu GB_CardMenu;
 	@FXML Menu GB_CheckMenu;
+	
 	@FXML Menu GB_ToolMenu;
 	@FXML MenuItem GB_ConnectDeviceMenuItem;
+	@FXML MenuItem GB_QRCodeMenuItem;
+	@FXML MenuItem GB_SoftClientMenuItem;
 	
 	@FXML Menu GB_UserManagementMenu;
 	@FXML MenuItem MyInfoMenuItem;
@@ -252,6 +255,18 @@ public class MainContainHandler {
 	
 	@FXML
 	public void GB_DeviceTestAction(){
+		deviceTestHandler.showDeviceTestPage();
+	}
+	
+	//做二维码
+	@FXML
+	public void GB_MakeQRCodeAction(){
+		deviceTestHandler.showDeviceTestPage();
+	}
+	
+	//上传客户端软件
+	@FXML
+	public void GB_SoftManagementAction(){
 		deviceTestHandler.showDeviceTestPage();
 	}
 	

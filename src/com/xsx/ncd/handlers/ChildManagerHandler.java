@@ -302,7 +302,7 @@ public class ChildManagerHandler {
 	private void upUserList() {
 		managerrListView.getItems().clear();
 		
-		managerrListView.getItems().addAll(userRepository.queryChildAccountList(userSession.getAccount()));
+		managerrListView.getItems().addAll(userRepository.queryChildUserList(userSession.getAccount()));
 
 		managerrListView.getSelectionModel().selectFirst();
 	}

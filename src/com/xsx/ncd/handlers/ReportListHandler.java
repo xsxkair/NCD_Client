@@ -279,7 +279,7 @@ public class ReportListHandler {
 					return;
 				
 				GB_Pagination.setPageCount(((Long) arg2[0]).intValue());
-				System.out.println(GB_Pagination.getPageCount());
+
 				List<Object[]> datas = (List<Object[]>) arg2[1];
 				List<ReportTableItem> reportTableItems = new ArrayList<>();
 

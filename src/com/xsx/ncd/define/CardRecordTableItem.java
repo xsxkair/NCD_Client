@@ -19,7 +19,7 @@ public class CardRecordTableItem {
 	private Card card;
 	private User user;
 	
-	public CardRecordTableItem(CardRecord cardRecord, Card card, User user, Device device) {
+	public CardRecordTableItem(CardRecord cardRecord, Device device, Card card, User user) {
 		this.cardRecord = cardRecord;
 		this.device = device;
 		this.card = card;

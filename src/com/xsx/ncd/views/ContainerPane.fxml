@@ -60,6 +60,8 @@
                   <Menu fx:id="GB_ToolMenu" mnemonicParsing="false" style="-fx-font-size: 14;" text="工具">
                      <items>
                         <MenuItem fx:id="GB_ConnectDeviceMenuItem" mnemonicParsing="false" onAction="#GB_DeviceTestAction" text="连接设备" />
+                        <MenuItem fx:id="GB_QRCodeMenuItem" mnemonicParsing="false" onAction="#GB_MakeQRCodeAction" text="二维码" />
+                        <MenuItem fx:id="GB_SoftClientMenuItem" mnemonicParsing="false" onAction="#GB_SoftManagementAction" text="软件管理" />
                      </items>
                   </Menu>
                   <Menu fx:id="GB_UserManagementMenu" mnemonicParsing="false" style="-fx-font-size: 14;" text="人员管理">

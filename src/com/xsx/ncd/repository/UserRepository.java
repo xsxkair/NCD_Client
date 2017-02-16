@@ -14,8 +14,11 @@ public interface UserRepository extends JpaRepository<User, Integer>{
 	
 	public User findByAccountAndPassword(String account, String password);
 
+	@Query("select m.account from User m where m.fatheraccount=:father")
+	public List<String> queryChildAccountList(@Param("father") String fatheraccount);
+	
 	@Query("select m from User m where m.fatheraccount=:father")
-	public List<User> queryChildAccountList(@Param("father") String fatheraccount);
+	public List<User> queryChildUserList(@Param("father") String fatheraccount);
 	
 	@Query("select u.id from User u where u.fatheraccount=:father")
 	public List<Integer> queryChildIdList(@Param("father") String fatheraccount);
