@@ -192,10 +192,6 @@ public class MainContainHandler {
 		else if(user.getType().equals(4)){
 			workSpaceHandler.showTodayReportPage();
 		}
-		//二级用户
-		else if(user.getType().equals(5)){
-			workSpaceHandler.showTodayReportPage();
-		}
 		
 		s_Stage = new Stage();
 		s_Stage.setOnCloseRequest(new EventHandler<WindowEvent>() {

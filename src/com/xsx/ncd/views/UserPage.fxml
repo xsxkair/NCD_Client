@@ -5,6 +5,7 @@
 <?import com.jfoenix.controls.JFXDialogLayout?>
 <?import com.jfoenix.controls.JFXPasswordField?>
 <?import com.jfoenix.controls.JFXTextField?>
+<?import com.jfoenix.controls.JFXComboBox?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
@@ -43,7 +44,7 @@
 												<HBox spacing="20.0">
 													<children>
 														<Label text="密       码：" />
-														<JFXTextField fx:id="userPasswordTextField"/>
+														<JFXPasswordField fx:id="userPasswordTextField"/>
 													</children>
 												</HBox>
 												<HBox spacing="20.0">

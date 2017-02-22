@@ -22,6 +22,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.image.Image;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
@@ -67,6 +68,7 @@ public class AppStart extends Application{
 		AnchorPane root = new AnchorPane(mediaView);
 		root.setStyle("-fx-border-color:red");
 		
+		primaryStage.getIcons().add(new Image(this.getClass().getResourceAsStream("/RES/logo.png")));
 		primaryStage.setScene(new Scene(root, 500, 281));
 		primaryStage.initStyle(StageStyle.UNDECORATED);
 		primaryStage.setResizable(false);

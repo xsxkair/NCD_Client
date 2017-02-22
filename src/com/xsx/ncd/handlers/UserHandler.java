@@ -92,7 +92,7 @@ public class UserHandler {
 	@FXML JFXTextField userPhoneTextField;
 	@FXML JFXTextField userJobTextField;
 	@FXML JFXTextField userDescTextField;
-	@FXML JFXComboBox userFatherCom;
+	@FXML JFXComboBox<User> userFatherCom;
 	@FXML JFXPasswordField adminPasswordTextField;
 	@FXML JFXButton acceptButton;
 	@FXML JFXButton cancelButton;
@@ -140,20 +140,20 @@ public class UserHandler {
         addUserSvgGlyph = SVGGlyphLoader.getIcoMoonGlyph("icomoon.svg.plus");
         addUserSvgGlyph.setPrefSize(16, 16);
         addUserSvgGlyph.setFill(Color.GREEN);   
-        addUserStackPane.getChildren().setAll(addUserSvgGlyph);
-        addChildUserStackPane.getChildren().setAll(addUserSvgGlyph);
+        addUserStackPane.getChildren().add(addUserSvgGlyph);
+        addChildUserStackPane.getChildren().add(addUserSvgGlyph);
         
         deleteUserSvgGlyph = SVGGlyphLoader.getIcoMoonGlyph("icomoon.svg.close, remove, times");
         deleteUserSvgGlyph.setPrefSize(16, 16);
         deleteUserSvgGlyph.setFill(Color.ORANGERED);
-        deleteUserStackPane.getChildren().setAll(deleteUserSvgGlyph);
-        deleteChildUserStackPane.getChildren().setAll(deleteUserSvgGlyph);
+        deleteUserStackPane.getChildren().add(deleteUserSvgGlyph);
+        deleteChildUserStackPane.getChildren().add(deleteUserSvgGlyph);
         
         modifyUserSvgGlyph = SVGGlyphLoader.getIcoMoonGlyph("icomoon.svg.pencil2");
         modifyUserSvgGlyph.setPrefSize(16, 16);
         modifyUserSvgGlyph.setFill(Color.BLUE);
-        modifyUserStackPane.getChildren().setAll(modifyUserSvgGlyph);
-        modifyChildUserStackPane.getChildren().setAll(modifyUserSvgGlyph);
+        modifyUserStackPane.getChildren().add(modifyUserSvgGlyph);
+        modifyChildUserStackPane.getChildren().add(modifyUserSvgGlyph);
         
         //主管
         UserListView.getSelectionModel().selectedItemProperty().addListener((o, oldValue, newValue)->{
@@ -184,6 +184,9 @@ public class UserHandler {
         		userPhoneLabel.setText(null);
         		userJobLabel.setText(null);
         		userDescLabel.setText(null);
+        		
+        		childUserListView.getItems().clear();
+        		childUserListView.getSelectionModel().selectFirst();
 			}
         });
         
@@ -213,6 +216,9 @@ public class UserHandler {
 			}
         });
 
+        UserTypeLabel.textProperty().addListener((o, oldValue, newValue)->{
+        	upUserList();
+        });
         
         RefreshMenuItem = new MenuItem("刷新");
         RefreshMenuItem.setOnAction(e->{
@@ -247,16 +253,16 @@ public class UserHandler {
 	private void upUserList() {
 		List<User> myUserList = null;
 		
-		if("销售".equals(UserDialogHeadLabel.getText()))
-			myUserList = userRepository.queryAllSaler();
-		else if("研发".equals(UserDialogHeadLabel.getText()))
-			myUserList = userRepository.queryAllNcdLaber();
-		else if("审核人".equals(UserDialogHeadLabel.getText()))
-			myUserList = userRepository.queryAllManager();
+		if("销售".equals(UserTypeLabel.getText()))
+			myUserList = userRepository.queryAllFatherSaler();
+		else if("研发".equals(UserTypeLabel.getText()))
+			myUserList = userRepository.queryAllFatherNcdLaber();
+		else if("审核人".equals(UserTypeLabel.getText()))
+			myUserList = userRepository.queryAllFatherManager();
 		
 		UserListView.getItems().clear();
 		UserListView.getItems().addAll(myUserList);
-		UserListView.getSelectionModel().select(null);
+		UserListView.getSelectionModel().selectFirst();
 	}
 	
 	private void showLogsDialog(String logs) {
@@ -265,7 +271,8 @@ public class UserHandler {
 	}
 	
 	@FXML
-	public void AddUserAction(){		
+	public void AddUserAction(){
+
 		UserDialogHeadLabel.setText(UserTypeLabel.getText()+"主管");
 		userAccountTextField.clear();
 		userPasswordTextField.clear();
@@ -278,10 +285,12 @@ public class UserHandler {
 		adminPasswordTextField.clear();
 		
 		if(!UserDialogVbox.getChildren().contains(UserAccountHbox))
-			UserDialogVbox.getChildren().add(UserAccountHbox);
+			UserDialogVbox.getChildren().add(0, UserAccountHbox);
 		
 		if(UserDialogVbox.getChildren().contains(UserFatherHbox))
 			UserDialogVbox.getChildren().remove(UserFatherHbox);
+		
+		UserDialog.setUserData(null);
 		
 		UserDialog.show(rootStackPane);
 	}
@@ -302,11 +311,38 @@ public class UserHandler {
 	
 	@FXML
 	public void ModifyUserAction(){
-
+		User user = UserListView.getSelectionModel().getSelectedItem();
+		if(user != null){
+			UserDialogHeadLabel.setText(UserTypeLabel.getText()+"主管");
+			
+			UserDialog.setUserData(user);
+			
+			userAccountTextField.setText(user.getAccount());
+			userPasswordTextField.setText(user.getPassword());
+			userNameTextField.setText(user.getName());
+			userSexTextField.setText(user.getSex());
+			userAgeTextField.setText(user.getAge());
+			userPhoneTextField.setText(user.getPassword());
+			userJobTextField.setText(user.getJob());
+			userDescTextField.setText(user.getDsc());
+			
+			adminPasswordTextField.clear();
+			
+			if(UserDialogVbox.getChildren().contains(UserAccountHbox))
+				UserDialogVbox.getChildren().remove(UserAccountHbox);
+			
+			if(UserDialogVbox.getChildren().contains(UserFatherHbox))
+				UserDialogVbox.getChildren().remove(UserFatherHbox);
+			
+			UserDialog.show(rootStackPane);
+		}
+		else
+			showLogsDialog("选择为空");
 	}
 	
 	@FXML
-	public void AddChildUserAction(){		
+	public void AddChildUserAction(){
+
 		UserDialogHeadLabel.setText(UserTypeLabel.getText()+"人员");
 		userAccountTextField.clear();
 		userPasswordTextField.clear();
@@ -316,15 +352,19 @@ public class UserHandler {
 		userPhoneTextField.clear();
 		userJobTextField.clear();
 		userDescTextField.clear();
+		userFatherCom.getItems().clear();
 		adminPasswordTextField.clear();
 		
-		if(UserDialogVbox.getChildren().contains(UserAccountHbox))
-			UserDialogVbox.getChildren().remove(UserAccountHbox);
+		if(!UserDialogVbox.getChildren().contains(UserAccountHbox))
+			UserDialogVbox.getChildren().add(0, UserAccountHbox);
 		
 		if(!UserDialogVbox.getChildren().contains(UserFatherHbox)){
-			UserDialogVbox.getChildren().add(UserFatherHbox);
-			userFatherCom.getItems().addAll(UserListView.getItems());
+			UserDialogVbox.getChildren().add(UserDialogVbox.getChildren().size(), UserFatherHbox);	
 		}
+		userFatherCom.getItems().addAll(UserListView.getItems());
+		userFatherCom.getSelectionModel().select(UserListView.getSelectionModel().getSelectedItem());
+		
+		UserDialog.setUserData(null);
 		
 		UserDialog.show(rootStackPane);
 	}
@@ -340,17 +380,102 @@ public class UserHandler {
 	
 	@FXML
 	public void ModifyChildUserAction(){
-
+		User user = childUserListView.getSelectionModel().getSelectedItem();
+		if(user != null){
+			UserDialogHeadLabel.setText(UserTypeLabel.getText()+"人员");
+			
+			UserDialog.setUserData(user);
+			
+			userAccountTextField.setText(user.getAccount());
+			userPasswordTextField.setText(user.getPassword());
+			userNameTextField.setText(user.getName());
+			userSexTextField.setText(user.getSex());
+			userAgeTextField.setText(user.getAge());
+			userPhoneTextField.setText(user.getPassword());
+			userJobTextField.setText(user.getJob());
+			userDescTextField.setText(user.getDsc());
+			
+			adminPasswordTextField.clear();
+			
+			if(UserDialogVbox.getChildren().contains(UserAccountHbox))
+				UserDialogVbox.getChildren().remove(UserAccountHbox);
+			
+			if(!UserDialogVbox.getChildren().contains(UserFatherHbox)){
+				UserDialogVbox.getChildren().add(UserDialogVbox.getChildren().size(), UserFatherHbox);
+			}
+			
+			userFatherCom.getItems().clear();
+			userFatherCom.getItems().addAll(UserListView.getItems());
+			userFatherCom.getSelectionModel().select(UserListView.getSelectionModel().getSelectedItem());
+			
+			UserDialog.show(rootStackPane);
+		}
+		else
+			showLogsDialog("选择为空");
 	}
 	
 	@FXML
 	public void ConfirmAction(){
-
+		User user = new User();
+		//添加
+		if(UserDialog.getUserData() == null){
+			//添加主管
+			if(UserDialogHeadLabel.getText().endsWith("主管")){
+				user.setFatheraccount(null);
+			}
+			//添加员工
+			else {
+				user.setFatheraccount(userFatherCom.getSelectionModel().getSelectedItem().getAccount());
+			}
+			
+			if("销售".equals(UserTypeLabel.getText()))
+				user.setType(2);
+			else if("研发".equals(UserTypeLabel.getText()))
+				user.setType(3);
+			else if("审核人".equals(UserTypeLabel.getText()))
+				user.setType(4);
+		}
+		//修改
+		else{
+			user = (User) UserDialog.getUserData();
+			
+			//修改主管
+			if(UserDialogHeadLabel.getText().endsWith("主管")){		
+				
+			}
+			//修改员工
+			else {
+				user.setFatheraccount(userFatherCom.getSelectionModel().getSelectedItem().getAccount());
+			}
+		}
+		
+		user.setAccount(userAccountTextField.getText());
+		user.setPassword(userPasswordTextField.getText());
+		user.setName(userNameTextField.getText());
+		user.setAge(userAgeTextField.getText());
+		user.setSex(userSexTextField.getText());
+		user.setPhone(userPhoneTextField.getText());
+		user.setJob(userJobTextField.getText());
+		user.setDsc(userDescTextField.getText());
+		
+		UserDialog.close();
+		
+		User admin = userRepository.findByAccount(userSession.getAccount());
+		if(admin.getPassword().equals(adminPasswordTextField.getText())){
+			userRepository.save(user);
+			upUserList();
+		}
+		else
+			showLogsDialog("密码错误，无此权限！");
 	}
 	
 	@FXML
 	public void CancelAction(){
-		UserDialog.close();
-		logDialog.close();
+		
+		if(UserDialog.isVisible())
+			UserDialog.close();
+		
+		if(logDialog.isVisible())
+			logDialog.close();
 	}
 }
