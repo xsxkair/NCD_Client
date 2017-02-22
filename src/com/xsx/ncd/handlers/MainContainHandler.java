@@ -87,10 +87,8 @@ public class MainContainHandler {
 	
 	@Autowired private MyInfoHandler managerInfoHandler;
 	@Autowired private AdministratorHandler administratorHandler;
-	@Autowired private SalerHandler salerHandler;
-	@Autowired private NcdLaberHandler ncdLaberHandler;
-	@Autowired private ManagerHandler managerHandler;
-	@Autowired private ChildManagerHandler childManagerHandler;
+	@Autowired private UserHandler userHandler;
+	@Autowired private ChildUserHandler childUserHandler;
 	
 	@Autowired
 	private DeviceHandler deviceHandler;
@@ -284,22 +282,22 @@ public class MainContainHandler {
 	//销售人员管理
 	@FXML
 	public void SalerManagementAction(){
-		salerHandler.ShowChileManagerPage();
+		userHandler.ShowUserPage("销售");
 	}
 	//实验室人员管理
 	@FXML
 	public void LabberManagementAction(){
-		ncdLaberHandler.ShowChileManagerPage();
+		userHandler.ShowUserPage("研发");
 	}
 	//审核人管理
 	@FXML
 	public void ManagerAction(){
-		managerHandler.ShowChileManagerPage();
+		userHandler.ShowUserPage("审核人");
 	}
 	//子审核人管理
 	@FXML
 	public void ChildManagerAction(){
-		childManagerHandler.ShowChileManagerPage();	
+		childUserHandler.ShowChileManagerPage();	
 	}
 	
 	@FXML

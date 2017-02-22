@@ -36,10 +36,7 @@ public class User {
 											//1 -- 超级账号,不能上传客户的软件，其他权限全有
 											//2 -- 销售，权限：添加和修改类别为3的用户
 											//3 -- 纽康度生物研发，只能处理自己管辖的设备的报告
-											//4 -- 一级用户（父账户为null）
-											//5 -- 二级用户（父账户不为null）
-	
-	private String adduser;					//添加当前账户的人
+											//4 -- 审核人（父账户为null，父账户不为null则为二级审核人）
 
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Id
@@ -130,14 +127,6 @@ public class User {
 
 	public void setType(Integer type) {
 		this.type = type;
-	}
-
-	public String getAdduser() {
-		return adduser;
-	}
-
-	public void setAdduser(String adduser) {
-		this.adduser = adduser;
 	}
 
 	@Override

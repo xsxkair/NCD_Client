@@ -205,7 +205,6 @@ public class AdministratorHandler {
 					tempUser.setJob(userJobTextField1.getText());
 					tempUser.setDsc(userDescTextField1.getText());
 					tempUser.setFatheraccount(admin.getAccount());
-					tempUser.setAdduser(admin.getAccount());
 					tempUser.setType(1);
 					
 					User user = userRepository.findByAccount(tempUser.getAccount());

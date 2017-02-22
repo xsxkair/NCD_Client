@@ -36,7 +36,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
 @Component
-public class ChildManagerHandler {
+public class ChildUserHandler {
 
 	private AnchorPane rootpane;
 	
@@ -107,8 +107,8 @@ public class ChildManagerHandler {
 	public void UI_Init(){
 
 		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(this.getClass().getResource("/com/xsx/ncd/views/ChildManagerPage.fxml"));
-        InputStream in = this.getClass().getResourceAsStream("/com/xsx/ncd/views/ChildManagerPage.fxml");
+		loader.setLocation(this.getClass().getResource("/com/xsx/ncd/views/ChildUserPage.fxml"));
+        InputStream in = this.getClass().getResourceAsStream("/com/xsx/ncd/views/ChildUserPage.fxml");
         loader.setController(this);
         try {
         	rootpane = loader.load(in);
@@ -205,7 +205,6 @@ public class ChildManagerHandler {
 					tempUser.setJob(userJobTextField1.getText());
 					tempUser.setDsc(userDescTextField1.getText());
 					tempUser.setFatheraccount(admin.getAccount());
-					tempUser.setAdduser(admin.getAccount());
 					tempUser.setType(5);
 					
 					User user = userRepository.findByAccount(tempUser.getAccount());
