@@ -1,3 +1,4 @@
+
 package com.xsx.ncd.handlers;
 
 import java.io.File;
@@ -14,15 +15,21 @@ import org.springframework.stereotype.Component;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDialog;
+import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.svg.SVGGlyph;
 import com.jfoenix.svg.SVGGlyphLoader;
+import com.xsx.ncd.entity.Device;
 import com.xsx.ncd.entity.User;
+import com.xsx.ncd.repository.DeviceRepository;
 import com.xsx.ncd.repository.UserRepository;
 import com.xsx.ncd.spring.UserSession;
 import com.xsx.ncd.spring.WorkPageSession;
 
+import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -34,15 +41,18 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
 @Component
-public class UserHandler {
+public class UserHandler implements EventHandler<MouseEvent>{
 
 	private AnchorPane rootpane;
+	
+	private IntegerProperty userType;
 	
 	@FXML StackPane rootStackPane;
 	
@@ -52,7 +62,7 @@ public class UserHandler {
 	@FXML StackPane addUserStackPane;						//添加主管图标
 	@FXML StackPane deleteUserStackPane;					//删除主管图标
 	@FXML StackPane modifyUserStackPane;					//修改主管图标
-	@FXML ListView<User> UserListView;						//主管列表
+	@FXML JFXListView<User> UserListView;						//主管列表
 	
 	@FXML Label userAccountLabel;
 	@FXML Label userNameLabel;
@@ -62,12 +72,20 @@ public class UserHandler {
 	@FXML Label userJobLabel;
 	@FXML Label userDescLabel;
 	
+	@FXML GridPane UserInfoPane;
+	
+	//我的设备
+	@FXML AnchorPane myDevicePane;
+	@FXML JFXListView<Device> deviceListView;						//主管列表
+	
 	//我的人员
+	@FXML AnchorPane myChildUserPane;
 	@FXML StackPane addChildUserStackPane;						//添加主管图标
 	@FXML StackPane deleteChildUserStackPane;					//删除主管图标
 	@FXML StackPane modifyChildUserStackPane;					//修改主管图标
-	@FXML ListView<User> childUserListView;						//主管列表
+	@FXML JFXListView<User> childUserListView;						//主管列表
 	
+	@FXML VBox myChildUserInfoPane;
 	@FXML Label cUserAccountLabel;
 	@FXML Label cUserNameLabel;
 	@FXML Label cUserAgeLabel;
@@ -84,6 +102,7 @@ public class UserHandler {
 	@FXML VBox UserDialogVbox;
 	@FXML HBox UserAccountHbox;
 	@FXML HBox UserFatherHbox;
+	@FXML HBox adminPasswordHBox;
 	@FXML JFXTextField userAccountTextField;
 	@FXML JFXPasswordField userPasswordTextField;
 	@FXML JFXTextField userNameTextField;
@@ -101,15 +120,12 @@ public class UserHandler {
 	@FXML JFXDialog logDialog;
 	@FXML Label dialogInfo;
 	
-	private SVGGlyph addUserSvgGlyph;
-	private SVGGlyph deleteUserSvgGlyph;
-	private SVGGlyph modifyUserSvgGlyph;
-	
 	ContextMenu myContextMenu;
 	MenuItem RefreshMenuItem;
 	
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired private DeviceRepository deviceRepository;
 	
 	@Autowired
 	private UserSession userSession;
@@ -137,23 +153,47 @@ public class UserHandler {
         rootStackPane.getChildren().remove(UserDialog);
         rootStackPane.getChildren().remove(logDialog);
 
-        addUserSvgGlyph = SVGGlyphLoader.getIcoMoonGlyph("icomoon.svg.plus");
-        addUserSvgGlyph.setPrefSize(16, 16);
-        addUserSvgGlyph.setFill(Color.GREEN);   
+        SVGGlyph addUserSvgGlyph = SVGGlyphLoader.getIcoMoonGlyph("icomoon.svg.plus");
+        addUserSvgGlyph.setPrefSize(12, 12);
+        addUserSvgGlyph.setFill(Color.GREY);   
         addUserStackPane.getChildren().add(addUserSvgGlyph);
-        addChildUserStackPane.getChildren().add(addUserSvgGlyph);
+        addUserStackPane.setOnMouseEntered(this);
+        addUserStackPane.setOnMouseExited(this);
         
-        deleteUserSvgGlyph = SVGGlyphLoader.getIcoMoonGlyph("icomoon.svg.close, remove, times");
-        deleteUserSvgGlyph.setPrefSize(16, 16);
-        deleteUserSvgGlyph.setFill(Color.ORANGERED);
+        SVGGlyph deleteUserSvgGlyph = SVGGlyphLoader.getIcoMoonGlyph("icomoon.svg.close, remove, times");
+        deleteUserSvgGlyph.setPrefSize(12, 12);
+        deleteUserSvgGlyph.setFill(Color.GREY);
         deleteUserStackPane.getChildren().add(deleteUserSvgGlyph);
-        deleteChildUserStackPane.getChildren().add(deleteUserSvgGlyph);
+        deleteUserStackPane.setOnMouseEntered(this);
+        deleteUserStackPane.setOnMouseExited(this);
         
-        modifyUserSvgGlyph = SVGGlyphLoader.getIcoMoonGlyph("icomoon.svg.pencil2");
-        modifyUserSvgGlyph.setPrefSize(16, 16);
-        modifyUserSvgGlyph.setFill(Color.BLUE);
+        SVGGlyph modifyUserSvgGlyph = SVGGlyphLoader.getIcoMoonGlyph("icomoon.svg.pencil2");
+        modifyUserSvgGlyph.setPrefSize(12, 12);
+        modifyUserSvgGlyph.setFill(Color.GREY);
         modifyUserStackPane.getChildren().add(modifyUserSvgGlyph);
-        modifyChildUserStackPane.getChildren().add(modifyUserSvgGlyph);
+        modifyUserStackPane.setOnMouseEntered(this);
+        modifyUserStackPane.setOnMouseExited(this);
+        
+        SVGGlyph addChildUserSvgGlyph = SVGGlyphLoader.getIcoMoonGlyph("icomoon.svg.plus");
+        addChildUserSvgGlyph.setPrefSize(12, 12);
+        addChildUserSvgGlyph.setFill(Color.GREY);  
+        addChildUserStackPane.getChildren().add(addChildUserSvgGlyph);
+        addChildUserStackPane.setOnMouseEntered(this);
+        addChildUserStackPane.setOnMouseExited(this);
+        
+        SVGGlyph deleteChildUserSvgGlyph = SVGGlyphLoader.getIcoMoonGlyph("icomoon.svg.close, remove, times");
+        deleteChildUserSvgGlyph.setPrefSize(12, 12);
+        deleteChildUserSvgGlyph.setFill(Color.GREY);
+        deleteChildUserStackPane.getChildren().add(deleteChildUserSvgGlyph);
+        deleteChildUserStackPane.setOnMouseEntered(this);
+        deleteChildUserStackPane.setOnMouseExited(this);
+        
+        SVGGlyph modifyChildUserSvgGlyph = SVGGlyphLoader.getIcoMoonGlyph("icomoon.svg.pencil2");
+        modifyChildUserSvgGlyph.setPrefSize(12, 12);
+        modifyChildUserSvgGlyph.setFill(Color.GREY);
+        modifyChildUserStackPane.getChildren().add(modifyChildUserSvgGlyph);
+        modifyChildUserStackPane.setOnMouseEntered(this);
+        modifyChildUserStackPane.setOnMouseExited(this);
         
         //主管
         UserListView.getSelectionModel().selectedItemProperty().addListener((o, oldValue, newValue)->{
@@ -168,6 +208,11 @@ public class UserHandler {
         		userPhoneLabel.setText(user.getPhone());
         		userJobLabel.setText(user.getJob());
         		userDescLabel.setText(user.getDsc());
+        		
+        		//获取我的设备
+        		List<Device> myDeviceList = deviceRepository.findByAccount(user.getAccount());
+        		deviceListView.getItems().clear();
+        		deviceListView.getItems().addAll(myDeviceList);
         		
         		//获取我的员工
         		List<User> myChildUserList = userRepository.queryChildUserList(newValue.getAccount());
@@ -215,10 +260,58 @@ public class UserHandler {
         		cUserDescLabel.setText(null);
 			}
         });
-
-        UserTypeLabel.textProperty().addListener((o, oldValue, newValue)->{
-        	upUserList();
+        
+        userType = new SimpleIntegerProperty();
+        userType.addListener((o, oldValue, newValue)->{
+        	if(newValue != null){
+        		
+        		if(!UserInfoPane.getChildren().contains(myDevicePane))
+        			UserInfoPane.getChildren().add(myDevicePane);
+        		if(!UserInfoPane.getChildren().contains(myChildUserPane))
+        			UserInfoPane.getChildren().add(myChildUserPane);
+        		if(!UserInfoPane.getChildren().contains(myChildUserInfoPane))
+        			UserInfoPane.getChildren().add(myChildUserInfoPane);
+        		
+        		if(newValue.equals(1)){
+        			UserTypeLabel.setText("管理员");
+        			if(UserInfoPane.getChildren().contains(myDevicePane))
+            			UserInfoPane.getChildren().remove(myDevicePane);
+            		if(UserInfoPane.getChildren().contains(myChildUserPane))
+            			UserInfoPane.getChildren().remove(myChildUserPane);
+            		if(UserInfoPane.getChildren().contains(myChildUserInfoPane))
+            			UserInfoPane.getChildren().remove(myChildUserInfoPane);
+        		}
+        		else if (newValue.equals(2)) {
+        			UserTypeLabel.setText("销售");
+				}
+        		else if (newValue.equals(3)) {
+        			UserTypeLabel.setText("研发");
+				}
+        		else if (newValue.equals(4)) {
+        			UserTypeLabel.setText("审核人");
+				}
+        		
+        		upUserList();
+        	}
         });
+        
+        acceptButton.disableProperty().bind(new BooleanBinding() {
+        	{
+        		bind(userAccountTextField.lengthProperty());
+        		bind(userPasswordTextField.lengthProperty());
+        		bind(adminPasswordTextField.lengthProperty());
+        	}
+
+			@Override
+			protected boolean computeValue() {
+				// TODO Auto-generated method stub
+				if((userAccountTextField.getLength() > 0) && (userPasswordTextField.getLength() >= 6) &&
+						(adminPasswordTextField.getLength() >= 6))
+					return false;
+				else
+					return true;
+			}
+		});
         
         RefreshMenuItem = new MenuItem("刷新");
         RefreshMenuItem.setOnAction(e->{
@@ -245,19 +338,21 @@ public class UserHandler {
         AnchorPane.setRightAnchor(rootpane, 0.0);
 	}
 	
-	public void ShowUserPage(String whichUser){
-		UserTypeLabel.setText(whichUser);
+	public void ShowUserPage(int userType){
+		this.userType.set(userType);
 		workPageSession.setWorkPane(rootpane);
 	}
 	
 	private void upUserList() {
 		List<User> myUserList = null;
 		
-		if("销售".equals(UserTypeLabel.getText()))
+		if(userType.getValue().equals(1))
+			myUserList = userRepository.queryAllAdministrator();
+		else if (userType.getValue().equals(2)) 
 			myUserList = userRepository.queryAllFatherSaler();
-		else if("研发".equals(UserTypeLabel.getText()))
+		else if (userType.getValue().equals(3)) 
 			myUserList = userRepository.queryAllFatherNcdLaber();
-		else if("审核人".equals(UserTypeLabel.getText()))
+		else if (userType.getValue().equals(4)) 
 			myUserList = userRepository.queryAllFatherManager();
 		
 		UserListView.getItems().clear();
@@ -273,7 +368,11 @@ public class UserHandler {
 	@FXML
 	public void AddUserAction(){
 
-		UserDialogHeadLabel.setText(UserTypeLabel.getText()+"主管");
+		if(userType.get() != 1)
+			UserDialogHeadLabel.setText("添加"+UserTypeLabel.getText()+"主管");
+		else
+			UserDialogHeadLabel.setText("添加"+UserTypeLabel.getText());
+		
 		userAccountTextField.clear();
 		userPasswordTextField.clear();
 		userNameTextField.clear();
@@ -313,7 +412,10 @@ public class UserHandler {
 	public void ModifyUserAction(){
 		User user = UserListView.getSelectionModel().getSelectedItem();
 		if(user != null){
-			UserDialogHeadLabel.setText(UserTypeLabel.getText()+"主管");
+			if(userType.get() != 1)
+				UserDialogHeadLabel.setText("修改"+UserTypeLabel.getText()+"主管信息");
+			else
+				UserDialogHeadLabel.setText("修改"+UserTypeLabel.getText()+"信息");
 			
 			UserDialog.setUserData(user);
 			
@@ -322,7 +424,7 @@ public class UserHandler {
 			userNameTextField.setText(user.getName());
 			userSexTextField.setText(user.getSex());
 			userAgeTextField.setText(user.getAge());
-			userPhoneTextField.setText(user.getPassword());
+			userPhoneTextField.setText(user.getPhone());
 			userJobTextField.setText(user.getJob());
 			userDescTextField.setText(user.getDsc());
 			
@@ -343,7 +445,11 @@ public class UserHandler {
 	@FXML
 	public void AddChildUserAction(){
 
-		UserDialogHeadLabel.setText(UserTypeLabel.getText()+"人员");
+		if(userType.get() != 1)
+			UserDialogHeadLabel.setText("添加"+UserTypeLabel.getText()+"人员");
+		else
+			UserDialogHeadLabel.setText("添加"+UserTypeLabel.getText());
+
 		userAccountTextField.clear();
 		userPasswordTextField.clear();
 		userNameTextField.clear();
@@ -382,7 +488,11 @@ public class UserHandler {
 	public void ModifyChildUserAction(){
 		User user = childUserListView.getSelectionModel().getSelectedItem();
 		if(user != null){
-			UserDialogHeadLabel.setText(UserTypeLabel.getText()+"人员");
+
+			if(userType.get() != 1)
+				UserDialogHeadLabel.setText("修改"+UserTypeLabel.getText()+"人员信息");
+			else
+				UserDialogHeadLabel.setText("修改"+UserTypeLabel.getText()+"信息");
 			
 			UserDialog.setUserData(user);
 			
@@ -391,7 +501,7 @@ public class UserHandler {
 			userNameTextField.setText(user.getName());
 			userSexTextField.setText(user.getSex());
 			userAgeTextField.setText(user.getAge());
-			userPhoneTextField.setText(user.getPassword());
+			userPhoneTextField.setText(user.getPhone());
 			userJobTextField.setText(user.getJob());
 			userDescTextField.setText(user.getDsc());
 			
@@ -417,35 +527,36 @@ public class UserHandler {
 	@FXML
 	public void ConfirmAction(){
 		User user = new User();
+		
+		User admin = userRepository.findByAccount(userSession.getAccount());
+		if(!admin.getPassword().equals(adminPasswordTextField.getText())){
+			showLogsDialog("密码错误，无此权限！");
+			return;
+		}
+		
 		//添加
 		if(UserDialog.getUserData() == null){
-			//添加主管
-			if(UserDialogHeadLabel.getText().endsWith("主管")){
-				user.setFatheraccount(null);
-			}
 			//添加员工
-			else {
+			if(UserDialogVbox.getChildren().contains(UserFatherHbox)){
 				user.setFatheraccount(userFatherCom.getSelectionModel().getSelectedItem().getAccount());
 			}
+			//添加主管
+			else {
+				user.setFatheraccount(null);
+			}	
 			
-			if("销售".equals(UserTypeLabel.getText()))
-				user.setType(2);
-			else if("研发".equals(UserTypeLabel.getText()))
-				user.setType(3);
-			else if("审核人".equals(UserTypeLabel.getText()))
-				user.setType(4);
 		}
 		//修改
 		else{
 			user = (User) UserDialog.getUserData();
 			
-			//修改主管
-			if(UserDialogHeadLabel.getText().endsWith("主管")){		
-				
-			}
 			//修改员工
-			else {
+			if(UserDialogVbox.getChildren().contains(UserFatherHbox)){
 				user.setFatheraccount(userFatherCom.getSelectionModel().getSelectedItem().getAccount());
+			}
+			//修改主管
+			else {
+
 			}
 		}
 		
@@ -458,15 +569,12 @@ public class UserHandler {
 		user.setJob(userJobTextField.getText());
 		user.setDsc(userDescTextField.getText());
 		
+		user.setType(userType.get());
+		
 		UserDialog.close();
 		
-		User admin = userRepository.findByAccount(userSession.getAccount());
-		if(admin.getPassword().equals(adminPasswordTextField.getText())){
-			userRepository.save(user);
-			upUserList();
-		}
-		else
-			showLogsDialog("密码错误，无此权限！");
+		userRepository.save(user);
+		upUserList();
 	}
 	
 	@FXML
@@ -477,5 +585,18 @@ public class UserHandler {
 		
 		if(logDialog.isVisible())
 			logDialog.close();
+	}
+
+	@Override
+	public void handle(MouseEvent event) {
+		// TODO Auto-generated method stub\
+		StackPane stackPane = (StackPane) event.getSource();
+		SVGGlyph sVGGlyph = (SVGGlyph) stackPane.getChildren().get(0);
+		
+		if(MouseEvent.MOUSE_ENTERED.equals(event.getEventType()))
+			sVGGlyph.setFill(Color.AQUA
+					);
+		else
+			sVGGlyph.setFill(Color.GREY);
 	}
 }

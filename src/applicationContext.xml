@@ -58,5 +58,41 @@
 	<!-- 配置springdata自动扫描的包 -->
 	<jpa:repositories base-package="com.xsx.ncd" 
 		entity-manager-factory-ref="entityManagerFactory"></jpa:repositories>
-			
+	
+	<!-- NT-proBNP固定信息 -->
+	<bean id="NT_proBNPConstInfo" class="com.xsx.ncd.define.CardConstInfo">
+		<property name="pointnum" value="0"></property>
+		<property name="lowestresult" value="20"></property>
+		<property name="highestresult" value="30000"></property>
+		<property name="normalresult" value="111"></property>
+		<property name="measure" value="pg/mL"></property>
+	</bean>
+	
+	<!-- CK-MB固定信息 -->
+	<bean id="CK_MBConstInfo" class="com.xsx.ncd.define.CardConstInfo">
+		<property name="pointnum" value="2"></property>
+		<property name="lowestresult" value="0.5"></property>
+		<property name="highestresult" value="1000"></property>
+		<property name="normalresult" value="222"></property>
+		<property name="measure" value="ng/mL"></property>
+	</bean>
+	
+	<!-- cTnI固定信息 -->
+	<bean id="cTnIConstInfo" class="com.xsx.ncd.define.CardConstInfo">
+		<property name="pointnum" value="2"></property>
+		<property name="lowestresult" value="20"></property>
+		<property name="highestresult" value="30000"></property>
+		<property name="normalresult" value="XSX"></property>
+		<property name="measure" value="ng/mL"></property>
+	</bean>
+	
+	<!-- Myo固定信息 -->
+	<bean id="MyoConstInfo" class="com.xsx.ncd.define.CardConstInfo">
+		<property name="pointnum" value="2"></property>
+		<property name="lowestresult" value="20"></property>
+		<property name="highestresult" value="30000"></property>
+		<property name="normalresult" value="SXSX"></property>
+		<property name="measure" value="ng/mL"></property>
+	</bean>
+	
 </beans>

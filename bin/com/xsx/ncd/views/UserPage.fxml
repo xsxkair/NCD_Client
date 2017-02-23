@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXDialog?>
 <?import com.jfoenix.controls.JFXDialogLayout?>
+<?import com.jfoenix.controls.JFXListView?>
 <?import com.jfoenix.controls.JFXPasswordField?>
 <?import com.jfoenix.controls.JFXTextField?>
-<?import com.jfoenix.controls.JFXComboBox?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -26,7 +26,7 @@
             <JFXDialog fx:id="UserDialog">
                <JFXDialogLayout>
 					<heading>
-						<Label fx:id="UserDialogHeadLabel"></Label>
+						<Label fx:id="UserDialogHeadLabel" />
 					</heading>
 					<body>
 						<VBox spacing="20.0">
@@ -38,62 +38,62 @@
 												<HBox fx:id="UserAccountHbox" spacing="20.0">
 													<children>
 														<Label text="账       号：" />
-														<JFXTextField fx:id="userAccountTextField"/>
+														<JFXTextField fx:id="userAccountTextField" />
 													</children>
 												</HBox>
 												<HBox spacing="20.0">
 													<children>
 														<Label text="密       码：" />
-														<JFXPasswordField fx:id="userPasswordTextField"/>
+														<JFXPasswordField fx:id="userPasswordTextField" />
 													</children>
 												</HBox>
 												<HBox spacing="20.0">
 													<children>
 														<Label text="姓       名：" />
-														<JFXTextField fx:id="userNameTextField"/>
+														<JFXTextField fx:id="userNameTextField" />
 													</children>
 												</HBox>
 												<HBox spacing="20.0">
 													<children>
 														<Label text="性       别：" />
-														<JFXTextField fx:id="userSexTextField"/>
+														<JFXTextField fx:id="userSexTextField" />
 													</children>
 												</HBox>
 												<HBox spacing="20.0">
 													<children>
 														<Label text="年       龄：" />
-														<JFXTextField fx:id="userAgeTextField"/>
+														<JFXTextField fx:id="userAgeTextField" />
 													</children>
 												</HBox>
 												<HBox spacing="20.0">
 													<children>
 														<Label text="联系方式：" />
-														<JFXTextField fx:id="userPhoneTextField"/>
+														<JFXTextField fx:id="userPhoneTextField" />
 													</children>
 												</HBox>
 												<HBox spacing="20.0">
 													<children>
 														<Label text="职       务：" />
-														<JFXTextField fx:id="userJobTextField"/>
+														<JFXTextField fx:id="userJobTextField" />
 													</children>
 												</HBox>
 												<HBox spacing="20.0">
 													<children>
 														<Label text="备       注：" />
-														<JFXTextField fx:id="userDescTextField"/>
+														<JFXTextField fx:id="userDescTextField" />
 													</children>
 												</HBox>
 												<HBox fx:id="UserFatherHbox" spacing="20.0">
 													<children>
 														<Label text="归       属：" />
-														<JFXComboBox fx:id="userFatherCom"/>
+														<JFXComboBox fx:id="userFatherCom" />
 													</children>
 												</HBox>
 		                                     </children>
 		                                </VBox>
 		                             </children>
 		                          </HBox>
-		                          <HBox>
+		                          <HBox fx:id="adminPasswordHBox">
 		                          	<children>
 		                          		<Label text="操作密码：" />
 		                          		<JFXPasswordField fx:id="adminPasswordTextField" text="密码" />
@@ -104,7 +104,7 @@
 					</body>
 					<actions>
 						<JFXButton onAction="#CancelAction" styleClass="dialog-accept">取消</JFXButton>
-						<JFXButton onAction="#ConfirmAction"  styleClass="dialog-accept">确认</JFXButton>
+						<JFXButton fx:id="acceptButton" onAction="#ConfirmAction" styleClass="dialog-accept">确认</JFXButton>
 					</actions>
 				</JFXDialogLayout>
             </JFXDialog>
@@ -137,41 +137,41 @@
                   </HBox>
                   <HBox spacing="50.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0">
                      <children>
-                        <AnchorPane>
+                        <AnchorPane prefWidth="200.0">
                            <children>
-                              <HBox spacing="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <HBox alignment="CENTER_LEFT" spacing="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
                                     <Label text="主管">
-                                       <HBox.margin>
-                                          <Insets right="115.0" />
-                                       </HBox.margin>
-                                    </Label>
-                                    <StackPane fx:id="addUserStackPane" onMouseClicked="#AddUserAction" prefHeight="16.0" prefWidth="16.0">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font></Label>
+                                    <StackPane fx:id="addUserStackPane" maxHeight="12.0" maxWidth="12.0" onMouseClicked="#AddUserAction" prefHeight="12.0" prefWidth="12.0">
                                        <cursor>
                                           <Cursor fx:constant="HAND" />
                                        </cursor>
                                     </StackPane>
-                                    <StackPane fx:id="deleteUserStackPane" onMouseClicked="#DeleteUserAction" prefHeight="16.0" prefWidth="16.0">
+                                    <StackPane fx:id="deleteUserStackPane" maxHeight="12.0" maxWidth="12.0" onMouseClicked="#DeleteUserAction" prefHeight="12.0" prefWidth="12.0">
                                        <cursor>
                                           <Cursor fx:constant="HAND" />
                                        </cursor>
                                     </StackPane>
-                                    <StackPane fx:id="modifyUserStackPane" onMouseClicked="#ModifyUserAction" prefHeight="16.0" prefWidth="16.0">
+                                    <StackPane fx:id="modifyUserStackPane" maxHeight="12.0" maxWidth="12.0" onMouseClicked="#ModifyUserAction" prefHeight="12.0" prefWidth="12.0">
                                        <cursor>
                                           <Cursor fx:constant="HAND" />
                                        </cursor>
                                     </StackPane>
                                  </children>
                               </HBox>
-                              <ListView fx:id="UserListView" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="23.0" />
+                              <JFXListView fx:id="UserListView" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="23.0" />
                            </children>
                            <HBox.margin>
                               <Insets bottom="20.0" left="10.0" />
                            </HBox.margin>
                         </AnchorPane>
-                        <GridPane hgap="50.0" vgap="20.0">
+                        <GridPane fx:id="UserInfoPane" hgap="20.0" vgap="20.0">
                           <columnConstraints>
                             <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                              <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
                               <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
                           </columnConstraints>
                           <rowConstraints>
@@ -179,7 +179,7 @@
                             <RowConstraints percentHeight="80.0" valignment="TOP" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <VBox spacing="10.0">
+                              <VBox spacing="10.0" GridPane.columnSpan="3">
                                  <children>
                                     <HBox alignment="CENTER_LEFT" spacing="50.0">
                                        <children>
@@ -220,36 +220,48 @@
                                     </HBox>
                                  </children>
                               </VBox>
-                              <AnchorPane GridPane.rowIndex="1">
+                              <AnchorPane fx:id="myDevicePane" prefWidth="200.0" GridPane.rowIndex="1">
                                  <children>
                                     <HBox spacing="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <children>
+                                          <Label text="我的设备">
+                                             <font>
+                                                <Font size="15.0" />
+                                             </font></Label>
+                                       </children>
+                                    </HBox>
+                                    <JFXListView fx:id="deviceListView" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="23.0" />
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane fx:id="myChildUserPane" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                 <children>
+                                    <HBox alignment="CENTER_LEFT" spacing="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <children>
                                           <Label text="我的人员">
-                                             <HBox.margin>
-                                                <Insets right="115.0" />
-                                             </HBox.margin>
-                                          </Label>
-                                          <StackPane fx:id="addChildUserStackPane" onMouseClicked="#AddChildUserAction" prefHeight="16.0" prefWidth="16.0">
+                                             <font>
+                                                <Font size="15.0" />
+                                             </font></Label>
+                                          <StackPane fx:id="addChildUserStackPane" maxHeight="12.0" maxWidth="12.0" onMouseClicked="#AddChildUserAction" prefHeight="12.0" prefWidth="12.0">
                                              <cursor>
                                                 <Cursor fx:constant="HAND" />
                                              </cursor>
                                           </StackPane>
-                                          <StackPane fx:id="deleteChildUserStackPane" onMouseClicked="#DeleteChildUserAction" prefHeight="16.0" prefWidth="16.0">
+                                          <StackPane fx:id="deleteChildUserStackPane" maxHeight="12.0" maxWidth="12.0" onMouseClicked="#DeleteChildUserAction" prefHeight="12.0" prefWidth="12.0">
                                              <cursor>
                                                 <Cursor fx:constant="HAND" />
                                              </cursor>
                                           </StackPane>
-                                          <StackPane fx:id="modifyChildUserStackPane" onMouseClicked="#ModifyChildUserAction" prefHeight="16.0" prefWidth="16.0">
+                                          <StackPane fx:id="modifyChildUserStackPane" maxHeight="12.0" maxWidth="12.0" onMouseClicked="#ModifyChildUserAction" prefHeight="12.0" prefWidth="12.0">
                                              <cursor>
                                                 <Cursor fx:constant="HAND" />
                                              </cursor>
                                           </StackPane>
                                        </children>
                                     </HBox>
-                                    <ListView fx:id="childUserListView" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="23.0" />
+                                    <JFXListView fx:id="childUserListView" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="23.0" />
                                  </children>
                               </AnchorPane>
-                              <VBox spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                              <VBox fx:id="myChildUserInfoPane" spacing="10.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
                                  <children>
                                     <HBox alignment="CENTER_LEFT" spacing="50.0">
                                        <children>

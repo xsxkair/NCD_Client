@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXDialog?>
 <?import com.jfoenix.controls.JFXDialogLayout?>
+<?import com.jfoenix.controls.JFXListView?>
 <?import com.jfoenix.controls.JFXPasswordField?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
@@ -17,126 +18,105 @@
 
 <AnchorPane prefHeight="765.0" prefWidth="1240.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <StackPane fx:id="rootStackPane" prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <StackPane fx:id="rootStackPane" layoutX="10.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <JFXDialog fx:id="addUserDialog">
-               <JFXDialogLayout>
-					<heading>
-						<Label>添加审核人</Label>
-					</heading>
-					<body>
-						<VBox spacing="20.0">
-							<children>
-								<HBox alignment="CENTER_LEFT" spacing="20.0">
-									<children>
-										<VBox alignment="BASELINE_LEFT" spacing="20.0">
-											<children>
-												<Label text="账       号：" />
-		                                        <Label text="密       码：" />
-		                                        <Label text="姓       名：" />
-		                                        <Label text="性       别：" />
-		                                        <Label text="年       龄：" />
-		                                        <Label text="联系方式：" />
-		                                        <Label text="职       务：" />
-		                                        <Label text="备       注：" />
-		                                     </children>
-		                                </VBox>
-		                                <VBox spacing="5.0">
-		                                   <children>
-		                                      <JFXTextField fx:id="userAccountTextField1" text="账号" />
-		                                      <JFXPasswordField fx:id="userPasswordTextField1" text="密码" />
-		                                      <JFXTextField fx:id="userNameTextField1" text="姓名" />
-		                                      <JFXTextField fx:id="userSexTextField1" text="性别" />
-		                                      <JFXTextField fx:id="userAgeTextField1" text="年龄" />
-		                                      <JFXTextField fx:id="userPhoneTextField1" text="联系方式" />
-		                                      <JFXTextField fx:id="userJobTextField1" text="职务" />
-		                                      <JFXTextField fx:id="userDescTextField1" text="备注" />
-		                                   </children>
-		                                </VBox>
-		                             </children>
-		                          </HBox>
-		                          <HBox>
-		                          	<children>
-		                          		<Label text="管理员密码：" />
-		                          		<JFXPasswordField fx:id="adminPasswordTextField" text="密码" />
-		                          	</children>
-		                          </HBox>
-                          	</children>
-                          </VBox>
-					</body>
-					<actions>
-						<JFXButton fx:id="cancelButton0" styleClass="dialog-accept">取消</JFXButton>
-						<JFXButton fx:id="acceptButton0" styleClass="dialog-accept">确认</JFXButton>
-					</actions>
-				</JFXDialogLayout>
-            </JFXDialog>
-            <JFXDialog fx:id="editUserDialog">
-               <JFXDialogLayout>
-					<heading>
-						<Label>修改审核人</Label>
-					</heading>
-					<body>
-						<VBox spacing="20.0">
-							<children>
-								<HBox alignment="CENTER_LEFT" spacing="20.0">
-									<children>
-										<VBox alignment="BASELINE_LEFT" spacing="20.0">
-											<children>
-		                                        <Label text="密       码：" />
-		                                        <Label text="姓       名：" />
-		                                        <Label text="性       别：" />
-		                                        <Label text="年       龄：" />
-		                                        <Label text="联系方式：" />
-		                                        <Label text="职       务：" />
-		                                        <Label text="备       注：" />
-		                                     </children>
-		                                </VBox>
-		                                <VBox spacing="5.0">
-		                                   <children>
-		                                      <JFXPasswordField fx:id="userPasswordTextField2" text="密码" />
-		                                      <JFXTextField fx:id="userNameTextField2" text="姓名" />
-		                                      <JFXTextField fx:id="userSexTextField2" text="性别" />
-		                                      <JFXTextField fx:id="userAgeTextField2" text="年龄" />
-		                                      <JFXTextField fx:id="userPhoneTextField2" text="联系方式" />
-		                                      <JFXTextField fx:id="userJobTextField2" text="职务" />
-		                                      <JFXTextField fx:id="userDescTextField2" text="备注" />
-		                                   </children>
-		                                </VBox>
-		                             </children>
-		                          </HBox>
-		                          <HBox>
-		                          	<children>
-		                          		<Label text="管理员密码：" />
-		                          		<JFXPasswordField fx:id="adminPasswordTextField1" text="密码" />
-		                          	</children>
-		                          </HBox>
-                          	</children>
-                          </VBox>
-					</body>
-					<actions>
-						<JFXButton fx:id="cancelButton1" styleClass="dialog-accept">取消</JFXButton>
-						<JFXButton fx:id="acceptButton1" styleClass="dialog-accept">确认</JFXButton>
-					</actions>
-				</JFXDialogLayout>
+            <JFXDialog fx:id="UserDialog">
+               <content>
+                  <JFXDialogLayout>
+                     <heading>
+                        <Label fx:id="UserDialogHeadLabel" />
+                     </heading>
+                     <body>
+                        <VBox spacing="20.0">
+                           <children>
+                              <VBox fx:id="UserDialogVbox" alignment="BASELINE_LEFT" spacing="5.0">
+                                       <children>
+                                          <HBox fx:id="UserAccountHbox" spacing="20.0">
+                                             <children>
+                                                <Label text="账       号：" />
+                                                <JFXTextField fx:id="userAccountTextField" />
+                                             </children>
+                                          </HBox>
+                                          <HBox spacing="20.0">
+                                             <children>
+                                                <Label text="密       码：" />
+                                                <JFXPasswordField fx:id="userPasswordTextField" />
+                                             </children>
+                                          </HBox>
+                                          <HBox spacing="20.0">
+                                             <children>
+                                                <Label text="姓       名：" />
+                                                <JFXTextField fx:id="userNameTextField" />
+                                             </children>
+                                          </HBox>
+                                          <HBox spacing="20.0">
+                                             <children>
+                                                <Label text="性       别：" />
+                                                <JFXTextField fx:id="userSexTextField" />
+                                             </children>
+                                          </HBox>
+                                          <HBox spacing="20.0">
+                                             <children>
+                                                <Label text="年       龄：" />
+                                                <JFXTextField fx:id="userAgeTextField" />
+                                             </children>
+                                          </HBox>
+                                          <HBox spacing="20.0">
+                                             <children>
+                                                <Label text="联系方式：" />
+                                                <JFXTextField fx:id="userPhoneTextField" />
+                                             </children>
+                                          </HBox>
+                                          <HBox spacing="20.0">
+                                             <children>
+                                                <Label text="职       务：" />
+                                                <JFXTextField fx:id="userJobTextField" />
+                                             </children>
+                                          </HBox>
+                                          <HBox spacing="20.0">
+                                             <children>
+                                                <Label text="备       注：" />
+                                                <JFXTextField fx:id="userDescTextField" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+								</VBox>
+                              <HBox>
+                                 <children>
+                                    <Label text="操作密码：" />
+                                    <JFXPasswordField fx:id="adminPasswordTextField" text="密码" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </body>
+                     <actions>
+                        <JFXButton onAction="#CancelAction" styleClass="dialog-accept">取消</JFXButton>
+						<JFXButton fx:id="acceptButton" onAction="#ConfirmAction" styleClass="dialog-accept">确认</JFXButton>
+                     </actions>
+                  </JFXDialogLayout>
+               </content>
             </JFXDialog>
             <JFXDialog fx:id="logDialog">
-               <JFXDialogLayout>
-					<heading>
-						<Label>信息</Label>
-					</heading>
-					<body>
-						 <Label fx:id="dialogInfo" />
-					</body>
-					<actions>
-						<JFXButton fx:id="acceptButton2" styleClass="dialog-accept">确认</JFXButton>
-					</actions>
-				</JFXDialogLayout>
+               <content>
+                  <JFXDialogLayout>
+                     <heading>
+                        <Label />
+                     </heading>
+                     <body>
+                        <Label fx:id="dialogInfo" />
+                     </body>
+                     <actions>
+                        <JFXButton onAction="#CancelAction" styleClass="dialog-accept">确认</JFXButton>
+                     </actions>
+                  </JFXDialogLayout>
+               </content>
             </JFXDialog>
             <AnchorPane>
                <children>
                   <HBox alignment="CENTER_LEFT" style="-fx-border-width: 0 0 1 0; -fx-border-color: grey;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
-                        <Label text="审核人">
+                        <Label fx:id="UserTypeLabel" text="我的人员">
                            <font>
                               <Font name="System Bold" size="15.0" />
                            </font>
@@ -148,66 +128,80 @@
                   </HBox>
                   <HBox spacing="50.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0">
                      <children>
-                        <AnchorPane>
+                        <AnchorPane prefWidth="200.0">
                            <children>
-                              <HBox alignment="TOP_RIGHT" spacing="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <HBox alignment="CENTER_LEFT" spacing="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
-                                    <StackPane fx:id="addUserStackPane" onMouseClicked="#AddUserAction" prefHeight="16.0" prefWidth="16.0">
+                                    <Label text="人员列表">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                    </Label>
+                                    <StackPane fx:id="addUserStackPane" maxHeight="12.0" maxWidth="12.0" onMouseClicked="#AddUserAction" prefHeight="12.0" prefWidth="12.0">
                                        <cursor>
                                           <Cursor fx:constant="HAND" />
                                        </cursor>
                                     </StackPane>
-                                    <StackPane fx:id="deleteUserStackPane" onMouseClicked="#DeleteUserAction" prefHeight="16.0" prefWidth="16.0">
+                                    <StackPane fx:id="deleteUserStackPane" maxHeight="12.0" maxWidth="12.0" onMouseClicked="#DeleteUserAction" prefHeight="12.0" prefWidth="12.0">
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor>
+                                    </StackPane>
+                                    <StackPane fx:id="modifyUserStackPane" maxHeight="12.0" maxWidth="12.0" onMouseClicked="#ModifyUserAction" prefHeight="12.0" prefWidth="12.0">
                                        <cursor>
                                           <Cursor fx:constant="HAND" />
                                        </cursor>
                                     </StackPane>
                                  </children>
                               </HBox>
-                              <ListView fx:id="managerrListView" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="23.0" />
+                              <JFXListView fx:id="UserListView" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="23.0" />
                            </children>
                            <HBox.margin>
                               <Insets bottom="20.0" left="10.0" />
                            </HBox.margin>
                         </AnchorPane>
-                        <VBox spacing="20.0">
+                        <VBox spacing="10.0">
                            <children>
-                              <HBox alignment="CENTER_LEFT" spacing="20.0">
+                              <HBox alignment="CENTER_LEFT" spacing="50.0">
                                  <children>
-                                    <VBox alignment="BASELINE_LEFT" spacing="20.0">
-                                       <children>
-                                          <Label nodeOrientation="LEFT_TO_RIGHT" text="账       号：" />
-                                          <Label text="密       码：" />
-                                          <Label nodeOrientation="LEFT_TO_RIGHT" text="姓       名：" />
-                                          <Label text="性       别：" />
-                                          <Label text="年       龄：" />
-                                          <Label text="联系方式：" />
-                                          <Label text="职       务：" />
-                                          <Label text="备       注：" />
-                                       </children>
-                                    </VBox>
-                                    <VBox spacing="6.0">
-                                       <children>
-                                          <JFXTextField fx:id="userAccountTextField" editable="false" focusColor="#405aa800" text="账号" unFocusColor="#4d4d4d00" />
-                                          <JFXTextField fx:id="userPasswordTextField" focusColor="#405aa800" text="密码" unFocusColor="#4d4d4d00" />
-                                          <JFXTextField fx:id="userNameTextField" focusColor="#405aa800" text="姓名" unFocusColor="#4d4d4d00" />
-                                          <JFXTextField fx:id="userSexTextField" focusColor="#405aa800" text="性别" unFocusColor="#4d4d4d00" />
-                                          <JFXTextField fx:id="userAgeTextField" focusColor="#405aa800" text="年龄" unFocusColor="#4d4d4d00" />
-                                          <JFXTextField fx:id="userPhoneTextField" focusColor="#405aa800" text="联系方式" unFocusColor="#4d4d4d00" />
-                                          <JFXTextField fx:id="userJobTextField" focusColor="#405aa800" text="职务" unFocusColor="#4d4d4d00" />
-                                          <JFXTextField fx:id="userDescTextField" focusColor="#405aa800" text="备注" unFocusColor="#4d4d4d00" />
-                                       </children>
-                                    </VBox>
+                                    <Label text="个人账号：">
+                                       <font>
+                                          <Font name="System Bold" size="15.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="userAccountLabel" text="账号" />
                                  </children>
                               </HBox>
-                              <HBox alignment="CENTER_RIGHT" spacing="30.0">
+                              <HBox alignment="CENTER_LEFT" spacing="50.0">
                                  <children>
-                                    <JFXButton fx:id="saveModifyUserButton" onAction="#saveModifyUserAction" prefHeight="30.0" prefWidth="80.0" style="-fx-background-color: cyan;" text="编辑" />
+                                    <Label text="个人信息：">
+                                       <font>
+                                          <Font name="System Bold" size="15.0" />
+                                       </font>
+                                    </Label>
+                                    <VBox alignment="CENTER_LEFT" spacing="10.0">
+                                       <children>
+                                          <HBox alignment="CENTER_LEFT" spacing="50.0">
+                                             <children>
+                                                <Label fx:id="userNameLabel" text="-" />
+                                                <Label fx:id="userAgeLabel" text="-" />
+                                                <Label fx:id="userSexLabel" text="-" />
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER_LEFT" spacing="50.0">
+                                             <children>
+                                                <Label fx:id="userPhoneLabel" text="-" />
+                                                <Label fx:id="userJobLabel" text="-" />
+                                             </children>
+                                          </HBox>
+                                          <Label fx:id="userDescLabel" text="-" />
+                                       </children>
+                                    </VBox>
                                  </children>
                               </HBox>
                            </children>
                            <HBox.margin>
-                              <Insets top="23.0" />
+                              <Insets top="25.0" />
                            </HBox.margin>
                         </VBox>
                      </children>

@@ -108,7 +108,7 @@
          </columnResizePolicy>
       </TableView>
       <Pagination fx:id="GB_Pagination" maxPageIndicatorCount="20" styleClass="bullet" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-      <VBox fx:id="GB_FreshPane" alignment="CENTER" layoutX="20.0" layoutY="20.0" spacing="10.0" style="-fx-background-color: rgba(0, 0, 0, 0.2);" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <VBox fx:id="GB_FreshPane" alignment="CENTER" layoutX="20.0" layoutY="20.0" spacing="10.0" style="-fx-background-color: rgba(0, 0, 0, 0.2);" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <JFXSpinner startingAngle="0.0" style="-fx-radius: 50;" />
             <Label text="正在加载数据，请稍后" />

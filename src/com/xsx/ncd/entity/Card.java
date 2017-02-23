@@ -16,23 +16,24 @@ public class Card {
 	private Integer channel;
 	private Float low;
 	private Float high;
+	private String normal;
 	private String danwei;
 	private Integer xsd;
-	private String t_l;
+	private Integer t_l;
 	private Integer waitt;
-	private String c_l;
+	private Integer c_l;
 	private java.sql.Date outdate;			//过期时间
-	private String fend1;
-	private String fend2;
-	private String qu1_a;
-	private String qu1_b;
-	private String qu1_c;
-	private String qu2_a;
-	private String qu2_b;
-	private String qu2_c;
-	private String qu3_a;
-	private String qu3_b;
-	private String qu3_c;
+	private Float fend1;
+	private Float fend2;
+	private Float qu1_a;
+	private Float qu1_b;
+	private Float qu1_c;
+	private Float qu2_a;
+	private Float qu2_b;
+	private Float qu2_c;
+	private Float qu3_a;
+	private Float qu3_b;
+	private Float qu3_c;
 	
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Id
@@ -84,6 +85,14 @@ public class Card {
 		this.high = high;
 	}
 
+	public String getNormal() {
+		return normal;
+	}
+
+	public void setNormal(String normal) {
+		this.normal = normal;
+	}
+
 	public String getDanwei() {
 		return danwei;
 	}
@@ -100,11 +109,11 @@ public class Card {
 		this.xsd = xsd;
 	}
 
-	public String getT_l() {
+	public Integer getT_l() {
 		return t_l;
 	}
 
-	public void setT_l(String t_l) {
+	public void setT_l(Integer t_l) {
 		this.t_l = t_l;
 	}
 
@@ -116,11 +125,11 @@ public class Card {
 		this.waitt = waitt;
 	}
 
-	public String getC_l() {
+	public Integer getC_l() {
 		return c_l;
 	}
 
-	public void setC_l(String c_l) {
+	public void setC_l(Integer c_l) {
 		this.c_l = c_l;
 	}
 
@@ -132,91 +141,91 @@ public class Card {
 		this.outdate = outdate;
 	}
 
-	public String getFend1() {
+	public Float getFend1() {
 		return fend1;
 	}
 
-	public void setFend1(String fend1) {
+	public void setFend1(Float fend1) {
 		this.fend1 = fend1;
 	}
 
-	public String getFend2() {
+	public Float getFend2() {
 		return fend2;
 	}
 
-	public void setFend2(String fend2) {
+	public void setFend2(Float fend2) {
 		this.fend2 = fend2;
 	}
 
-	public String getQu1_a() {
+	public Float getQu1_a() {
 		return qu1_a;
 	}
 
-	public void setQu1_a(String qu1_a) {
+	public void setQu1_a(Float qu1_a) {
 		this.qu1_a = qu1_a;
 	}
 
-	public String getQu1_b() {
+	public Float getQu1_b() {
 		return qu1_b;
 	}
 
-	public void setQu1_b(String qu1_b) {
+	public void setQu1_b(Float qu1_b) {
 		this.qu1_b = qu1_b;
 	}
 
-	public String getQu1_c() {
+	public Float getQu1_c() {
 		return qu1_c;
 	}
 
-	public void setQu1_c(String qu1_c) {
+	public void setQu1_c(Float qu1_c) {
 		this.qu1_c = qu1_c;
 	}
 
-	public String getQu2_a() {
+	public Float getQu2_a() {
 		return qu2_a;
 	}
 
-	public void setQu2_a(String qu2_a) {
+	public void setQu2_a(Float qu2_a) {
 		this.qu2_a = qu2_a;
 	}
 
-	public String getQu2_b() {
+	public Float getQu2_b() {
 		return qu2_b;
 	}
 
-	public void setQu2_b(String qu2_b) {
+	public void setQu2_b(Float qu2_b) {
 		this.qu2_b = qu2_b;
 	}
 
-	public String getQu2_c() {
+	public Float getQu2_c() {
 		return qu2_c;
 	}
 
-	public void setQu2_c(String qu2_c) {
+	public void setQu2_c(Float qu2_c) {
 		this.qu2_c = qu2_c;
 	}
 
-	public String getQu3_a() {
+	public Float getQu3_a() {
 		return qu3_a;
 	}
 
-	public void setQu3_a(String qu3_a) {
+	public void setQu3_a(Float qu3_a) {
 		this.qu3_a = qu3_a;
 	}
 
-	public String getQu3_b() {
+	public Float getQu3_b() {
 		return qu3_b;
 	}
 
-	public void setQu3_b(String qu3_b) {
+	public void setQu3_b(Float qu3_b) {
 		this.qu3_b = qu3_b;
 	}
 
-	public String getQu3_c() {
+	public Float getQu3_c() {
 		return qu3_c;
 	}
 
-	public void setQu3_c(String qu3_c) {
+	public void setQu3_c(Float qu3_c) {
 		this.qu3_c = qu3_c;
 	}
 

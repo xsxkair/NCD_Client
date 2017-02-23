@@ -86,7 +86,6 @@ public class MainContainHandler {
 	private TodayWorkHandler workSpaceHandler;
 	
 	@Autowired private MyInfoHandler managerInfoHandler;
-	@Autowired private AdministratorHandler administratorHandler;
 	@Autowired private UserHandler userHandler;
 	@Autowired private ChildUserHandler childUserHandler;
 	
@@ -105,6 +104,7 @@ public class MainContainHandler {
 	private CardInOutHandler cardInOutHandler;
 	@Autowired
 	private CardRecordHandler cardRecordHandler;
+	@Autowired private QRCodeHandler qrCodeHandler;
 	@Autowired private DeviceTestHandler deviceTestHandler;
 	@Autowired private SoftHandler softHandler;
 	@Autowired
@@ -153,43 +153,73 @@ public class MainContainHandler {
 
 		GB_SignedManagerLable.setText(user.getName());
 		
+		GB_MenuFlowPane.getChildren().clear();
+		GB_MenuBar.getMenus().clear();
+		
+		GB_ToolMenu.getItems().clear();
+		GB_UserManagementMenu.getItems().clear();
+		
 		//数据库管理员
 		if(user.getType().equals(0)){
-			//不需要管理库存
-			GB_MenuBar.getMenus().remove(GB_CardMenu);
-			//不需要管理子级审核人
-			GB_UserManagementMenu.getItems().remove(ChildManagerMenuItem);
+			
+			GB_MenuFlowPane.getChildren().add(GB_MenuBar);
+			
+			GB_MenuBar.getMenus().addAll(GB_ReportMenu, GB_DeviceMenu, GB_ToolMenu, GB_UserManagementMenu, GB_AboutMenu);
+			
+			GB_ToolMenu.getItems().addAll(GB_ConnectDeviceMenuItem, GB_QRCodeMenuItem, GB_SoftClientMenuItem);
+			GB_UserManagementMenu.getItems().addAll(MyInfoMenuItem, AdminManagementItem, SalerManagementMenuItem, LabberManagementMenuItem, ManagerMenuItem);
 			
 			//进入报告查询界面
 			reportListHandler.showReportListPage();
 		}
 		//超级管理员
 		else if(user.getType().equals(1)){
-			//不需要管理子级审核人
-			GB_UserManagementMenu.getItems().remove(ChildManagerMenuItem);
+			GB_MenuFlowPane.getChildren().add(GB_MenuBar);
+			
+			GB_MenuBar.getMenus().addAll(GB_ReportMenu, GB_DeviceMenu, GB_ToolMenu, GB_UserManagementMenu, GB_AboutMenu);
+			
+			GB_ToolMenu.getItems().addAll(GB_ConnectDeviceMenuItem);
+			GB_UserManagementMenu.getItems().addAll(MyInfoMenuItem, AdminManagementItem, SalerManagementMenuItem, LabberManagementMenuItem, ManagerMenuItem);
 			
 			//进入报告查询界面
 			reportListHandler.showReportListPage();
 		}
 		//销售
 		else if(user.getType().equals(2)){
-			GB_MenuFlowPane.getChildren().remove(GB_TodayHbox);
-			GB_MenuBar.getMenus().removeAll(GB_ReportMenu, GB_CardMenu, GB_CheckMenu);
-			GB_UserManagementMenu.getItems().removeAll(AdminManagementItem, SalerManagementMenuItem, LabberManagementMenuItem, ManagerMenuItem,
-					ChildManagerMenuItem);
+			GB_MenuFlowPane.getChildren().add(GB_MenuBar);
 			
+			GB_MenuBar.getMenus().addAll(GB_DeviceMenu, GB_ToolMenu, GB_UserManagementMenu, GB_AboutMenu);
+			
+			GB_ToolMenu.getItems().addAll(GB_ConnectDeviceMenuItem);
+			GB_UserManagementMenu.getItems().addAll(MyInfoMenuItem, ChildManagerMenuItem);
+			
+			//进入报告查询界面
 			deviceHandler.showDeviceListPane();
 		}
 		//生物研发
 		else if(user.getType().equals(3)){
-			//不需要管理子级审核人
-			GB_UserManagementMenu.getItems().remove(ChildManagerMenuItem);
+			GB_MenuFlowPane.getChildren().addAll(GB_TodayHbox, GB_MenuBar);
+			
+			GB_MenuBar.getMenus().addAll(GB_ReportMenu, GB_DeviceMenu, GB_ToolMenu, GB_UserManagementMenu, GB_AboutMenu);
+			
+			GB_ToolMenu.getItems().add(GB_ConnectDeviceMenuItem);
+			if(user.getFatheraccount() == null)
+				GB_ToolMenu.getItems().add(GB_QRCodeMenuItem);
+			
+			GB_UserManagementMenu.getItems().addAll(MyInfoMenuItem, ChildManagerMenuItem);
 			
 			//进入报告查询界面
-			reportListHandler.showReportListPage();
+			workSpaceHandler.showTodayReportPage();
 		}
 		//一级用户
 		else if(user.getType().equals(4)){
+			GB_MenuFlowPane.getChildren().addAll(GB_TodayHbox, GB_MenuBar);
+			
+			GB_MenuBar.getMenus().addAll(GB_ReportMenu, GB_DeviceMenu, GB_CardMenu, GB_UserManagementMenu, GB_AboutMenu);
+
+			GB_UserManagementMenu.getItems().addAll(MyInfoMenuItem, ChildManagerMenuItem);
+			
+			//进入报告查询界面
 			workSpaceHandler.showTodayReportPage();
 		}
 		
@@ -256,7 +286,7 @@ public class MainContainHandler {
 	//做二维码
 	@FXML
 	public void GB_MakeQRCodeAction(){
-		deviceTestHandler.showDeviceTestPage();
+		qrCodeHandler.showQRCodePage();
 	}
 	
 	//上传客户端软件
@@ -273,27 +303,27 @@ public class MainContainHandler {
 	//管理员管理
 	@FXML
 	public void AdminManagementAction(){
-		administratorHandler.ShowChileManagerPage();
+		userHandler.ShowUserPage(1);
 	}
 	//销售人员管理
 	@FXML
 	public void SalerManagementAction(){
-		userHandler.ShowUserPage("销售");
+		userHandler.ShowUserPage(2);
 	}
 	//实验室人员管理
 	@FXML
 	public void LabberManagementAction(){
-		userHandler.ShowUserPage("研发");
+		userHandler.ShowUserPage(3);
 	}
 	//审核人管理
 	@FXML
 	public void ManagerAction(){
-		userHandler.ShowUserPage("审核人");
+		userHandler.ShowUserPage(4);
 	}
 	//子审核人管理
 	@FXML
 	public void ChildManagerAction(){
-		childUserHandler.ShowChileManagerPage();	
+		childUserHandler.ShowUserPage();
 	}
 	
 	@FXML

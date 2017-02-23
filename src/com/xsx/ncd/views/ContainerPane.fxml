@@ -32,7 +32,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </HBox>
-            <MenuBar fx:id="GB_MenuBar" style="-fx-background-color: white;">
+            <MenuBar fx:id="GB_MenuBar" style="-fx-background-color: transparent;">
               <menus>
                 <Menu fx:id="GB_ReportMenu" mnemonicParsing="false" style="-fx-font-size: 14;" text="报告管理">
                   <items>
