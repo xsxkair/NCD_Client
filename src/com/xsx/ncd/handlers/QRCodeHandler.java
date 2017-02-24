@@ -1,6 +1,7 @@
 package com.xsx.ncd.handlers;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
@@ -29,6 +30,7 @@ import com.xsx.ncd.repository.UserRepository;
 import com.xsx.ncd.spring.UserSession;
 import com.xsx.ncd.spring.WorkPageSession;
 import com.xsx.ncd.tool.CRC16;
+import com.xsx.ncd.tool.DescyTool;
 
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -47,6 +49,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -111,7 +114,7 @@ public class QRCodeHandler {
 	@FXML TextField GB_BQ3CField;
 	
 	@FXML TextField GB_QRNumField;
-	
+	@FXML ToggleButton GB_TestOnlyToggleButton;
 	@FXML Button GB_MakeQRCodeButton;
 	
 	@FXML VBox GB_FreshPane;
@@ -124,6 +127,7 @@ public class QRCodeHandler {
 	private String savePath = null;
 	private Card card;
 	private Boolean upLoadCardInfo = false;
+	private Integer qrCodeNum = null;
 	
 	@Autowired private WorkPageSession workPageSession;
 	@Autowired private CardRepository cardRepository;
@@ -217,16 +221,15 @@ public class QRCodeHandler {
 			@Override
 			protected boolean computeValue() {
 				// TODO Auto-generated method stub
-				Integer temp = null;
 				
 				try {
-					temp = Integer.valueOf(GB_QRNumField.getText());
+					qrCodeNum = Integer.valueOf(GB_QRNumField.getText());
 				} catch (NumberFormatException e) {
 					// TODO: handle exception
-					temp = null;
+					qrCodeNum = null;
 				}
 				
-				if(temp != null)
+				if((qrCodeNum != null) && (qrCodeNum.intValue() > 0))
 					return false;
 				else
 					return true;
@@ -318,7 +321,9 @@ public class QRCodeHandler {
 		}
 		
 		try {
-			cardRepository.save(card);
+			//只是测试用
+			if(!GB_TestOnlyToggleButton.isSelected())
+				cardRepository.save(card);
 
 			makeQRCodeService.restart();
 			
@@ -381,6 +386,81 @@ public class QRCodeHandler {
 
 			@Override
 			protected Void call(){
+	        	StringBuffer content = new StringBuffer();
+	        	SimpleDateFormat matter = new SimpleDateFormat( "yyMMdd");
+	        	
+	        	try {
+	        		//创建文本保存二维码数据
+		        	File file = new File(savePath+"/"+card.getCid()+".txt");
+		        	FileWriter writer = null;
+		        	
+		        	//原数据文本保存
+		        	File s_file = new File(savePath+"/"+card.getCid()+"_S.txt");
+		        	FileWriter s_writer = null;
+		        	
+		        	if (!file.exists()){
+		        		file.createNewFile();
+		        	}
+		        	writer = new FileWriter(file);
+
+		        	if (!s_file.exists()){
+		        		s_file.createNewFile();
+		        	}
+		        	s_writer = new FileWriter(s_file);
+
+		        	for(int i=0; i<qrCodeNum.intValue(); i++){
+		        		
+		        		content.delete(0, content.length());
+		    			
+		    			content.append(card.getItem()+"#"+card.getChannel()+"#"+card.getT_l()+"#"+
+		    					card.getFend1()+"#"+card.getFend2()+"#");
+		    			
+		    			content.append(card.getQu1_a()+"#"+card.getQu1_b()+"#"+card.getQu1_c()+"#");
+
+		    			if(card.getFend1().floatValue() > 0)
+		    				content.append(card.getQu2_a()+"#"+card.getQu2_b()+"#"+card.getQu2_c()+"#");
+		    			
+		    			if(card.getFend2().floatValue() > 0)
+		    				content.append(card.getQu3_a()+"#"+card.getQu3_b()+"#"+card.getQu3_c()+"#");
+		    			
+		    			content.append(card.getWaitt()+"#"+card.getC_l()+"#"+card.getCid()+"#"+String .format("%05d",i)+
+		    					"#");
+		    			
+		    			String date = matter.format(card.getOutdate());
+		    			content.append(date+"#");
+		    			
+		    			content.append(String.valueOf(CRC16.CalCRC16(content.toString().getBytes(), content.length())));
+
+		        		String tempstr = content.toString();
+		        		
+		        		String tempstr2 = DescyTool.Des(tempstr);
+		        		
+		        		if(tempstr2 != null){
+
+		        			writer.write(tempstr2+"\r\n");
+							writer.flush();
+		                	
+							s_writer.write(tempstr+"\r\n");
+							s_writer.flush();
+		        		}
+		        		
+		        		updateProgress(i, qrCodeNum.intValue());
+		        		try {
+							Thread.sleep(10);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+		        	}
+		            
+		        	writer.close();
+					s_writer.close();
+				} catch (Exception e) {
+					// TODO: handle exception
+					e.printStackTrace();
+				}
+	        	
+				
 				return null;
 			}
 

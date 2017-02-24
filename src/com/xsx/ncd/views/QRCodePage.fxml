@@ -7,14 +7,14 @@
 <?import com.jfoenix.controls.JFXDialogLayout?>
 <?import com.jfoenix.controls.JFXPasswordField?>
 <?import com.jfoenix.controls.JFXProgressBar?>
-<?import com.jfoenix.controls.JFXTextField?>
-<?import javafx.collections.FXCollections?>
+<?import com.jfoenix.controls.JFXToggleButton?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
@@ -53,7 +53,7 @@
                         <Label fx:id="dialogInfo" />
                      </body>
                      <actions>
-                        <JFXButton onAction="#CancelAction" styleClass="dialog-accept" >确认</JFXButton>
+                        <JFXButton onAction="#CancelAction" styleClass="dialog-accept">确认</JFXButton>
                      </actions>
                   </JFXDialogLayout>
                </content>
@@ -78,7 +78,7 @@
                                     <HBox alignment="CENTER_LEFT">
                                        <children>
                                           <Label prefWidth="100.0" text="测试项目" />
-                                          <JFXComboBox fx:id="GB_ItemNameCom" prefWidth="160.0"/>
+                                          <JFXComboBox fx:id="GB_ItemNameCom" prefWidth="160.0" />
                                        </children>
                                        <padding>
                                           <Insets left="5.0" right="5.0" />
@@ -87,7 +87,7 @@
                                     <HBox alignment="CENTER_LEFT">
                                        <children>
                                           <Label prefWidth="100.0" text="测试通道" />
-                                          <JFXComboBox fx:id="GB_ChannelCom" prefWidth="160.0"/>
+                                          <JFXComboBox fx:id="GB_ChannelCom" prefWidth="160.0" />
                                        </children>
                                        <padding>
                                           <Insets left="5.0" right="5.0" />
@@ -245,15 +245,24 @@
                                     <TextArea fx:id="GB_BasicText" prefRowCount="5" />
                                  </children>
                               </HBox>
-                              <HBox alignment="CENTER_LEFT">
+                              <HBox alignment="CENTER_LEFT" spacing="20.0">
                                  <children>
-                                    <Label prefWidth="100.0" text="生成二维码数目" />
-                                    <TextField fx:id="GB_QRNumField" prefWidth="80.0">
-                                       <HBox.margin>
-                                          <Insets right="50.0" />
-                                       </HBox.margin>
-                                    </TextField>
-                                    <Button fx:id="GB_MakeQRCodeButton" contentDisplay="CENTER" mnemonicParsing="false" onAction="#GB_MakeQRCodeAction" prefHeight="80.0" prefWidth="125.0" style="-fx-background-color: cadetblue; -fx-background-radius: 10;" text="开始生成二维码">
+                                    <HBox alignment="CENTER_LEFT">
+                                       <children>
+                                          <Label text="数目：" />
+                                          <TextField fx:id="GB_QRNumField" prefWidth="80.0">
+                                             <HBox.margin>
+                                                <Insets right="50.0" />
+                                             </HBox.margin>
+                                          </TextField>
+                                       </children>
+                                    </HBox>
+                                    <JFXToggleButton fx:id="GB_TestOnlyToggleButton" text="仅做测试">
+                                       <tooltip>
+                                          <Tooltip text="选中，则表明当前二维码不提交服务器，仅作为测试用！" />
+                                       </tooltip>
+                                    </JFXToggleButton>
+                                    <Button fx:id="GB_MakeQRCodeButton" contentDisplay="CENTER" mnemonicParsing="false" onAction="#GB_MakeQRCodeAction" prefHeight="52.0" prefWidth="115.0" style="-fx-background-color: cadetblue; -fx-background-radius: 10;" text="开始生成二维码">
                                        <cursor>
                                           <Cursor fx:constant="HAND" />
                                        </cursor>
