@@ -32,8 +32,10 @@ public interface UserRepository extends JpaRepository<User, Integer>{
 	@Query("select u from User u where u.type=3 and u.fatheraccount IS NULL ")
 	public List<User> queryAllFatherNcdLaber();
 	
-	
 	@Query("select u from User u where u.type=4 and u.fatheraccount IS NULL ")
 	public List<User> queryAllFatherManager();
+	
+	@Query("select u from User u where u.type=5 and u.fatheraccount IS NULL ")
+	public List<User> queryAllFatherQualityControler();
 
 }

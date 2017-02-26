@@ -71,6 +71,7 @@ public class MainContainHandler {
 	@FXML MenuItem SalerManagementMenuItem;
 	@FXML MenuItem LabberManagementMenuItem;
 	@FXML MenuItem ManagerMenuItem;
+	@FXML MenuItem QualityControlMenuItem;
 	@FXML MenuItem ChildManagerMenuItem;
 	
 	@FXML Menu GB_SystemSetMenu;
@@ -167,7 +168,8 @@ public class MainContainHandler {
 			GB_MenuBar.getMenus().addAll(GB_ReportMenu, GB_DeviceMenu, GB_ToolMenu, GB_UserManagementMenu, GB_AboutMenu);
 			
 			GB_ToolMenu.getItems().addAll(GB_ConnectDeviceMenuItem, GB_QRCodeMenuItem, GB_SoftClientMenuItem);
-			GB_UserManagementMenu.getItems().addAll(MyInfoMenuItem, AdminManagementItem, SalerManagementMenuItem, LabberManagementMenuItem, ManagerMenuItem);
+			GB_UserManagementMenu.getItems().addAll(MyInfoMenuItem, AdminManagementItem, SalerManagementMenuItem, 
+					LabberManagementMenuItem, QualityControlMenuItem, ManagerMenuItem);
 			
 			//进入报告查询界面
 			reportListHandler.showReportListPage();
@@ -179,7 +181,8 @@ public class MainContainHandler {
 			GB_MenuBar.getMenus().addAll(GB_ReportMenu, GB_DeviceMenu, GB_ToolMenu, GB_UserManagementMenu, GB_AboutMenu);
 			
 			GB_ToolMenu.getItems().addAll(GB_ConnectDeviceMenuItem);
-			GB_UserManagementMenu.getItems().addAll(MyInfoMenuItem, AdminManagementItem, SalerManagementMenuItem, LabberManagementMenuItem, ManagerMenuItem);
+			GB_UserManagementMenu.getItems().addAll(MyInfoMenuItem, AdminManagementItem, SalerManagementMenuItem, 
+					LabberManagementMenuItem, QualityControlMenuItem, ManagerMenuItem);
 			
 			//进入报告查询界面
 			reportListHandler.showReportListPage();
@@ -216,6 +219,17 @@ public class MainContainHandler {
 			GB_MenuFlowPane.getChildren().addAll(GB_TodayHbox, GB_MenuBar);
 			
 			GB_MenuBar.getMenus().addAll(GB_ReportMenu, GB_DeviceMenu, GB_CardMenu, GB_UserManagementMenu, GB_AboutMenu);
+
+			GB_UserManagementMenu.getItems().addAll(MyInfoMenuItem, ChildManagerMenuItem);
+			
+			//进入报告查询界面
+			workSpaceHandler.showTodayReportPage();
+		}
+		//品控
+		else if(user.getType().equals(5)){
+			GB_MenuFlowPane.getChildren().addAll(GB_TodayHbox, GB_MenuBar);
+			
+			GB_MenuBar.getMenus().addAll(GB_ReportMenu, GB_DeviceMenu, GB_ToolMenu, GB_UserManagementMenu, GB_AboutMenu);
 
 			GB_UserManagementMenu.getItems().addAll(MyInfoMenuItem, ChildManagerMenuItem);
 			
@@ -320,6 +334,11 @@ public class MainContainHandler {
 	public void ManagerAction(){
 		userHandler.ShowUserPage(4);
 	}
+	//品控管理
+	@FXML
+	public void QualityControlAction(){
+		userHandler.ShowUserPage(5);
+	}	
 	//子审核人管理
 	@FXML
 	public void ChildManagerAction(){

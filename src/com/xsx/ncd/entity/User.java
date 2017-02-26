@@ -37,6 +37,7 @@ public class User {
 											//2 -- 销售，权限：添加和修改类别为3的用户
 											//3 -- 纽康度生物研发，只能处理自己管辖的设备的报告
 											//4 -- 审核人（父账户为null，父账户不为null则为二级审核人）
+											//5 -- 品控
 
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Id

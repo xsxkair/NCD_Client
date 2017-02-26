@@ -290,6 +290,9 @@ public class UserHandler implements EventHandler<MouseEvent>{
         		else if (newValue.equals(4)) {
         			UserTypeLabel.setText("…Û∫À»À");
 				}
+        		else if (newValue.equals(5)) {
+        			UserTypeLabel.setText("∆∑øÿ");
+				}
         		
         		upUserList();
         	}
@@ -354,6 +357,8 @@ public class UserHandler implements EventHandler<MouseEvent>{
 			myUserList = userRepository.queryAllFatherNcdLaber();
 		else if (userType.getValue().equals(4)) 
 			myUserList = userRepository.queryAllFatherManager();
+		else if (userType.getValue().equals(5)) 
+			myUserList = userRepository.queryAllFatherQualityControler();
 		
 		UserListView.getItems().clear();
 		UserListView.getItems().addAll(myUserList);

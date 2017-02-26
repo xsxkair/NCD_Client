@@ -205,13 +205,28 @@ public class HttpRequest {
         }  
     }  
 }
-------WebKitFormBoundaryiTUj5fbBpjGLBPJr
-Content-Disposition: form-data; name="file"; filename="card.xls"
-Content-Type: application/vnd.ms-excel
+POST /NCD_Server/deviceCodeUpload HTTP/1.1
+Host: 116.62.108.201:8080
+Connection: keep-alive
+Content-Length: 322
+Cache-Control: max-age=0
+Origin: http://116.62.108.201:8080
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryLdaZZRA9RAhrUwTj
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+Referer: http://116.62.108.201:8080/NCD_Server/deviceCodeUpload
+Accept-Encoding: gzip, deflate
+Accept-Language: zh-CN,zh;q=0.8
+Cookie: JSESSIONID=6D181E4F8BCEBB77E6D063EF0893D971
 
+------WebKitFormBoundaryLdaZZRA9RAhrUwTj
+Content-Disposition: form-data; name="file"; filename="新建文本文档 (2).bin"
+Content-Type: application/octet-stream
 
-------WebKitFormBoundaryiTUj5fbBpjGLBPJr
+1234567890
+------WebKitFormBoundaryLdaZZRA9RAhrUwTj
 Content-Disposition: form-data; name="version"
 
-1234
-------WebKitFormBoundaryiTUj5fbBpjGLBPJr--
+1013
+------WebKitFormBoundaryLdaZZRA9RAhrUwTj--

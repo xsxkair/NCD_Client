@@ -71,6 +71,7 @@
                         <MenuItem fx:id="SalerManagementMenuItem" mnemonicParsing="false" onAction="#SalerManagementAction" text="销售人员管理" />
                         <MenuItem fx:id="LabberManagementMenuItem" mnemonicParsing="false" onAction="#LabberManagementAction" text="研发人员管理" />
                         <MenuItem fx:id="ManagerMenuItem" mnemonicParsing="false" onAction="#ManagerAction" text="审核人管理" />
+                        <MenuItem fx:id="QualityControlMenuItem" mnemonicParsing="false" onAction="#QualityControlAction" text="品控管理" />
                         <MenuItem fx:id="ChildManagerMenuItem" mnemonicParsing="false" onAction="#ChildManagerAction" text="我的人员" />
                     </items>
                   </Menu>
