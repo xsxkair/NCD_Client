@@ -162,7 +162,7 @@ public class QRCodeHandler {
         GB_ItemNameCom.getItems().addAll("NT-proBNP", "CK-MB", "cTnI", "Myo");
         GB_ChannelCom.getItems().addAll(0, 1, 2, 3, 4, 5, 6, 7);
         
-        card = new Card();
+        
         
         GB_BQ2Hbox.disableProperty().bind(new BooleanBinding() {
 			{
@@ -258,12 +258,18 @@ public class QRCodeHandler {
 			card.setQu1_a(Float.valueOf(GB_BQ1AField.getText()));
 			card.setQu1_b(Float.valueOf(GB_BQ1BField.getText()));
 			card.setQu1_c(Float.valueOf(GB_BQ1CField.getText()));
-			card.setQu2_a(Float.valueOf(GB_BQ2AField.getText()));
-			card.setQu2_b(Float.valueOf(GB_BQ2BField.getText()));
-			card.setQu2_c(Float.valueOf(GB_BQ2CField.getText()));
-			card.setQu3_a(Float.valueOf(GB_BQ3AField.getText()));
-			card.setQu3_b(Float.valueOf(GB_BQ3BField.getText()));
-			card.setQu3_c(Float.valueOf(GB_BQ3CField.getText()));
+			
+			if(!GB_BQ2Hbox.isDisabled()){
+				card.setQu2_a(Float.valueOf(GB_BQ2AField.getText()));
+				card.setQu2_b(Float.valueOf(GB_BQ2BField.getText()));
+				card.setQu2_c(Float.valueOf(GB_BQ2CField.getText()));
+			}
+			
+			if(!GB_BQ3Hbox.isDisabled()){
+				card.setQu3_a(Float.valueOf(GB_BQ3AField.getText()));
+				card.setQu3_b(Float.valueOf(GB_BQ3BField.getText()));
+				card.setQu3_c(Float.valueOf(GB_BQ3CField.getText()));
+			}
 			
 			if("NT-proBNP".equals(card.getItem()))
 				cardConstInfo = NT_proBNPConstInfo;
@@ -296,6 +302,7 @@ public class QRCodeHandler {
 	
 	@FXML
 	public void GB_MakeQRCodeAction(){
+		card = new Card();
 		if(combinContent()){
 			DirectoryChooser dirchoose = new DirectoryChooser();
 			dirchoose.setTitle("二维码生成文件夹");
@@ -348,6 +355,7 @@ public class QRCodeHandler {
 	public void GB_PreSeeQRCodeAction(){
 		StringBuffer content = new StringBuffer();
 		 SimpleDateFormat matter = new SimpleDateFormat( "yyMMdd");
+		 card = new Card();
 		if(combinContent()){
 			content.delete(0, content.length());
 			

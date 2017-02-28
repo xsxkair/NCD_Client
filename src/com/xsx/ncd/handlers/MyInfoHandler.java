@@ -110,8 +110,8 @@ public class MyInfoHandler {
         try {
         	rootpane = loader.load(in);
         	SVGGlyphLoader.clear();
-        	File file = new File(this.getClass().getResource("/RES/icomoon.svg").getFile());
-			SVGGlyphLoader.loadGlyphsFont(new FileInputStream(file),file.getName());
+
+			SVGGlyphLoader.loadGlyphsFont(this.getClass().getResourceAsStream("/RES/icomoon.svg"), "icomoon.svg");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
