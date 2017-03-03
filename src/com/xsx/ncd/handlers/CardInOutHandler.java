@@ -58,18 +58,12 @@ public class CardInOutHandler {
 	@FXML TextField GB_OutUserTextField;
 	@FXML ComboBox<Device> GB_OutDeviceComboBox;
 	
-	@Autowired
-	private WorkPageSession workPageSession;
-	@Autowired
-	private CardRecordRepository cardRecordRepository;
-	@Autowired
-	private DeviceRepository deviceRepository;
-	@Autowired
-	private CardRepository cardRepository;
-	@Autowired
-	private UserSession managerSession;
-	@Autowired
-	private UserRepository managerRepository;
+	@Autowired private WorkPageSession workPageSession;
+	@Autowired private CardRecordRepository cardRecordRepository;
+	@Autowired private DeviceRepository deviceRepository;
+	@Autowired private CardRepository cardRepository;
+	@Autowired private UserSession managerSession;
+	@Autowired private UserRepository managerRepository;
 	
 	@PostConstruct
 	private void UI_Init() {
@@ -99,6 +93,9 @@ public class CardInOutHandler {
         AnchorPane.setBottomAnchor(rootpane, 0.0);
         AnchorPane.setLeftAnchor(rootpane, 0.0);
         AnchorPane.setRightAnchor(rootpane, 0.0);
+        
+        loader = null;
+        in = null;
 	}
 	
 	public void ShowCardInOutPage() {

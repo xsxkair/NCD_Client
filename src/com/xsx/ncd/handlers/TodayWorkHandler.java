@@ -221,6 +221,9 @@ public class TodayWorkHandler {
         AnchorPane.setBottomAnchor(rootpane, 0.0);
         AnchorPane.setLeftAnchor(rootpane, 0.0);
         AnchorPane.setRightAnchor(rootpane, 0.0);
+        
+        loader = null;
+        in = null;
 	}
 	
 	public void showTodayReportPage() {
@@ -302,6 +305,8 @@ public class TodayWorkHandler {
 			
 			public Object[] QueryTodayNotDoReport(){
 				Object[] results = new Object[5];
+				List<String> deviceList;
+				
 				//管理员
 				User admin;
 				
@@ -315,7 +320,10 @@ public class TodayWorkHandler {
 					return null;
 				
 				//查询管理员所管理的所有设备id
-				List<String> deviceList = deviceRepository.queryDidByAccount(admin.getAccount());
+				if(admin.getType() < 2)
+					deviceList = deviceRepository.quaryAllDeviceId();
+				else
+					deviceList = deviceRepository.queryDidByAccount(admin.getAccount());
 
 				if(deviceList.size() == 0)
 					return null;

@@ -192,6 +192,9 @@ public class CardRecordHandler {
         AnchorPane.setBottomAnchor(rootpane, 0.0);
         AnchorPane.setLeftAnchor(rootpane, 0.0);
         AnchorPane.setRightAnchor(rootpane, 0.0);
+        
+        loader = null;
+        in = null;
 	}
 	
 	public void ShowCardRecordPage(){

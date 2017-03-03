@@ -92,10 +92,8 @@ public class DeviceDetailHandler {
 	private MenuItem myMenuItem1;
 	private MenuItem myMenuItem2;
 	
-	@Autowired
-	private WorkPageSession workPageSession;
-	@Autowired
-	private DeviceRepository deviceRepository;
+	@Autowired private WorkPageSession workPageSession;
+	@Autowired private DeviceRepository deviceRepository;
 	
 	private QueryDeviceActivenessService s_QueryDeviceActivenessService;
 	
@@ -208,6 +206,9 @@ public class DeviceDetailHandler {
         AnchorPane.setBottomAnchor(rootpane, 0.0);
         AnchorPane.setLeftAnchor(rootpane, 0.0);
         AnchorPane.setRightAnchor(rootpane, 0.0);
+        
+        loader = null;
+        in = null;
 	}
 	
 	public void ShowDeviceDetail(Device device){

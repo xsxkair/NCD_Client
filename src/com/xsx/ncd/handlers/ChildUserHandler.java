@@ -211,6 +211,9 @@ public class ChildUserHandler implements EventHandler<MouseEvent>{
         AnchorPane.setBottomAnchor(rootpane, 0.0);
         AnchorPane.setLeftAnchor(rootpane, 0.0);
         AnchorPane.setRightAnchor(rootpane, 0.0);
+        
+        loader = null;
+        in = null;
 	}
 	
 	public void ShowUserPage(){

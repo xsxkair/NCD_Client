@@ -59,6 +59,13 @@ public class ReportDetailHandler {
 	private AnchorPane rootpane;
 	private Pane S_FatherPane = null;
 	
+	private TestData testData = null;;
+	private Card card = null;;
+	private Device device = null;;
+	private User user = null;
+	
+	private JSONArray jsonArray = null;
+	private List<Integer> seriesdata = null;
 	
 	//设备信息
 	@FXML private Label S_DeviceidLabel;
@@ -85,37 +92,23 @@ public class ReportDetailHandler {
 
 	
 	//报告信息
-	@FXML
-	Label GB_ManagerNameLabel;
-	@FXML
-	Label GB_ManagerTimeLabel;
-	@FXML
-	private JFXRadioButton S_ReportOK;
-	@FXML
-	private JFXRadioButton S_ReportError;
-	@FXML
-	private ToggleGroup S_ReportToogleGroup;
-	@FXML
-	private JFXTextField S_ReportDescTextArea;
-	@FXML
-	private Button S_CommitReportButton;
-	@FXML
-	private Button S_BackButton;
+	@FXML Label GB_ManagerNameLabel;
+	@FXML Label GB_ManagerTimeLabel;
+	@FXML private JFXRadioButton S_ReportOK;
+	@FXML private JFXRadioButton S_ReportError;
+	@FXML private ToggleGroup S_ReportToogleGroup;
+	@FXML private JFXTextField S_ReportDescTextArea;
+	@FXML private Button S_CommitReportButton;
+	@FXML private Button S_BackButton;
 		
 	private Series<Number, Number> series = new Series<>();
 	
-	@Autowired
-	private TestDataRepository testDataRepository;
-	@Autowired
-	private CardRepository cardRepository;
-	@Autowired
-	private DeviceRepository deviceRepository;
-	@Autowired
-	private UserRepository userRepository;
-	@Autowired
-	private UserSession userSession;
-	@Autowired
-	private WorkPageSession workPageSession;
+	@Autowired private TestDataRepository testDataRepository;
+	@Autowired private CardRepository cardRepository;
+	@Autowired private DeviceRepository deviceRepository;
+	@Autowired private UserRepository userRepository;
+	@Autowired private UserSession userSession;
+	@Autowired private WorkPageSession workPageSession;
 	
 	@PostConstruct
 	public void UI_Init(){
@@ -136,10 +129,10 @@ public class ReportDetailHandler {
         		
         		Integer testDataId = (Integer) rootpane.getUserData();
         		
-        		TestData testData = testDataRepository.findOne(testDataId);
-        		Card card = cardRepository.findCardByCid(testData.getCid());
-        		Device device = deviceRepository.findDeviceByDid(testData.getDid());
-        		User user = userRepository.findByAccount(testData.getAccount());
+        		testData = testDataRepository.findOne(testDataId);
+        		card = cardRepository.findCardByCid(testData.getCid());
+        		device = deviceRepository.findDeviceByDid(testData.getDid());
+        		user = userRepository.findByAccount(testData.getAccount());
         		
         		//清空曲线
     			series.getData().clear();
@@ -170,8 +163,7 @@ public class ReportDetailHandler {
     			S_TestResultLabel.setText(testData.getA_v()+" " + card.getDanwei());
     			
     			//测试信息
-    			JSONArray jsonArray = null;
-    	        List<Integer> seriesdata = new ArrayList<>();
+    	        seriesdata = new ArrayList<>();
     	        
     	        try {
     	        	jsonArray = (JSONArray) JSONSerializer.toJSON(testData.getSerie_a());
@@ -242,6 +234,13 @@ public class ReportDetailHandler {
     			}
     	        
     	        S_ReportDescTextArea.setText(testData.getR_desc());
+    	        
+    	        testData = null;
+        		card = null;
+        		device = null;
+        		user = null;
+        		seriesdata = null;
+        		jsonArray = null;
         	}
         		
 		});
@@ -256,6 +255,9 @@ public class ReportDetailHandler {
         AnchorPane.setBottomAnchor(rootpane, 0.0);
         AnchorPane.setLeftAnchor(rootpane, 0.0);
         AnchorPane.setRightAnchor(rootpane, 0.0);
+        
+        loader = null;
+        in = null;
 	}
 
 	public void startReportDetailActivity(Integer testDataId) {
@@ -269,7 +271,7 @@ public class ReportDetailHandler {
 	public void S_CommitReportAction(){
 		Integer testDataId = (Integer) rootpane.getUserData();
 		
-		TestData testData = testDataRepository.findOne(testDataId);
+		testData = testDataRepository.findOne(testDataId);
 		testData.setResult((String) S_ReportToogleGroup.getSelectedToggle().getUserData());
 		testData.setR_desc(S_ReportDescTextArea.getText());
 		testData.setHandletime(new Timestamp(System.currentTimeMillis()));
@@ -279,6 +281,8 @@ public class ReportDetailHandler {
 		testDataRepository.save(testData);
 		
 		workPageSession.setWorkPane(S_FatherPane);
+		
+		testData = null;
 	}
 	
 	@FXML

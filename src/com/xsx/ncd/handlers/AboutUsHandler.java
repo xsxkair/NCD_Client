@@ -24,8 +24,6 @@ public class AboutUsHandler {
 	
 	@PostConstruct
 	private void UI_Init(){
-		
-
         FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(this.getClass().getResource("/com/xsx/ncd/views/AboutUsStage.fxml"));
         InputStream in = this.getClass().getResourceAsStream("/com/xsx/ncd/views/AboutUsStage.fxml");
@@ -36,6 +34,9 @@ public class AboutUsHandler {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+        
+        loader = null;
+        in = null;
 	}
 	
 	public void ShowAbout(){

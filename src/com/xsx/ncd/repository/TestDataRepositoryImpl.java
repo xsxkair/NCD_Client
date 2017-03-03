@@ -59,7 +59,7 @@ public class TestDataRepositoryImpl implements MyTestDataDao{
 		// TODO Auto-generated method stub
 		java.sql.Date tempdate = new java.sql.Date(System.currentTimeMillis());
 		
-		StringBuffer sqlHead1 = new StringBuffer("SELECT t.result,COUNT(t.id) FROM TestData t where DATE(t.testtime)=:testdate "
+		StringBuffer sqlHead1 = new StringBuffer("SELECT t.result,COUNT(t.id) FROM TestData t where DATE(t.handletime)=:testdate "
 				+ "and t.did in (:devicelist) GROUP BY (t.result)");
         
         Query query = em.createQuery(sqlHead1.toString());

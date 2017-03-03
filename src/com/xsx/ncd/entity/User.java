@@ -132,8 +132,6 @@ public class User {
 
 	@Override
 	public String toString() {
-		if(this.type == 5)
-			return "ÉóºËÈË-"+name;
-		return "ĞÕÃû" + name;
+		return name;
 	}
 }

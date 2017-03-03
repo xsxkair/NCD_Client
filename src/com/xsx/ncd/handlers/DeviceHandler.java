@@ -44,22 +44,17 @@ public class DeviceHandler {
 	@FXML FlowPane DeviceThumbShowPane;
 	@FXML StackPane GB_FreshPane;
 	
-	@Autowired
-	private WorkPageSession workPageSession;
-	
-	@Autowired
-	private UserRepository managerRepository;
-	
-	@Autowired
-	private UserSession managerSession;
-	
-	@Autowired
-	private DeviceRepository deviceRepository;
-	@Autowired
-	private DeviceDetailHandler deviceDetailHandler;
+	@Autowired private WorkPageSession workPageSession;
+	@Autowired private UserRepository managerRepository;
+	@Autowired private UserSession managerSession;
+	@Autowired private DeviceRepository deviceRepository;
+	@Autowired private DeviceDetailHandler deviceDetailHandler;
 	
 	//更新设备状态任务
-	private ReadDeviceInfoService S_ReadDeviceInfoService;
+	private ReadDeviceInfoService S_ReadDeviceInfoService = null;
+
+	//管理员
+	private User admin = null;
 	
 	@PostConstruct
 	private void UI_Init(){
@@ -87,6 +82,7 @@ public class DeviceHandler {
 				// TODO Auto-generated method stub
 				long currenttime = System.currentTimeMillis();
 				Long devicetime = null;
+
 				DeviceThumbShowPane.getChildren().clear();
 				
 				if(arg2 != null){
@@ -145,6 +141,8 @@ public class DeviceHandler {
         AnchorPane.setLeftAnchor(devicepane, 0.0);
         AnchorPane.setRightAnchor(devicepane, 0.0);
 
+        loader = null;
+        in = null;
 	}
 	
 	public void showDeviceListPane(){
@@ -169,9 +167,6 @@ public class DeviceHandler {
 			
 			private List<Device> ReadDeviceInfoFun(){
 				
-				//管理员
-				User admin;
-				
 				if(managerSession.getFatherAccount() == null)
 					admin = managerRepository.findByAccount(managerSession.getAccount());
 				else
@@ -181,9 +176,10 @@ public class DeviceHandler {
 					return null;
 				
 				//查询管理员所管理的所有设备id
-				List<Device> deviceList = deviceRepository.findByAccount(admin.getAccount());
-				
-				return deviceList;
+				if(admin.getType() < 2)
+					return deviceRepository.quaryAllDevice();
+				else
+					return deviceRepository.findByAccount(admin.getAccount());
 			}
 		}
 	}

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.jfoenix.svg.SVGGlyphLoader;
+import com.xsx.ncd.define.SoftInfo;
 import com.xsx.ncd.entity.User;
 import com.xsx.ncd.repository.UserRepository;
 import com.xsx.ncd.spring.UserSession;
@@ -77,42 +78,26 @@ public class MainContainHandler {
 	@FXML Menu GB_SystemSetMenu;
 	@FXML Menu GB_AboutMenu;
 	
-	@Autowired
-	private UserSession userSession;
+	private User user = null;
+	private StringBuffer tempStr = null;
 	
-	@Autowired
-	private WorkPageSession workPageSession;
-	
-	@Autowired
-	private TodayWorkHandler workSpaceHandler;
-	
+	@Autowired private UserSession userSession;
+	@Autowired private WorkPageSession workPageSession;
+	@Autowired private TodayWorkHandler workSpaceHandler;
 	@Autowired private MyInfoHandler managerInfoHandler;
 	@Autowired private UserHandler userHandler;
 	@Autowired private ChildUserHandler childUserHandler;
-	
-	@Autowired
-	private DeviceHandler deviceHandler;
-	
-	@Autowired
-	private ReportListHandler reportListHandler;
-	
-	@Autowired
-	private ReportOverViewPage reportOverViewPage;
-	
-	@Autowired
-	private CardRepertoryHandler cardRepertoryHandler;
-	@Autowired
-	private CardInOutHandler cardInOutHandler;
-	@Autowired
-	private CardRecordHandler cardRecordHandler;
+	@Autowired private DeviceHandler deviceHandler;
+	@Autowired private ReportListHandler reportListHandler;
+	@Autowired private ReportOverViewPage reportOverViewPage;
+	@Autowired private CardRepertoryHandler cardRepertoryHandler;
+	@Autowired private CardInOutHandler cardInOutHandler;
+	@Autowired private CardRecordHandler cardRecordHandler;
 	@Autowired private QRCodeHandler qrCodeHandler;
 	@Autowired private DeviceTestHandler deviceTestHandler;
 	@Autowired private SoftHandler softHandler;
-	@Autowired
-	private LoginHandler loginHandler;
-	
-	@Autowired
-	private AboutUsHandler aboutUsHandler;
+	@Autowired private LoginHandler loginHandler;
+	@Autowired private AboutUsHandler aboutUsHandler;
 	
 	@PostConstruct
 	public void UI_Init() {
@@ -147,10 +132,12 @@ public class MainContainHandler {
 
 		s_Scene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
 
+		loader = null;
+        in = null;
 	}
 	
 	public void startWorkActivity() {
-		User user = userSession.getUser();
+		user = userSession.getUser();
 
 		GB_SignedManagerLable.setText(user.getName());
 		
@@ -169,7 +156,7 @@ public class MainContainHandler {
 			
 			GB_ToolMenu.getItems().addAll(GB_ConnectDeviceMenuItem, GB_QRCodeMenuItem, GB_SoftClientMenuItem);
 			GB_UserManagementMenu.getItems().addAll(MyInfoMenuItem, AdminManagementItem, SalerManagementMenuItem, 
-					LabberManagementMenuItem, QualityControlMenuItem, ManagerMenuItem);
+					LabberManagementMenuItem, ManagerMenuItem);
 			
 			//进入报告查询界面
 			reportListHandler.showReportListPage();
@@ -182,7 +169,7 @@ public class MainContainHandler {
 			
 			GB_ToolMenu.getItems().addAll(GB_ConnectDeviceMenuItem);
 			GB_UserManagementMenu.getItems().addAll(MyInfoMenuItem, AdminManagementItem, SalerManagementMenuItem, 
-					LabberManagementMenuItem, QualityControlMenuItem, ManagerMenuItem);
+					LabberManagementMenuItem, ManagerMenuItem);
 			
 			//进入报告查询界面
 			reportListHandler.showReportListPage();
@@ -237,6 +224,8 @@ public class MainContainHandler {
 			workSpaceHandler.showTodayReportPage();
 		}
 		
+		user = null;
+		
 		s_Stage = new Stage();
 		s_Stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			
@@ -250,7 +239,13 @@ public class MainContainHandler {
 
 	    s_Stage.setResizable(true);
 	    s_Stage.sizeToScene();
-	    s_Stage.setTitle("荧光分析仪  V2.3.0");
+	    
+	    tempStr = new StringBuffer(SoftInfo.SoftTitle);
+	    tempStr.append(" -- ");
+	    tempStr.append(String.format("V %d.%d.%02d", SoftInfo.softVersion/1000, SoftInfo.softVersion%1000/100, 
+	    		SoftInfo.softVersion%100));
+	    s_Stage.setTitle(tempStr.toString());
+	    tempStr = null;
 
 	    s_Stage.getIcons().add(new Image(this.getClass().getResourceAsStream("/RES/logo.png")));
 	    s_Stage.setScene(s_Scene);

@@ -12,6 +12,7 @@ public class NcdSoft {
 	private Integer id;
 	private String name;
 	private Integer version;
+	private Long fsize;
 	private String dsc;
 	private String MD5;
 	
@@ -34,6 +35,12 @@ public class NcdSoft {
 	}
 	public void setVersion(Integer version) {
 		this.version = version;
+	}
+	public Long getFsize() {
+		return fsize;
+	}
+	public void setFsize(Long fsize) {
+		this.fsize = fsize;
 	}
 	public String getDsc() {
 		return dsc;

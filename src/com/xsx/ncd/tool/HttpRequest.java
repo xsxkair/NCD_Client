@@ -129,46 +129,81 @@ public class HttpRequest {
         return result;
     }
     
-    public static void uploadFile(File file) {  
+    public static void uploadFile(File file, Integer version, Boolean isDevice) {  
         try {  
   
             // 换行符  
             final String newLine = "\r\n";  
             final String boundaryPrefix = "--";  
             // 定义数据分隔线  
-            String BOUNDARY = "========7d4a6d158c9";  
+            String BOUNDARY = "----WebKitFormBoundaryLdaZZRA9RAhrUwTj";  
             // 服务器的域名  
-            URL url = new URL("http://116.62.108.201:8080/NCD_Server/clientUpload");  
+            URL url = null;
+            
+            /*****文件参数头*****/
+            StringBuilder fileHead = new StringBuilder();
+            /*****版本参数头*****/
+            StringBuilder versionHead = new StringBuilder();
+            /*****结尾*****/
+            StringBuilder endStr = new StringBuilder();
+            
+            if(isDevice)
+            	url = new URL("http://116.62.108.201:8080/NCD_Server/deviceCodeUpload"); 
+            else
+            	url = new URL("http://116.62.108.201:8080/NCD_Server/clientUpload");
+            
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();  
             // 设置为POST情  
             conn.setRequestMethod("POST");  
             // 发送POST请求必须设置如下两行  
             conn.setDoOutput(true);  
             conn.setDoInput(true);  
-            conn.setUseCaches(false);  
+            conn.setUseCaches(false);
+
             // 设置请求头参数  
-            conn.setRequestProperty("connection", "Keep-Alive");  
-            conn.setRequestProperty("Charsert", "UTF-8");  
+            conn.setRequestProperty("connection", "Keep-Alive");
             conn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + BOUNDARY);  
-  
+            conn.setRequestProperty("Charsert", "UTF-8");
+            
+            /*****组合文件参数头*****/
+            fileHead = new StringBuilder();  
+            fileHead.append(boundaryPrefix);  
+            fileHead.append(BOUNDARY);  
+            fileHead.append(newLine);  
+            // 文件参数,photo参数名可以随意修改  
+            fileHead.append("Content-Disposition: form-data; name=\"file\"; filename=\"" + file.getName()  
+                    + "\"" + newLine);  
+            fileHead.append("Content-Type:application/octet-stream");  
+            // 参数头设置完以后需要两个换行，然后才是参数内容  
+            fileHead.append(newLine);  
+            fileHead.append(newLine);  
+            
+            /*****组合固件版本参数头*****/
+            versionHead = new StringBuilder();  
+            versionHead.append(boundaryPrefix);  
+            versionHead.append(BOUNDARY);  
+            versionHead.append(newLine);  
+            // 文件参数,photo参数名可以随意修改  
+            versionHead.append("Content-Disposition: form-data; name=\"version\"" + newLine);  
+            // 参数头设置完以后需要两个换行，然后才是参数内容  
+            versionHead.append(newLine);
+            
+            /*****组合结尾*****/
+            endStr = new StringBuilder();
+            endStr.append(boundaryPrefix);  
+            endStr.append(BOUNDARY);
+            endStr.append(boundaryPrefix);
+            endStr.append(newLine); 
+            
+          //计算所有数据长度
+            long dataSize = fileHead.length() + file.length() + versionHead.length() + String.valueOf(version).length() + endStr.length();
+            conn.setRequestProperty("Content-Length", String.valueOf(dataSize));
+            
             OutputStream out = new DataOutputStream(conn.getOutputStream());  
   
-            // 上传文件  
-  
-            StringBuilder sb = new StringBuilder();  
-            sb.append(boundaryPrefix);  
-            sb.append(BOUNDARY);  
-            sb.append(newLine);  
-            // 文件参数,photo参数名可以随意修改  
-            sb.append("Content-Disposition: form-data;name=\"photo\";filename=\"" + file.getName()  
-                    + "\"" + newLine);  
-            sb.append("Content-Type:application/octet-stream");  
-            // 参数头设置完以后需要两个换行，然后才是参数内容  
-            sb.append(newLine);  
-            sb.append(newLine);  
-  
-            // 将参数头的数据写入到输出流中  
-            out.write(sb.toString().getBytes());  
+
+            /*****发送文件*****/
+            out.write(fileHead.toString().getBytes());  
   
             // 数据输入流,用于读取文件数据  
             DataInputStream in = new DataInputStream(new FileInputStream(  
@@ -183,11 +218,14 @@ public class HttpRequest {
             out.write(newLine.getBytes());  
             in.close();  
   
-            // 定义最后数据分隔线，即--加上BOUNDARY再加上--。  
-            byte[] end_data = (newLine + boundaryPrefix + BOUNDARY + boundaryPrefix + newLine)  
-                    .getBytes();  
-            // 写上结尾标识  
-            out.write(end_data);  
+            /*****发送文件版本*****/
+            out.write(versionHead.toString().getBytes());
+            out.write(String.valueOf(version).getBytes());
+            out.write(newLine.getBytes());
+            
+            /*****发送结尾*****/
+            out.write(endStr.toString().getBytes());
+  
             out.flush();  
             out.close();  
   
@@ -205,28 +243,3 @@ public class HttpRequest {
         }  
     }  
 }
-POST /NCD_Server/deviceCodeUpload HTTP/1.1
-Host: 116.62.108.201:8080
-Connection: keep-alive
-Content-Length: 322
-Cache-Control: max-age=0
-Origin: http://116.62.108.201:8080
-Upgrade-Insecure-Requests: 1
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36
-Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryLdaZZRA9RAhrUwTj
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
-Referer: http://116.62.108.201:8080/NCD_Server/deviceCodeUpload
-Accept-Encoding: gzip, deflate
-Accept-Language: zh-CN,zh;q=0.8
-Cookie: JSESSIONID=6D181E4F8BCEBB77E6D063EF0893D971
-
-------WebKitFormBoundaryLdaZZRA9RAhrUwTj
-Content-Disposition: form-data; name="file"; filename="鏂板缓鏂囨湰鏂囨。 (2).bin"
-Content-Type: application/octet-stream
-
-1234567890
-------WebKitFormBoundaryLdaZZRA9RAhrUwTj
-Content-Disposition: form-data; name="version"
-
-1013
-------WebKitFormBoundaryLdaZZRA9RAhrUwTj--

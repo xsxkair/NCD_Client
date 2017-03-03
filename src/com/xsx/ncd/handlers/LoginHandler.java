@@ -54,12 +54,13 @@ public class LoginHandler {
 	
 	@FXML JFXButton LoginButton;
 	
-	@Autowired
-	private UserRepository userRepository;
-	@Autowired
-	private UserSession userSession;
-	@Autowired
-	private MainContainHandler mainContainHandler;
+	@Autowired private UserRepository userRepository;
+	@Autowired private UserSession userSession;
+	@Autowired private MainContainHandler mainContainHandler;
+	@Autowired private NcdSoftRepository ncdSoftRepository;
+	
+	private NcdSoft ncdSoft = null;
+	private User tempuser = null;
 	
 	@PostConstruct
 	public void UI_Init() {
@@ -82,8 +83,7 @@ public class LoginHandler {
     			protected boolean computeValue() {
     				// TODO Auto-generated method stub
     				
-    				if(UserNameText.getText() != null && UserNameText.getText().length() > 0 &&
-    						UserPasswordText.getText() != null && UserPasswordText.getText().length() >0)
+    				if(UserNameText.getLength() > 0 && UserPasswordText.getLength() >0)
     					return false;
     				else
     					return true;
@@ -105,18 +105,28 @@ public class LoginHandler {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return;
 		}
+        
+        loader = null;
+        in = null;
 	}
+	
 	
 	public void startLoginActivity() {
 		
-/*		NcdSoft ncdSoft = ncdSoftRepository.findNcdSoftByName(SoftInfo.softName);
+		ncdSoft = ncdSoftRepository.findNcdSoftByName(SoftInfo.softName);
 
-		if(ncdSoft != null && ncdSoft.getVersion() > SoftInfo.softVersion){
-			System.out.println("系统有更新");
-			//System.exit(0);
-		}*/
+		if((ncdSoft != null) && (ncdSoft.getVersion() > SoftInfo.softVersion)){
+			try {
+				Runtime.getRuntime().exec(".\\jre\\bin\\javaw -jar UPDATE.jar ");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.exit(0);
+		}
+		
+		ncdSoft = null;
 		
 		s_Stage = new Stage();
 			 
@@ -131,7 +141,7 @@ public class LoginHandler {
 		});
 			
 		s_Stage.getIcons().add(new Image(this.getClass().getResourceAsStream("/RES/logo.png")));
-			   // s_Stage.initModality(Modality.APPLICATION_MODAL);
+
 		s_Stage.setTitle("登录");
 			        
 		s_Stage.setResizable(true);
@@ -143,7 +153,7 @@ public class LoginHandler {
 	@FXML
 	public void LoginAction(ActionEvent e){
 		
-		User tempuser = userRepository.findByAccountAndPassword(UserNameText.getText(), UserPasswordText.getText());
+		tempuser = userRepository.findByAccountAndPassword(UserNameText.getText(), UserPasswordText.getText());
 
 		if(tempuser != null){
 			UserPasswordText.setText(null);
@@ -160,6 +170,8 @@ public class LoginHandler {
 			dialog.getDialogPane().getButtonTypes().add(loginButtonType);
 			dialog.showAndWait();
 		}
+		
+		tempuser = null;
 	}
 	
 }

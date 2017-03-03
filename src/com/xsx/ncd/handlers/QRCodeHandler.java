@@ -235,6 +235,9 @@ public class QRCodeHandler {
 					return true;
 			}
 		});
+		
+		loader = null;
+        in = null;
 	}
 
 	public void showQRCodePage(){
@@ -290,7 +293,7 @@ public class QRCodeHandler {
 			
 		}catch(Exception e){
 			e.printStackTrace();
-			showLogsDialog("Error");
+			showLogsDialog(e.getMessage());
 			return false;
 		}
 	}

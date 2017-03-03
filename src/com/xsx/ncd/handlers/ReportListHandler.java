@@ -94,42 +94,25 @@ public class ReportListHandler {
 	
 	private AnchorPane reportpane;
 	
-	@FXML
-	HBox GB_FilterHbox;
-	@FXML
-	TextField GB_TestItemFilterTextfield;
-	@FXML
-	DatePicker GB_TestTimeFilterDateChoose;
-	@FXML
-	TextField GB_TesterFilterTextfield;
-	@FXML
-	ComboBox<Device> GB_TestDeviceFilterCombox;
-	@FXML
-	TextField GB_TestSampleFilterTextField;
-	@FXML
-	ComboBox<String> GB_ReportResultFilterCombox;
+	@FXML HBox GB_FilterHbox;
+	@FXML TextField GB_TestItemFilterTextfield;
+	@FXML DatePicker GB_TestTimeFilterDateChoose;
+	@FXML TextField GB_TesterFilterTextfield;
+	@FXML ComboBox<Device> GB_TestDeviceFilterCombox;
+	@FXML TextField GB_TestSampleFilterTextField;
+	@FXML ComboBox<String> GB_ReportResultFilterCombox;
 	
-	@FXML
-	TableView<ReportTableItem>	GB_TableView;
-	@FXML
-	TableColumn<ReportTableItem, Integer> TableColumn1;
-	@FXML
-	TableColumn<ReportTableItem, String> TableColumn2;
-	@FXML
-	TableColumn<ReportTableItem, java.sql.Timestamp> TableColumn3;
-	@FXML
-	TableColumn<ReportTableItem, String> TableColumn4;
-	@FXML
-	TableColumn<ReportTableItem, String> TableColumn5;
-	@FXML
-	TableColumn<ReportTableItem, String> TableColumn6;
-	@FXML
-	TableColumn<ReportTableItem, String> TableColumn7;
-	@FXML
-	TableColumn<ReportTableItem, String> TableColumn8;
+	@FXML TableView<ReportTableItem>	GB_TableView;
+	@FXML TableColumn<ReportTableItem, Integer> TableColumn1;
+	@FXML TableColumn<ReportTableItem, String> TableColumn2;
+	@FXML TableColumn<ReportTableItem, java.sql.Timestamp> TableColumn3;
+	@FXML TableColumn<ReportTableItem, String> TableColumn4;
+	@FXML TableColumn<ReportTableItem, String> TableColumn5;
+	@FXML TableColumn<ReportTableItem, String> TableColumn6;
+	@FXML TableColumn<ReportTableItem, String> TableColumn7;
+	@FXML TableColumn<ReportTableItem, String> TableColumn8;
 	
-	@FXML
-	Pagination GB_Pagination;
+	@FXML Pagination GB_Pagination;
 	
 	@FXML VBox GB_FreshPane;
 	
@@ -139,21 +122,25 @@ public class ReportListHandler {
 	//查询线程
 	private QueryReportService S_QueryReportService;
 	
-	@Autowired
-	private TestDataRepository testDataRepository;
-	@Autowired
-	private UserRepository managerRepository;
-	@Autowired
-	private DeviceRepository deviceRepository;
-	@Autowired
-	private UserSession managerSession;
+	private User admin = null;
+	private List<Device> deviceList = null;
+	private List<String> deviceIdList = null;
+	private String deviceId = null;
 	
-	@Autowired
-	private WorkPageSession workPageSession;
-	@Autowired
-	private SystemSetData systemSetData;
-	@Autowired
-	private ReportDetailHandler reportDetailHandler;
+	private List<Object[]> datas = null;
+	private List<ReportTableItem> reportTableItems = null;
+	
+	private Tooltip tooltip = null;
+	private TableRow row = null;
+	
+	@Autowired private TestDataRepository testDataRepository;
+	@Autowired private UserRepository managerRepository;
+	@Autowired private DeviceRepository deviceRepository;
+	@Autowired private UserSession managerSession;
+	
+	@Autowired private WorkPageSession workPageSession;
+	@Autowired private SystemSetData systemSetData;
+	@Autowired private ReportDetailHandler reportDetailHandler;
 	
 	@PostConstruct
 	private void UI_Init(){
@@ -193,6 +180,8 @@ public class ReportListHandler {
         TableColumn8.setCellValueFactory(new PropertyValueFactory<ReportTableItem, String>("reportresult"));
         TableColumn8.setCellFactory(new TableColumnModel<ReportTableItem, String>());
 
+        tooltip = new Tooltip();
+        
         GB_ReportResultFilterCombox.getItems().add(null);
         GB_ReportResultFilterCombox.getItems().addAll("未审核", "合格", "不合格");
         
@@ -204,23 +193,28 @@ public class ReportListHandler {
 			public void changed(ObservableValue<? extends Pane> observable, Pane oldValue, Pane newValue) {
 				// TODO Auto-generated method stub
 				if(reportpane.equals(newValue)){	
-					//管理员
-					User admin;
-						
-					if(managerSession.getFatherAccount() == null)
-						admin = managerRepository.findByAccount(managerSession.getAccount());
-					else
+					//管理员						
+					if(managerSession.getFatherAccount() != null)
 						admin = managerRepository.findByAccount(managerSession.getFatherAccount());
+					else
+						admin = managerRepository.findByAccount(managerSession.getAccount());
 						
 					if(admin == null)
 						return;
 						
 					//查询管理员所管理的所有设备id
-					List<Device> deviceList = deviceRepository.findByAccount(admin.getAccount());
-						
+					if(admin.getType() < 2)
+						deviceList = deviceRepository.quaryAllDevice();
+					else
+						deviceList = deviceRepository.findByAccount(admin.getAccount());
+					
+					GB_TestDeviceFilterCombox.getItems().clear();
 					GB_TestDeviceFilterCombox.getItems().add(null);
 					GB_TestDeviceFilterCombox.getItems().addAll(deviceList);
-	
+					
+					deviceList = null;
+					admin = null;
+					
 					StartReportService();
 				}
 			}
@@ -280,8 +274,8 @@ public class ReportListHandler {
 				
 				GB_Pagination.setPageCount(((Long) arg2[0]).intValue());
 
-				List<Object[]> datas = (List<Object[]>) arg2[1];
-				List<ReportTableItem> reportTableItems = new ArrayList<>();
+				datas = (List<Object[]>) arg2[1];
+				reportTableItems = new ArrayList<>();
 
 				for (Object[] object : datas) {
 					reportTableItems.add(new ReportTableItem(datas.indexOf(object)+1+GB_Pagination.getCurrentPageIndex()*systemSetData.getPageSize(), (TestData)object[0], (Device)object[1], (Card)object[2], null));
@@ -289,11 +283,12 @@ public class ReportListHandler {
 				
 				GB_TableView.getItems().clear();
 				GB_TableView.getItems().addAll(reportTableItems);
+				
+				datas = null;
+				reportTableItems = null;
 			}
 			
 		});
-		
-		
 		
         reportpane.getStylesheets().add(this.getClass().getResource("/com/xsx/ncd/views/reportpage.css").toExternalForm());
         
@@ -309,6 +304,8 @@ public class ReportListHandler {
         AnchorPane.setLeftAnchor(reportpane, 0.0);
         AnchorPane.setRightAnchor(reportpane, 0.0);
         
+        loader = null;
+        in = null;
 	}
 
 	public void showReportListPage() {
@@ -333,47 +330,70 @@ public class ReportListHandler {
 	    @Override
 	    public TableCell<T, S> call(TableColumn<T, S> param) {
 	    	TextFieldTableCell<T, S> cell = new TextFieldTableCell<>();
-	    	
-	    	Tooltip tooltip = new Tooltip();
-	    	
+
 	    	cell.setAlignment(Pos.CENTER);
 	    	cell.setEditable(false);
 	    	
 	    	cell.setOnMouseEntered(new EventHandler<MouseEvent>() {
-
+	    		
 				@Override
 				public void handle(MouseEvent event) {
 					// TODO Auto-generated method stub
-					TableRow<T> row = cell.getTableRow();
+					
+					row = cell.getTableRow();
 					
 					if((row != null)&&(row.getIndex() < GB_TableView.getItems().size())){
 						
 						if(!row.getStyleClass().contains("tablerow"))
 							row.getStyleClass().add("tablerow");
-						
+
 						tooltip.setGraphic(new ReportTipPaneHandler(GB_TableView.getItems().get(row.getIndex()).getTestdata()));
+
 						Tooltip.install(cell, tooltip);	
 					}
-					else
-						Tooltip.uninstall(cell, tooltip);
+
+					row = null;
 				}
 			});
+	    	
+/*	    	cell.setOnMouseExited( new EventHandler<MouseEvent>() {
+
+				@Override
+				public void handle(MouseEvent event) {
+					// TODO Auto-generated method stub
+					row = cell.getTableRow();
+					
+					if((row != null)&&(row.getIndex() < GB_TableView.getItems().size())){
+						
+						if(!row.getStyleClass().contains("tablerow"))
+							row.getStyleClass().add("tablerow");
+
+						tooltip.setGraphic(new ReportTipPaneHandler(GB_TableView.getItems().get(row.getIndex()).getTestdata()));
+
+						Tooltip.install(cell, tooltip);	
+					}
+
+					row = null;
+				}
+			});*/
 
 	    	cell.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 				@Override
 				public void handle(MouseEvent event) {
 					// TODO Auto-generated method stub
-					TableRow<T> row = cell.getTableRow();
+					row = cell.getTableRow();
 					
 					if((row != null)&&(row.getIndex() < GB_TableView.getItems().size())){
 						if(event.getClickCount() == 2){
-							//reportDetailHandler.startReportDetailActivity(GB_TableView.getItems().get(row.getIndex()).getTestdata());
+							reportDetailHandler.startReportDetailActivity(GB_TableView.getItems().get(row.getIndex()).getTestdata().getId());
 						}
 						else if(event.getButton().equals(MouseButton.SECONDARY)){
 							myContextMenu.show(cell, event.getScreenX(), event.getScreenY());
 						}
 					}
+					
+					row = null;
 				}
 			});
 	    	
@@ -437,7 +457,7 @@ public class ReportListHandler {
 								temp = Integer.valueOf(pageindexinput.getText());
 							} catch (Exception e2) {
 								// TODO: handle exception
-
+								temp = null;
 							}
 							
 							if(temp != null){
@@ -447,6 +467,8 @@ public class ReportListHandler {
 									pagination.setCurrentPageIndex(temp);
 
 							}
+							
+							temp = null;
 						}
 					}
 				}
@@ -548,8 +570,6 @@ public class ReportListHandler {
 			}
 			
 			private Object[] ReadDeviceInfoFun(){
-				//管理员
-				User admin;
 				
 				//查询当前审核人
 				if(managerSession.getFatherAccount() == null)
@@ -561,111 +581,15 @@ public class ReportListHandler {
 					return null;
 
 				//查询管理员所管理的所有设备id
-				List<String> deviceList = deviceRepository.queryDidByAccount(admin.getAccount());
+				if(admin.getType() < 2)
+					deviceIdList = deviceRepository.quaryAllDeviceId();
+				else
+					deviceIdList = deviceRepository.queryDidByAccount(admin.getAccount());
 				
-				if(deviceList.size() == 0)
+				if(deviceIdList.size() == 0)
 					return null;
 				//查询数据
-				
-				//分页条件
-/*				Order order = new Order(Direction.ASC, "uptime");
-				Sort sort = new Sort(order);
-				PageRequest pageable = new PageRequest(GB_Pagination.getCurrentPageIndex(), systemSetData.getPageSize(), sort);
-				
-				//通常使用 Specification 的匿名内部类
-				Specification<TestData> specification = new Specification<TestData>() {
 
-						@Override
-						public Predicate toPredicate(Root<TestData> root,
-								CriteriaQuery<?> query, CriteriaBuilder cb) {
-							Predicate predicate = null;
-							Path<String> path;
-							//过滤测试项目
-							String item = GB_TestItemFilterTextfield.getText();
-							if((item != null) && (item.length() > 0)){
-								path = root.get("card").get("item");
-								predicate = cb.like(path, "%"+item+"%");
-							}
-							
-							//过滤测试时间
-							java.sql.Date tempdate = null;
-							try {
-								tempdate = java.sql.Date.valueOf(GB_TestTimeFilterDateChoose.getValue());
-							} catch (Exception e2) {
-								// TODO: handle exception
-								tempdate = null;
-							}
-							if(tempdate != null){
-								//Path<java.sql.Date> param = root.get("testtime").as(java.sql.Date.class);
-								if(predicate == null)
-									predicate = cb.equal(root.get("testtime").as(java.sql.Date.class), tempdate);
-								else
-									predicate = cb.and(cb.equal(root.get("testtime").as(java.sql.Date.class), tempdate), predicate);
-							}
-							
-							//过滤测试人
-							String tester = GB_TesterFilterTextfield.getText();
-							if((tester != null) && (tester.length() > 0)){
-								path = root.get("t_name");
-								
-								if(predicate == null)
-									predicate = cb.like(path, "%"+tester+"%");
-								else
-									predicate = cb.and(cb.like(path, "%"+tester+"%"), predicate);
-							}
-							
-							//设备id
-							String deviceDid = GB_TestDeviceFilterCombox.getSelectionModel().getSelectedItem();
-							Device deviceo = null;
-							for (Device device : deviceList) {
-								if(device.getDid().equals(deviceDid))
-									deviceo = device;
-							}
-							
-							Path<Device> path1 = root.get("device");
-							if(deviceo == null){
-								if(predicate == null)
-									predicate = path1.in(deviceList);
-								else
-									predicate = cb.and(path1.in(deviceList), predicate);
-							}
-							else{
-								if(predicate == null)
-									predicate = cb.equal(path1, deviceo);
-								else
-									predicate = cb.and(cb.equal(path1, deviceo), predicate);
-							}
-							
-							//过滤样品编号
-							String sampleid = GB_TestSampleFilterTextField.getText();
-							if((sampleid != null) && (sampleid.length() > 0)){
-								path = root.get("sid");
-								
-								if(predicate == null)
-									predicate = cb.like(path, "%"+sampleid+"%");
-								else
-									predicate = cb.and(cb.like(path, "%"+sampleid+"%"), predicate);
-							}
-							
-							//过滤报告结果
-							String reportresult = GB_ReportResultFilterCombox.getValue();
-							if((reportresult != null) && (reportresult != "ALL")){
-								path = root.get("result");
-								
-								if(predicate == null)
-									predicate = cb.equal(path, reportresult);
-								else
-									predicate = cb.and(cb.equal(path, reportresult), predicate);
-							}
-							
-							return predicate;
-						}
-					};
-					
-				Page<TestData> page = testDataRepository.findAll(specification, pageable);
-
-				return page;
-*/				
 				java.sql.Date tempdate = null;
 				try {
 					tempdate = java.sql.Date.valueOf(GB_TestTimeFilterDateChoose.getValue());
@@ -673,14 +597,17 @@ public class ReportListHandler {
 					// TODO: handle exception
 					tempdate = null;
 				}
-				
-				String deviceId = null;
+
 				if(GB_TestDeviceFilterCombox.getSelectionModel().getSelectedItem() != null)
 					deviceId = GB_TestDeviceFilterCombox.getSelectionModel().getSelectedItem().getDid();
 				
 				Object[] data = testDataRepository.QueryReportList(GB_TestItemFilterTextfield.getText(), tempdate, GB_TesterFilterTextfield.getText(),
-						deviceId, deviceList, GB_TestSampleFilterTextField.getText(), 
+						deviceId, deviceIdList, GB_TestSampleFilterTextField.getText(), 
 						GB_ReportResultFilterCombox.getValue(), GB_Pagination.getCurrentPageIndex()*systemSetData.getPageSize(), systemSetData.getPageSize());
+				
+				admin = null;
+				deviceIdList = null;
+				tempdate = null;
 				
 				return data;
 			}

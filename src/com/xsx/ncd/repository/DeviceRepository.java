@@ -23,4 +23,10 @@ public interface DeviceRepository extends JpaRepository<Device, Integer>, JpaSpe
 	@Query("SELECT DATE_FORMAT(t.testtime,'%Y-%m') ,COUNT(t.id) "
 			+"FROM TestData t where t.did=:deviceid GROUP BY DATE_FORMAT(t.testtime,'%Y-%m')" )
 	public List<Object[]> queryDeviceActiveness(@Param("deviceid") String deviceid);
+	
+	@Query("SELECT d.did FROM Device d " )
+	public List<String> quaryAllDeviceId();
+	
+	@Query("SELECT d FROM Device d " )
+	public List<Device> quaryAllDevice();
 }

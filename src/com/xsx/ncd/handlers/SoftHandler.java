@@ -116,6 +116,9 @@ public class SoftHandler {
         AnchorPane.setBottomAnchor(rootpane, 0.0);
         AnchorPane.setLeftAnchor(rootpane, 0.0);
         AnchorPane.setRightAnchor(rootpane, 0.0);
+        
+        loader = null;
+        in = null;
 	}
 	
 	public void ShowSoftPage(){
@@ -130,10 +133,19 @@ public class SoftHandler {
 		//显示最新报告管理软件信息
 		ncdSoft = ncdSoftRepository.findNcdSoftByName("Client");
 		
-		version = ncdSoft.getVersion();
-		str = String.format("%d.%d.%02d", version/1000, version%1000/100, version%100);
-		clientLastVersionLabel.setText(str);
-		clientLastMd5Label.setText(ncdSoft.getMD5());
+		if(ncdSoft != null){
+			version = ncdSoft.getVersion();
+			str = String.format("%d.%d.%02d", version/1000, version%1000/100, version%100);
+			clientLastVersionLabel.setText(str);
+			clientLastMd5Label.setText(ncdSoft.getMD5());
+			clientLastSizeLabel.setText(ncdSoft.getFsize()+"字节");
+		}
+		else{
+			clientLastVersionLabel.setText(null);
+			clientLastMd5Label.setText(null);
+			clientLastSizeLabel.setText(null);
+		}
+		
 		
 		clientNewFileMd5Label.setText(null);
 		clientNewFileNameLabel.setText(null);
@@ -144,10 +156,19 @@ public class SoftHandler {
 		
 		//显示最新设备软件信息
 		ncdSoft = ncdSoftRepository.findNcdSoftByName("Device");
-		version = ncdSoft.getVersion();
-		str = String.format("%d.%d.%02d", version/1000, version%1000/100, version%100);
-		deviceLastVersionLabel.setText(str);
-		deviceLastMd5Label.setText(ncdSoft.getMD5());
+		
+		if(ncdSoft != null){
+			version = ncdSoft.getVersion();
+			str = String.format("%d.%d.%02d", version/1000, version%1000/100, version%100);
+			deviceLastVersionLabel.setText(str);
+			deviceLastMd5Label.setText(ncdSoft.getMD5());
+			deviceLastSizeLabel.setText(ncdSoft.getFsize()+"字节");
+		}
+		else {
+			deviceLastVersionLabel.setText(null);
+			deviceLastMd5Label.setText(null);
+			deviceLastSizeLabel.setText(null);
+		}
 		
 		deviceNewFileMd5Label.setText(null);
 		deviceNewFileNameLabel.setText(null);
@@ -228,7 +249,7 @@ public class SoftHandler {
 		
 		fileChooser.getExtensionFilters().clear();
 		fileChooser.getExtensionFilters().addAll(
-		         new ExtensionFilter("WinRar Files", "*.rar"));
+		         new ExtensionFilter("压缩文件", "*.zip"));
 		
 		File selectedFile = fileChooser.showOpenDialog(null);
 		 
@@ -239,7 +260,7 @@ public class SoftHandler {
 	
 	@FXML
 	public void upLoadClientSoftFileAction(){
-		HttpRequest.uploadFile(clientFile.get());
+		HttpRequest.uploadFile(clientFile.get(), Integer.valueOf(clientNewVersionField.getText()), false);
 	}
 	
 	@FXML
@@ -259,6 +280,6 @@ public class SoftHandler {
 	
 	@FXML
 	public void upLoadDeviceSoftFileAction(){
-		
+		HttpRequest.uploadFile(clientFile.get(), Integer.valueOf(deviceNewVersionField.getText()), true);
 	}
 }

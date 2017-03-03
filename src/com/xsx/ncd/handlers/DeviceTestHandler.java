@@ -97,6 +97,9 @@ public class DeviceTestHandler {
         GB_TestCountFiled.disableProperty().bind(S_TestService.runningProperty());
         GB_TestRelayFiled.disableProperty().bind(S_TestService.runningProperty());
         GB_DeviceIPField.disableProperty().bind(S_TestService.runningProperty());
+        
+        loader = null;
+        in = null;
 	}
 	
 	public void showDeviceTestPage(){
