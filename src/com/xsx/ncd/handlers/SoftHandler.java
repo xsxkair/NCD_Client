@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 
@@ -15,12 +16,15 @@ import org.springframework.stereotype.Component;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import com.xsx.ncd.entity.NcdSoft;
+import com.xsx.ncd.handlers.ReportOverViewPage.QueryTodayReportNumByStatusService.QueryReportTask;
 import com.xsx.ncd.repository.NcdSoftRepository;
 import com.xsx.ncd.spring.WorkPageSession;
 import com.xsx.ncd.tool.HttpRequest;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
@@ -46,7 +50,7 @@ public class SoftHandler {
 	@FXML Label clientNewFileMd5Label;
 	@FXML JFXButton clientUploadButton;
 	private ObjectProperty<File> clientFile;
-	
+	private UpClientService upClientService = null;
 	
 	//Éè±¸Èí¼þ
 	@FXML Label deviceLastVersionLabel;
@@ -59,7 +63,8 @@ public class SoftHandler {
 	@FXML Label deviceNewFileMd5Label;
 	@FXML JFXButton deviceUploadButton;
 	private ObjectProperty<File> deviceFile;
-
+	private UpDeviceService upDeviceService = null;
+	
 	@Autowired private WorkPageSession workPageSession;
 	@Autowired private NcdSoftRepository ncdSoftRepository;
 	
@@ -109,7 +114,14 @@ public class SoftHandler {
         workPageSession.getWorkPane().addListener((o, oldValue, newValue)->{
         	if(rootpane.equals(newValue)){
         		upDataPageValue();
+        		
+        		upClientService = new UpClientService();
+        		upDeviceService = new UpDeviceService();
         	}
+        	else if (rootpane.equals(oldValue)) {
+        		upClientService = null;
+        		upDeviceService = null;
+			}
         });
         
         AnchorPane.setTopAnchor(rootpane, 0.0);
@@ -260,7 +272,7 @@ public class SoftHandler {
 	
 	@FXML
 	public void upLoadClientSoftFileAction(){
-		HttpRequest.uploadFile(clientFile.get(), Integer.valueOf(clientNewVersionField.getText()), false);
+		upClientService.restart();
 	}
 	
 	@FXML
@@ -280,6 +292,46 @@ public class SoftHandler {
 	
 	@FXML
 	public void upLoadDeviceSoftFileAction(){
-		HttpRequest.uploadFile(clientFile.get(), Integer.valueOf(deviceNewVersionField.getText()), true);
+		upDeviceService.restart();
+	}
+	
+	class UpClientService extends Service<Boolean>{
+
+		@Override
+		protected Task<Boolean> createTask() {
+			// TODO Auto-generated method stub
+			return new QueryReportTask();
+		}
+		
+		class QueryReportTask extends Task<Boolean>{
+
+			@Override
+			protected Boolean call(){
+				// TODO Auto-generated method stub
+				HttpRequest.uploadFile(clientFile.get(), Integer.valueOf(clientNewVersionField.getText()), false);
+				
+				return datas;
+			}
+		}
+	}
+	
+	class UpDeviceService extends Service<Boolean>{
+
+		@Override
+		protected Task<Boolean> createTask() {
+			// TODO Auto-generated method stub
+			return new QueryReportTask();
+		}
+		
+		class QueryReportTask extends Task<Boolean>{
+
+			@Override
+			protected Boolean call(){
+				// TODO Auto-generated method stub
+				HttpRequest.uploadFile(deviceFile.get(), Integer.valueOf(deviceNewVersionField.getText()), false);
+				
+				return datas;
+			}
+		}
 	}
 }

@@ -5,8 +5,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.junit.Test;
-
 public class DescyTool {
 	
 	private static String myKey = "wuhannewcandoshengwukejigufenyouxiangongsidezhangxiong";
@@ -190,15 +188,5 @@ public class DescyTool {
 		
 		return result.toString();
 	}
-	
-	@Test
-	public void testFun(){
-		String textstr = "xsx5201314";
-		String desStr;
-		String disDesStr;
-		desStr = Des(textstr);
-		disDesStr = DisDes(desStr);
-		System.out.println(desStr);
-		System.out.println(disDesStr);
-	}
+
 }

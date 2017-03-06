@@ -231,11 +231,15 @@ public class HttpRequest {
   
             // 定义BufferedReader输入流来读取URL的响应  
             BufferedReader reader = new BufferedReader(new InputStreamReader(  
-                    conn.getInputStream()));  
-            String line = null;  
-            while ((line = reader.readLine()) != null) {  
-               System.out.println(line);  
-            }  
+                    conn.getInputStream()));
+            
+            String str;
+            while ((str = reader.readLine()) != null) {  
+            	if( str.indexOf("success") >= 0 )
+            		return true;
+            }
+            
+            return false;
   
         } catch (Exception e) {  
             System.out.println("发送POST请求出现异常！" + e);  
