@@ -17,7 +17,8 @@ public class TestDataRepositoryImpl implements MyTestDataDao{
 		Object[] result = new Object[2];
 		
 		StringBuffer sqlHead1 = new StringBuffer("select count(td.id) FROM TestData td ");
-		StringBuffer sqlHead2 = new StringBuffer("SELECT td,d,c,u FROM TestData td left join Device d on d.did=td.did "
+		StringBuffer sqlHead2 = new StringBuffer("SELECT td.id, td.testtime, td.a_v, td.t_name, td.sid, c.item, c.danwei, "
+				+ "d.did FROM TestData td left join Device d on d.did=td.did "
         		+ "left join Card c on c.cid=td.cid "
         		+ "left join User u on u.account=td.account ");
 		//定义SQL   
@@ -187,7 +188,7 @@ public class TestDataRepositoryImpl implements MyTestDataDao{
 		Object[] reportObject = new Object[2];
 		
 		StringBuffer sqlHead1 = new StringBuffer("select count(t.id) FROM TestData t ");
-		StringBuffer sqlHead2 = new StringBuffer("SELECT t,d,c,u FROM TestData t ");
+		StringBuffer sqlHead2 = new StringBuffer("SELECT t.id, t.testtime, t.a_v, t.t_name, t.sid, c.item, c.danwei, d.did, t.result FROM TestData t ");
 		//定义SQL   
         StringBuffer sql =  new StringBuffer("left join Device d on d.did=t.did "
         		+ "left join Card c on c.cid=t.cid "

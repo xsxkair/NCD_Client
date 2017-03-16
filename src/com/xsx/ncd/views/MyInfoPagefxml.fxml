@@ -89,7 +89,8 @@
                         <StackPane fx:id="modifyToggleNode" prefHeight="16.0" prefWidth="16.0">
                            <cursor>
                               <Cursor fx:constant="HAND" />
-                           </cursor></StackPane>
+                           </cursor>
+                        </StackPane>
                      </children>
                      <padding>
                         <Insets bottom="5.0" left="10.0" top="20.0" />

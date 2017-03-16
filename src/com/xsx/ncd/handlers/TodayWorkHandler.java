@@ -15,6 +15,7 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang.ObjectUtils.Null;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -81,6 +82,8 @@ public class TodayWorkHandler {
 	@FXML TableColumn<ReportTableItem, String> TableColumn6;
 	@FXML TableColumn<ReportTableItem, String> TableColumn7;
 	
+	Tooltip tooltip = null;
+	
 	@FXML Pagination GB_Pagination;
 	
 	@FXML VBox GB_FreshPane;
@@ -91,28 +94,18 @@ public class TodayWorkHandler {
 	MenuItem myMenuItem3 = new MenuItem("导出PDF");
 	MenuItem myMenuItem4 = new MenuItem("打印报告");
 	
-	@Autowired
-	private UserRepository managerRepository;
+	@Autowired private UserRepository managerRepository;	
+	@Autowired private UserSession managerSession;
+	@Autowired private DeviceRepository deviceRepository;
+	@Autowired private TestDataRepository testDataRepository;
+	@Autowired private SystemSetData systemSetData;
+	@Autowired private WorkPageSession workPageSession;
+	@Autowired private ReportDetailHandler reportDetailHandler;
+	@Autowired private CardRepository cardRepository;
 	
-	@Autowired
-	private UserSession managerSession;
-	
-	@Autowired
-	private DeviceRepository deviceRepository;
-	
-	@Autowired
-	private TestDataRepository testDataRepository;
-	
-	@Autowired
-	private SystemSetData systemSetData;
-	@Autowired
-	private WorkPageSession workPageSession;
-	@Autowired
-	private ReportDetailHandler reportDetailHandler;
-	@Autowired
-	private CardRepository cardRepository;
-	
-	private QueryReportService queryReportService;
+	private QueryReportService queryReportService = null;
+	private List<ReportTableItem> reportTableItems = null;
+	private List<Object[]> tempData = null;
 
 	@PostConstruct
 	public void UI_Init() {
@@ -155,17 +148,27 @@ public class TodayWorkHandler {
         queryReportService = new QueryReportService();
         queryReportService.valueProperty().addListener((o, oldValue, newValue)->{
         	if(newValue != null){
+        		int i,dSize;
+        		
 				GB_Pagination.setPageCount(((Long) newValue[0]).intValue());
 
-				List<Object[]> datas = (List<Object[]>) newValue[1];
-				List<ReportTableItem> reportTableItems = new ArrayList<>();
-
-				for (Object[] object : datas) {
-					reportTableItems.add(new ReportTableItem(datas.indexOf(object)+1+GB_Pagination.getCurrentPageIndex()*systemSetData.getPageSize(), (TestData)object[0], (Device)object[1], (Card)object[2], null));
+				tempData = (List<Object[]>) newValue[1];
+				dSize = tempData.size();
+				reportTableItems = new ArrayList<>(dSize);
+				
+				Object[] object = null;
+				
+				for(i=0; i<dSize; i++){
+					object = tempData.get(i);
+					reportTableItems.add(new ReportTableItem(i+1+GB_Pagination.getCurrentPageIndex()*systemSetData.getPageSize(), 
+							(String)object[5], (java.sql.Timestamp)object[1], (Float)object[2], (String)object[6], (String)object[3], 
+							(String)object[7], (String)object[4], null, (Integer)object[0]));
 				}
 				
-				GB_TableView.getItems().clear();
-				GB_TableView.getItems().addAll(reportTableItems);
+				GB_TableView.getItems().setAll(reportTableItems);
+				
+				tempData = null;
+				reportTableItems = null;
 			}
         });
         
@@ -173,7 +176,7 @@ public class TodayWorkHandler {
 
         workPageSession.getWorkPane().addListener((o, oldValue, newValue)->{
         	
-        	if(newValue != null && newValue.equals(rootpane)){
+        	if(rootpane.equals(newValue)){
 				if(GB_Pagination.getCurrentPageIndex() != 0)
 					GB_Pagination.setCurrentPageIndex(0);
 				else
@@ -182,6 +185,8 @@ public class TodayWorkHandler {
 			else{
 				if(queryReportService.isRunning())
 					queryReportService.cancel();
+				
+				GB_TableView.getItems().clear();
 			}
         });
 
@@ -211,7 +216,7 @@ public class TodayWorkHandler {
 			public void handle(ActionEvent event) {
 				// TODO Auto-generated method stub
 				TableRow row = (TableRow) myContextMenu.getOwnerNode();
-				reportDetailHandler.startReportDetailActivity(GB_TableView.getItems().get(row.getIndex()).getTestdata().getId());
+				reportDetailHandler.startReportDetailActivity(GB_TableView.getItems().get(row.getIndex()).getDataIndex());
 			}
 		});
 			
@@ -236,32 +241,8 @@ public class TodayWorkHandler {
 	    public TableCell<T, S> call(TableColumn<T, S> param) {
 	    	TextFieldTableCell<T, S> cell = new TextFieldTableCell<>();
 	    	
-	    	Tooltip tooltip = new Tooltip();
-	    	
 	    	cell.setAlignment(Pos.CENTER);
 	    	cell.setEditable(false);
-	    	
-	    	cell.setOnMouseEntered(new EventHandler<MouseEvent>() {
-
-				@Override
-				public void handle(MouseEvent event) {
-					// TODO Auto-generated method stub
-					TableRow<T> row = cell.getTableRow();
-					TableView<ReportTableItem> tableView = (TableView<ReportTableItem>) cell.getTableView();
-					
-					if((row != null)&&(row.getIndex() < tableView.getItems().size())){
-						
-						if(!row.getStyleClass().contains("tablerow"))
-							row.getStyleClass().add("tablerow");
-						
-						tooltip.setGraphic(new ReportTipPaneHandler(GB_TableView.getItems().get(row.getIndex()).getTestdata()));
-						
-						Tooltip.install(cell, tooltip);	
-					}
-					else
-						Tooltip.uninstall(cell, tooltip);
-				}
-			});
 
 	    	cell.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
@@ -269,11 +250,10 @@ public class TodayWorkHandler {
 				public void handle(MouseEvent event) {
 					// TODO Auto-generated method stub
 					TableRow<T> row = cell.getTableRow();
-					TableView<ReportTableItem> tableView = (TableView<ReportTableItem>) cell.getTableView();
 					
-					if((row != null)&&(row.getIndex() < tableView.getItems().size())){
+					if((row != null)&&(row.getIndex() < GB_TableView.getItems().size())){
 						if(event.getClickCount() == 2){
-							reportDetailHandler.startReportDetailActivity(tableView.getItems().get(row.getIndex()).getTestdata().getId());
+							reportDetailHandler.startReportDetailActivity(GB_TableView.getItems().get(row.getIndex()).getDataIndex());
 						}
 						else if(event.getButton().equals(MouseButton.SECONDARY)){
 							myContextMenu.show(row, event.getScreenX(), event.getScreenY());
@@ -304,11 +284,18 @@ public class TodayWorkHandler {
 			}
 			
 			public Object[] QueryTodayNotDoReport(){
-				Object[] results = new Object[5];
+				Object[] results = null;
 				List<String> deviceList;
 				
 				//管理员
 				User admin;
+				
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				
 				//查询当前审核人
 				if(managerSession.getFatherAccount() == null)
@@ -320,15 +307,17 @@ public class TodayWorkHandler {
 					return null;
 				
 				//查询管理员所管理的所有设备id
-				if(admin.getType() < 2)
+				if(admin.getType() < 3)
 					deviceList = deviceRepository.quaryAllDeviceId();
 				else
 					deviceList = deviceRepository.queryDidByAccount(admin.getAccount());
 
-				if(deviceList.size() == 0)
-					return null;
-				else
-					return testDataRepository.QueryTodayReport(deviceList, GB_Pagination.getCurrentPageIndex()*systemSetData.getPageSize(), systemSetData.getPageSize());
+				if(deviceList.size() > 0)
+					results = testDataRepository.QueryTodayReport(deviceList, GB_Pagination.getCurrentPageIndex()*systemSetData.getPageSize(), systemSetData.getPageSize());
+				
+				deviceList = null;
+				
+				return results;
 			}
 		}
 	}

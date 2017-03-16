@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
-import javax.jws.soap.SOAPBinding.Use;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -57,7 +56,6 @@ public class ReportOverViewPage {
 	MenuItem myMenuItem1;
 	
 	private List<String> deviceIds = null;
-	private List<Device> devices = null;
 	private User admin = null;
 	
 	@FXML PieChart GB_ReportPieChart;
@@ -109,6 +107,8 @@ public class ReportOverViewPage {
         workPageSession.getWorkPane().addListener( (o, oldValue, newValue)->{
         	if(rootpane.equals(newValue)){
 				
+        		refreshDeviceIDs();
+        		
 				s_QueryReportSummyService.restart();
 				
 				s_QueryTodayReportNumByStatusService.restart();
@@ -117,7 +117,10 @@ public class ReportOverViewPage {
 				
 				s_QueryTodayReportNumByDeviceService.restart();
 			}
-			else if(rootpane.equals(oldValue)){
+			else{
+				
+				deviceIds = null;
+				admin = null;
 				GB_ReportPieChartData.clear();
 				GB_ItemPieChartData.clear();
 				GB_DevicePieChartData.clear();
@@ -331,6 +334,8 @@ public class ReportOverViewPage {
         myContextMenu = new ContextMenu(myMenuItem1);
         myMenuItem1.setOnAction(e->{
         	
+        	refreshDeviceIDs();
+        	
         	s_QueryReportSummyService.restart();
 			
 			s_QueryTodayReportNumByStatusService.restart();
@@ -356,6 +361,26 @@ public class ReportOverViewPage {
 	public void ShowReportOverViewPage(){
 		workPageSession.setWorkPane(rootpane);
 	}
+	
+	private void refreshDeviceIDs(){
+		
+		if(userSession.getFatherAccount() == null)
+			admin = userRepository.findByAccount(userSession.getAccount());
+		else{
+			admin = userRepository.findByAccount(userSession.getFatherAccount());
+		}
+		
+		if(admin == null)
+			return;
+		
+		//查询管理员所管理的所有设备id
+		if(admin.getType() < 3)
+			deviceIds = deviceRepository.quaryAllDeviceId();
+		else
+			deviceIds = deviceRepository.queryDidByAccount(admin.getAccount());
+		
+		admin = null;
+	}
 
 	@FXML
 	public void QueryReportSummyDataAction(){
@@ -378,27 +403,11 @@ public class ReportOverViewPage {
 				// TODO Auto-generated method stub
 				List<Object[]> datas = null;
 				
-				if(userSession.getFatherAccount() == null)
-					admin = userRepository.findByAccount(userSession.getAccount());
-				else{
-					admin = userRepository.findByAccount(userSession.getFatherAccount());
-				}
-				
-				if(admin == null)
+				if(deviceIds == null)
 					return null;
-				
-				//查询管理员所管理的所有设备id
-				if(admin.getType() < 2)
-					deviceIds = deviceRepository.quaryAllDeviceId();
-				else
-					deviceIds = deviceRepository.queryDidByAccount(admin.getAccount());
-				
-				admin = null;
 				
 				if(deviceIds.size() > 0)
 					datas = testDataRepository.queryTodayReportGroupByResult(deviceIds);
-				
-				deviceIds = null;
 				
 				return datas;
 			}
@@ -420,26 +429,11 @@ public class ReportOverViewPage {
 				// TODO Auto-generated method stub
 				List<Object[]> datas = null;
 				
-				if(userSession.getFatherAccount() == null)
-					admin = userRepository.findByAccount(userSession.getAccount());
-				else{
-					admin = userRepository.findByAccount(userSession.getFatherAccount());
-				}
-				
-				if(admin == null)
+				if(deviceIds == null)
 					return null;
-				
-				//查询管理员所管理的所有设备id
-				if(admin.getType() < 2)
-					deviceIds = deviceRepository.quaryAllDeviceId();
-				else
-					deviceIds = deviceRepository.queryDidByAccount(admin.getAccount());
 				
 				if(deviceIds.size() > 0)
 					datas = testDataRepository.queryTodayReportGroupByItem(deviceIds);
-
-				deviceIds = null;
-				admin = null;
 				
 				return datas;
 			}
@@ -462,26 +456,11 @@ public class ReportOverViewPage {
 				// TODO Auto-generated method stub
 				List<Object[]> datas = null;
 				
-				if(userSession.getFatherAccount() == null)
-					admin = userRepository.findByAccount(userSession.getAccount());
-				else{
-					admin = userRepository.findByAccount(userSession.getFatherAccount());
-				}
-				
-				if(admin == null)
+				if(deviceIds == null)
 					return null;
-				
-				//查询管理员所管理的所有设备id
-				if(admin.getType() < 2)
-					deviceIds = deviceRepository.quaryAllDeviceId();
-				else
-					deviceIds = deviceRepository.queryDidByAccount(admin.getAccount());
 				
 				if(deviceIds.size() > 0)
 					datas = testDataRepository.queryTodayReportGroupByDevice( deviceIds);
-				
-				deviceIds = null;
-				admin = null;
 				
 				return datas;
 			}
@@ -510,26 +489,11 @@ public class ReportOverViewPage {
 				
 				groupType = GB_GroupTypeToggleGroup.getSelectedToggle().getUserData().toString();
 				
-				if(userSession.getFatherAccount() == null)
-					admin = userRepository.findByAccount(userSession.getAccount());
-				else{
-					admin = userRepository.findByAccount(userSession.getFatherAccount());
-				}
-				
-				if(admin == null)
+				if(deviceIds == null)
 					return null;
-				
-				//查询管理员所管理的所有设备id
-				if(admin.getType() < 2)
-					deviceIds = deviceRepository.quaryAllDeviceId();
-				else
-					deviceIds = deviceRepository.queryDidByAccount(admin.getAccount());
 				
 				if(deviceIds.size() > 0)
 					datas = testDataRepository.queryReportSummy(deviceIds, groupType, viewTimeType);
-				
-				deviceIds = null;
-				admin = null;
 				
 				return datas;
 			}

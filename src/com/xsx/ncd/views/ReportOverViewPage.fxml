@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.*?>
-<?import java.lang.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.chart.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 <?import com.jfoenix.controls.JFXSpinner?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
@@ -25,7 +17,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="765.0" prefWidth="1240.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="765.0" prefWidth="1240.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <ScrollPane fitToWidth="true" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <content>
@@ -35,6 +27,11 @@
                      <children>
                         <StackPane>
                            <children>
+                              <Label fx:id="noDataLabel1" text="无数据">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </Label>
                               <PieChart fx:id="GB_ReportPieChart" legendVisible="false" prefHeight="300.0" prefWidth="300.0" stylesheets="@ReportOverView.css" title="今日测试审核图" />
                               <VBox fx:id="GB_FreshPane1" alignment="CENTER" spacing="10.0" style="-fx-background-color: rgba(0, 0, 0, 0.2);" visible="false">
                                  <children>
@@ -49,6 +46,11 @@
                         </StackPane>
                         <StackPane>
                            <children>
+                              <Label fx:id="noDataLabel2" text="无数据">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </Label>
                               <PieChart fx:id="GB_ItemPieChart" legendVisible="false" prefHeight="300.0" prefWidth="300.0" stylesheets="@ReportOverView.css" title="今日试剂用量图" />
                               <VBox fx:id="GB_FreshPane2" alignment="CENTER" spacing="10.0" style="-fx-background-color: rgba(0, 0, 0, 0.2);" visible="false">
                                  <children>
@@ -63,6 +65,11 @@
                         </StackPane>
                         <StackPane>
                            <children>
+                              <Label fx:id="noDataLabel3" text="无数据">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </Label>
                               <PieChart fx:id="GB_DevicePieChart" legendVisible="false" prefHeight="300.0" prefWidth="300.0" stylesheets="@ReportOverView.css" title="今日设备活跃图" />
                               <VBox fx:id="GB_FreshPane3" alignment="CENTER" spacing="10.0" style="-fx-background-color: rgba(0, 0, 0, 0.2);" visible="false">
                                  <children>

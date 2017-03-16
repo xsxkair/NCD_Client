@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXTextField;
 import com.xsx.ncd.entity.NcdSoft;
 import com.xsx.ncd.handlers.ReportOverViewPage.QueryTodayReportNumByStatusService.QueryReportTask;
@@ -29,6 +31,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 
@@ -36,34 +40,32 @@ import javafx.stage.FileChooser.ExtensionFilter;
 public class SoftHandler {
 
 	private AnchorPane rootpane;
+	@FXML StackPane rootStackPane;
+	
+	@FXML VBox GB_FreshPane;
+	
+	@FXML JFXDialog logDialog;
+	@FXML Label logsText;
 	
 	private FileChooser fileChooser = null;
 	
-	//报告管理软件
-	@FXML Label clientLastVersionLabel;
-	@FXML Label clientLastSizeLabel;
-	@FXML Label clientLastMd5Label;
-	@FXML JFXButton clientNewFileButton;
-	@FXML JFXTextField clientNewVersionField;
-	@FXML Label clientNewFileNameLabel;
-	@FXML Label clientNewFileSizeLabel;
-	@FXML Label clientNewFileMd5Label;
-	@FXML JFXButton clientUploadButton;
+	@FXML JFXComboBox<String> softTypeComboBox;
+	
+	@FXML VBox softInfoVBox;
+	//最新版信息
+	@FXML Label newestVersionLabel;
+	@FXML Label newestSizeLabel;
+	@FXML Label newestMd5Label;
+	
+	//上传
+	@FXML JFXTextField VersionField;
+	@FXML Label FileNameLabel;
+	@FXML Label FileSizeLabel;
+	@FXML Label FileMd5Label;
+	@FXML JFXButton uploadSoftButton;
+	
 	private ObjectProperty<File> clientFile;
 	private UpClientService upClientService = null;
-	
-	//设备软件
-	@FXML Label deviceLastVersionLabel;
-	@FXML Label deviceLastSizeLabel;
-	@FXML Label deviceLastMd5Label;
-	@FXML JFXButton deviceNewFileButton;
-	@FXML JFXTextField deviceNewVersionField;
-	@FXML Label deviceNewFileNameLabel;
-	@FXML Label deviceNewFileSizeLabel;
-	@FXML Label deviceNewFileMd5Label;
-	@FXML JFXButton deviceUploadButton;
-	private ObjectProperty<File> deviceFile;
-	private UpDeviceService upDeviceService = null;
 	
 	@Autowired private WorkPageSession workPageSession;
 	@Autowired private NcdSoftRepository ncdSoftRepository;
@@ -82,6 +84,14 @@ public class SoftHandler {
 			e.printStackTrace();
 		}
 
+        softTypeComboBox.getItems().addAll("客户端软件", "客户端补丁", "设备软件");
+        softTypeComboBox.getSelectionModel().selectedItemProperty().addListener((o, oldValue, newValue)->{
+        	if(newValue != null){
+        		upDataPageValue();
+        	}
+        });
+        softInfoVBox.disableProperty().bind(softTypeComboBox.getSelectionModel().selectedItemProperty().isNull());
+        
         fileChooser = new FileChooser();
         
         clientFile = new SimpleObjectProperty<File>(null);
@@ -90,38 +100,32 @@ public class SoftHandler {
         	upSeletedClientSoftInfo(newValue);
         });
         
-        clientNewVersionField.lengthProperty().addListener((o, oldValue, newValue)->{
+        VersionField.lengthProperty().addListener((o, oldValue, newValue)->{
         	if((newValue.intValue() > 0) && (clientFile.get() != null))
-        		clientUploadButton.setDisable(false);
+        		uploadSoftButton.setDisable(false);
         	else
-        		clientUploadButton.setDisable(true);
+        		uploadSoftButton.setDisable(true);
         });
         
-        deviceFile = new SimpleObjectProperty<File>(null);
-        deviceFile.addListener((o, oldValue, newValue)->{
-        	upSeletedDeviceSoftInfo(newValue);
-        });
         
-        deviceNewVersionField.lengthProperty().addListener((o, oldValue, newValue)->{
-        	if((newValue.intValue() > 0) && (deviceFile.get() != null))
-        		deviceUploadButton.setDisable(false);
+        upClientService = new UpClientService();
+
+        GB_FreshPane.visibleProperty().bind(upClientService.runningProperty());
+
+        upClientService.valueProperty().addListener((o, oldValue, newValue)->{
+        	if(newValue == true){
+        		showLogsDialog("上传成功！");
+        		upDataPageValue();
+        	}
         	else {
-        		deviceUploadButton.setDisable(true);
+        		showLogsDialog("上传失败！");
 			}
-        });
-        
+        }); 
         
         workPageSession.getWorkPane().addListener((o, oldValue, newValue)->{
         	if(rootpane.equals(newValue)){
-        		upDataPageValue();
-        		
-        		upClientService = new UpClientService();
-        		upDeviceService = new UpDeviceService();
+        		//upDataPageValue();
         	}
-        	else if (rootpane.equals(oldValue)) {
-        		upClientService = null;
-        		upDeviceService = null;
-			}
         });
         
         AnchorPane.setTopAnchor(rootpane, 0.0);
@@ -142,52 +146,36 @@ public class SoftHandler {
 		String str = null;
 		Integer version;
 		
+		str = softTypeComboBox.getSelectionModel().getSelectedItem();
 		//显示最新报告管理软件信息
-		ncdSoft = ncdSoftRepository.findNcdSoftByName("Client");
+		if("客户端软件".equals(str)){
+			ncdSoft = ncdSoftRepository.findNcdSoftByName("Client");
+		}
+		else if ("客户端补丁".equals(str)) {
+			ncdSoft = ncdSoftRepository.findNcdSoftByName("CPath");
+		}
+		else if ("设备软件".equals(str)) {
+			ncdSoft = ncdSoftRepository.findNcdSoftByName("Device");
+		}
 		
 		if(ncdSoft != null){
 			version = ncdSoft.getVersion();
 			str = String.format("%d.%d.%02d", version/1000, version%1000/100, version%100);
-			clientLastVersionLabel.setText(str);
-			clientLastMd5Label.setText(ncdSoft.getMD5());
-			clientLastSizeLabel.setText(ncdSoft.getFsize()+"字节");
+			newestVersionLabel.setText(str);
+			newestMd5Label.setText(ncdSoft.getMD5());
+			newestSizeLabel.setText(ncdSoft.getFsize()+"字节");
 		}
 		else{
-			clientLastVersionLabel.setText(null);
-			clientLastMd5Label.setText(null);
-			clientLastSizeLabel.setText(null);
+			newestVersionLabel.setText(null);
+			newestMd5Label.setText(null);
+			newestSizeLabel.setText(null);
 		}
 		
 		
-		clientNewFileMd5Label.setText(null);
-		clientNewFileNameLabel.setText(null);
-		clientNewFileSizeLabel.setText(null);
-		clientNewVersionField.clear();
-		clientFile.set(null);
-		clientUploadButton.setDisable(true);
-		
-		//显示最新设备软件信息
-		ncdSoft = ncdSoftRepository.findNcdSoftByName("Device");
-		
-		if(ncdSoft != null){
-			version = ncdSoft.getVersion();
-			str = String.format("%d.%d.%02d", version/1000, version%1000/100, version%100);
-			deviceLastVersionLabel.setText(str);
-			deviceLastMd5Label.setText(ncdSoft.getMD5());
-			deviceLastSizeLabel.setText(ncdSoft.getFsize()+"字节");
-		}
-		else {
-			deviceLastVersionLabel.setText(null);
-			deviceLastMd5Label.setText(null);
-			deviceLastSizeLabel.setText(null);
-		}
-		
-		deviceNewFileMd5Label.setText(null);
-		deviceNewFileNameLabel.setText(null);
-		deviceNewFileSizeLabel.setText(null);
-		deviceNewVersionField.clear();
-		deviceFile.set(null);
-		deviceUploadButton.setDisable(true);
+		VersionField.clear();
+		FileNameLabel.setText(null);
+		FileSizeLabel.setText(null);
+		FileMd5Label.setText(null);
 	}
 	
 	private void upSeletedClientSoftInfo(File file) {
@@ -197,71 +185,45 @@ public class SoftHandler {
 		if(file != null){
 			try {
 				md5 = DigestUtils.md5Hex(new FileInputStream(file));
-				clientNewFileMd5Label.setText(md5);
+				FileMd5Label.setText(md5);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				clientNewFileMd5Label.setText("error");
+				FileMd5Label.setText("error");
 	    		
 			}
 			
-			clientNewFileNameLabel.setText(file.getName());
-			
-			size = (double) file.length();
-			size /= 1048576;
-    		clientNewFileSizeLabel.setText(String.format("%.2f MB", size));
-    		
-    		if(clientNewVersionField.getLength() > 0)
-    			clientUploadButton.setDisable(false);
+			FileNameLabel.setText(file.getName());
+
+			FileSizeLabel.setText(String.valueOf(file.length())+"字节");
 		}
 		else {
-			clientNewFileMd5Label.setText(null);
-    		clientNewFileNameLabel.setText(null);
-    		clientNewFileSizeLabel.setText(null);
-    		
-    		clientUploadButton.setDisable(true);
+			FileNameLabel.setText(null);
+			FileSizeLabel.setText(null);
+			FileMd5Label.setText(null);
 		}
 	}
+
+	private void showLogsDialog(String logs) {
+		logsText.setText(logs);
+		logDialog.show(rootStackPane);
+	}
 	
-	private void upSeletedDeviceSoftInfo(File file) {
-		String md5 = null;
-		Double size = null;
+	@FXML public void downSoftFileAction(){
 		
-		if(file != null){
-			try {
-				md5 = DigestUtils.md5Hex(new FileInputStream(file));
-				deviceNewFileMd5Label.setText(md5);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				deviceNewFileMd5Label.setText("error");
-			}
-			
-			deviceNewFileNameLabel.setText(file.getName());
-			
-			size = (double) file.length();
-			size /= 1048576;
-			deviceNewFileSizeLabel.setText(String.format("%.2f MB", size));
-			
-			if(deviceNewVersionField.getLength() > 0)
-				deviceUploadButton.setDisable(false);
-		}
-		else {
-			deviceNewFileMd5Label.setText(null);
-			deviceNewFileNameLabel.setText(null);
-    		deviceNewFileSizeLabel.setText(null);
-    		
-    		deviceUploadButton.setDisable(true);
-		}
+	}
+	
+	@FXML public void uploadSoftAction(){
+		upClientService.restart();
 	}
 	
 	@FXML
-	public void chooseClientSoftFileAction(){
+	public void selectFileAction(){
 		fileChooser.setTitle("选择文件");
 		
 		fileChooser.getExtensionFilters().clear();
 		fileChooser.getExtensionFilters().addAll(
-		         new ExtensionFilter("压缩文件", "*.zip"));
+		         new ExtensionFilter("所有", "*.*"));
 		
 		File selectedFile = fileChooser.showOpenDialog(null);
 		 
@@ -269,30 +231,11 @@ public class SoftHandler {
 			 clientFile.set(selectedFile);
 		 }
 	}
-	
+
 	@FXML
-	public void upLoadClientSoftFileAction(){
-		upClientService.restart();
-	}
-	
-	@FXML
-	public void chooseDeviceSoftFileAction(){
-		fileChooser.setTitle("选择文件");
-		
-		fileChooser.getExtensionFilters().clear();
-		fileChooser.getExtensionFilters().addAll(
-		         new ExtensionFilter("Binary Files", "*.bin"));
-		
-		File selectedFile = fileChooser.showOpenDialog(null);
-		 
-		 if(selectedFile != null){ 
-			 deviceFile.set(selectedFile);
-		 }
-	}
-	
-	@FXML
-	public void upLoadDeviceSoftFileAction(){
-		upDeviceService.restart();
+	public void logDialogAction(){
+		if(logDialog.isVisible())
+			logDialog.close();
 	}
 	
 	class UpClientService extends Service<Boolean>{
@@ -308,29 +251,25 @@ public class SoftHandler {
 			@Override
 			protected Boolean call(){
 				// TODO Auto-generated method stub
-				HttpRequest.uploadFile(clientFile.get(), Integer.valueOf(clientNewVersionField.getText()), false);
+				String str = null;
+				int version;
 				
-				return datas;
-			}
-		}
-	}
-	
-	class UpDeviceService extends Service<Boolean>{
-
-		@Override
-		protected Task<Boolean> createTask() {
-			// TODO Auto-generated method stub
-			return new QueryReportTask();
-		}
-		
-		class QueryReportTask extends Task<Boolean>{
-
-			@Override
-			protected Boolean call(){
-				// TODO Auto-generated method stub
-				HttpRequest.uploadFile(deviceFile.get(), Integer.valueOf(deviceNewVersionField.getText()), false);
+				version = Integer.valueOf(VersionField.getText());
 				
-				return datas;
+				str = softTypeComboBox.getSelectionModel().getSelectedItem();
+				//显示最新报告管理软件信息
+				if("客户端软件".equals(str)){
+					return HttpRequest.uploadFile(clientFile.get(), version, 1);
+				}
+				else if ("客户端补丁".equals(str)) {
+					return HttpRequest.uploadFile(clientFile.get(), version, 2);
+				}
+				else if ("设备软件".equals(str)) {
+					return HttpRequest.uploadFile(clientFile.get(), version, 3);
+				}
+				else {
+					return false;
+				}
 			}
 		}
 	}

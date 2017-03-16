@@ -11,10 +11,11 @@ import javax.persistence.Table;
 @Entity
 public class LabTestData {
 	private Integer id;
-	private Integer deviceid;
-	private Integer userid;
+	private String did;
+	private String userid;
 	private java.sql.Timestamp testtime;	//测试时间
 	private String serie;					//测试曲线
+	private String tindex;					//测试组内索引
 	private String dsc;
 	private Integer t_l;
 	private Integer b_l;
@@ -30,16 +31,13 @@ public class LabTestData {
 		this.id = id;
 	}
 	
-	public Integer getDeviceid() {
-		return deviceid;
+	public String getDid() {
+		return did;
 	}
-	public void setDeviceid(Integer deviceid) {
-		this.deviceid = deviceid;
+	public void setDid(String did) {
+		this.did = did;
 	}
-	public Integer getUserid() {
-		return userid;
-	}
-	public void setUserid(Integer userid) {
+	public void setUserid(String userid) {
 		this.userid = userid;
 	}
 	public java.sql.Timestamp getTesttime() {
@@ -55,6 +53,12 @@ public class LabTestData {
 	}
 	public void setSerie(String serie) {
 		this.serie = serie;
+	}
+	public String getTindex() {
+		return tindex;
+	}
+	public void setTindex(String tindex) {
+		this.tindex = tindex;
 	}
 	public String getDsc() {
 		return dsc;

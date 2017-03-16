@@ -1,208 +1,163 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXDialog?>
+<?import com.jfoenix.controls.JFXDialogLayout?>
+<?import com.jfoenix.controls.JFXSpinner?>
 <?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.collections.FXCollections?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="765.0" prefWidth="1240.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
-        <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-        </rowConstraints>
+      <StackPane fx:id="rootStackPane" layoutX="10.0" layoutY="10.0" prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <VBox spacing="20.0">
+            <JFXDialog fx:id="logDialog">
+               <content>
+                  <JFXDialogLayout>
+                     <heading>
+                        <Label />
+                     </heading>
+                     <body>
+                        <Label fx:id="logsText" />
+                     </body>
+                     <actions>
+                        <JFXButton onAction="#logDialogAction" styleClass="dialog-accept">确定</JFXButton>
+                     </actions>
+                  </JFXDialogLayout>
+               </content>
+            </JFXDialog>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0">
                <children>
-                  <HBox alignment="CENTER_LEFT" style="-fx-border-width: 0 0 1 0; -fx-border-color: grey;">
+                  <VBox spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
-                        <Label text="报告管理软件">
-                           <font>
-                              <Font name="System Bold" size="15.0" />
-                           </font>
-                        </Label>
-                     </children>
-                     <padding>
-                        <Insets bottom="5.0" left="10.0" top="20.0" />
-                     </padding>
-                  </HBox>
-                  <HBox alignment="CENTER_LEFT" spacing="50.0">
-                     <children>
-                        <Label text="当前版本" textFill="#0f1add">
-                           <font>
-                              <Font size="15.0" />
-                           </font>
-                        </Label>
-                        <VBox spacing="10.0">
+                        <HBox alignment="CENTER_LEFT" style="-fx-border-width: 0 0 1 0; -fx-border-color: grey;">
                            <children>
-                              <HBox alignment="CENTER_LEFT" spacing="5.0">
-                                 <children>
-                                    <Label text="软件版本：" />
-                                    <Label fx:id="clientLastVersionLabel" />
-                                 </children>
-                              </HBox>
-                              <HBox alignment="CENTER_LEFT" spacing="5.0">
-                                 <children>
-                                    <Label text="文件大小：" />
-                                    <Label fx:id="clientLastSizeLabel" />
-                                 </children>
-                              </HBox>
-                              <HBox alignment="CENTER_LEFT" spacing="5.0">
-                                 <children>
-                                    <Label text="MD5：" />
-                                    <Label fx:id="clientLastMd5Label" />
-                                 </children>
-                              </HBox>
+                              <Label text="软件管理">
+                                 <font>
+                                    <Font name="System Bold" size="15.0" />
+                                 </font>
+                              </Label>
                            </children>
-                        </VBox>
-                     </children>
-                  </HBox>
-                  <HBox alignment="CENTER_LEFT" spacing="50.0">
-                     <children>
-                        <JFXButton fx:id="clientNewFileButton" onAction="#chooseClientSoftFileAction" prefHeight="27.0" prefWidth="75.0" style="-fx-background-color: aquamarine;" text="选择文件">
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </JFXButton>
-                        <VBox alignment="CENTER_LEFT" spacing="10.0">
+                           <padding>
+                              <Insets bottom="5.0" left="10.0" top="20.0" />
+                           </padding>
+                        </HBox>
+                        <HBox prefHeight="100.0" prefWidth="200.0" spacing="100.0">
                            <children>
-                              <HBox alignment="CENTER_LEFT" spacing="5.0">
+                              <HBox alignment="CENTER_LEFT">
                                  <children>
-                                    <Label text="软件版本：" />
-                                    <JFXTextField fx:id="clientNewVersionField" prefWidth="110.0" />
+                                    <Label text="软件类型：" />
+                                    <JFXComboBox fx:id="softTypeComboBox" editable="false" />
                                  </children>
                               </HBox>
-                              <HBox alignment="CENTER_LEFT" spacing="5.0">
+                              <VBox fx:id="softInfoVBox" spacing="50.0">
                                  <children>
-                                    <Label text="文件名：" />
-                                    <Label fx:id="clientNewFileNameLabel" />
+                                    <HBox alignment="CENTER_LEFT" spacing="50.0">
+                                       <children>
+                                          <Label text="软件信息：">
+                                             <font>
+                                                <Font size="15.0" />
+                                             </font>
+                                          </Label>
+                                          <VBox spacing="10.0">
+                                             <children>
+                                                <HBox alignment="CENTER_LEFT" spacing="5.0">
+                                                   <children>
+                                                      <Label text="软件版本：" />
+                                                      <Label fx:id="newestVersionLabel" />
+                                                   </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER_LEFT" spacing="5.0">
+                                                   <children>
+                                                      <Label text="文件大小：" />
+                                                      <Label fx:id="newestSizeLabel" />
+                                                   </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER_LEFT" spacing="5.0">
+                                                   <children>
+                                                      <Label text="MD5：" />
+                                                      <Label fx:id="newestMd5Label" />
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </VBox>
+                                          <JFXButton onAction="#downSoftFileAction" prefHeight="63.0" prefWidth="96.0" style="-fx-background-color: lightsalmon;" text="下载">
+                                             <cursor>
+                                                <Cursor fx:constant="HAND" />
+                                             </cursor>
+                                          </JFXButton>
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" spacing="50.0">
+                                       <children>
+                                          <Label text="上传新版本：" />
+                                          <VBox alignment="CENTER_LEFT" spacing="10.0">
+                                             <children>
+                                                <JFXButton onAction="#selectFileAction" prefHeight="27.0" prefWidth="75.0" style="-fx-background-color: aquamarine;" text="选择文件">
+                                                   <cursor>
+                                                      <Cursor fx:constant="HAND" />
+                                                   </cursor>
+                                                </JFXButton>
+                                                <HBox alignment="CENTER_LEFT" spacing="5.0">
+                                                   <children>
+                                                      <Label text="软件版本：" />
+                                                      <JFXTextField fx:id="VersionField" prefWidth="110.0" />
+                                                   </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER_LEFT" spacing="5.0">
+                                                   <children>
+                                                      <Label text="文件名：" />
+                                                      <Label fx:id="FileNameLabel" />
+                                                   </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER_LEFT" spacing="5.0">
+                                                   <children>
+                                                      <Label text="文件大小：" />
+                                                      <Label fx:id="FileSizeLabel" />
+                                                   </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER_LEFT" spacing="5.0">
+                                                   <children>
+                                                      <Label text="MD5：" />
+                                                      <Label fx:id="FileMd5Label" />
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </VBox>
+                                          <JFXButton fx:id="uploadSoftButton" onAction="#uploadSoftAction" prefHeight="63.0" prefWidth="96.0" style="-fx-background-color: lightsalmon;" text="提交">
+                                             <cursor>
+                                                <Cursor fx:constant="HAND" />
+                                             </cursor>
+                                          </JFXButton>
+                                       </children>
+                                    </HBox>
                                  </children>
-                              </HBox>
-                              <HBox alignment="CENTER_LEFT" spacing="5.0">
-                                 <children>
-                                    <Label text="文件大小：" />
-                                    <Label fx:id="clientNewFileSizeLabel" />
-                                 </children>
-                              </HBox>
-                              <HBox alignment="CENTER_LEFT" spacing="5.0">
-                                 <children>
-                                    <Label text="MD5：" />
-                                    <Label fx:id="clientNewFileMd5Label" />
-                                 </children>
-                              </HBox>
+                              </VBox>
                            </children>
-                        </VBox>
-                        <JFXButton fx:id="clientUploadButton" onAction="#upLoadClientSoftFileAction" prefHeight="63.0" prefWidth="96.0" style="-fx-background-color: lightsalmon;" text="提交">
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </JFXButton>
+                        </HBox>
                      </children>
-                  </HBox>
+                  </VBox>
+                  <VBox fx:id="GB_FreshPane" alignment="CENTER" spacing="10.0" style="-fx-background-color: rgba(0, 0, 0, 0.2);" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <JFXSpinner startingAngle="0.0" style="-fx-radius: 50;" />
+                        <Label text="正在上传数据，请稍后" />
+                     </children>
+                     <cursor>
+                        <Cursor fx:constant="WAIT" />
+                     </cursor>
+                  </VBox>
                </children>
-            </VBox>
-            <VBox spacing="20.0" GridPane.rowIndex="1">
-               <children>
-                  <HBox alignment="CENTER_LEFT" style="-fx-border-width: 0 0 1 0; -fx-border-color: grey;">
-                     <children>
-                        <Label text="设备软件">
-                           <font>
-                              <Font name="System Bold" size="15.0" />
-                           </font>
-                        </Label>
-                     </children>
-                     <padding>
-                        <Insets bottom="5.0" left="10.0" top="20.0" />
-                     </padding>
-                  </HBox>
-                  <HBox alignment="CENTER_LEFT" spacing="50.0">
-                     <children>
-                        <Label text="当前版本" textFill="#0f1add">
-                           <font>
-                              <Font size="15.0" />
-                           </font>
-                        </Label>
-                        <VBox spacing="10.0">
-                           <children>
-                              <HBox alignment="CENTER_LEFT" spacing="5.0">
-                                 <children>
-                                    <Label text="软件版本：" />
-                                    <Label fx:id="deviceLastVersionLabel" />
-                                 </children>
-                              </HBox>
-                              <HBox alignment="CENTER_LEFT" spacing="5.0">
-                                 <children>
-                                    <Label text="文件大小：" />
-                                    <Label fx:id="deviceLastSizeLabel" />
-                                 </children>
-                              </HBox>
-                              <HBox alignment="CENTER_LEFT" spacing="5.0">
-                                 <children>
-                                    <Label text="MD5：" />
-                                    <Label fx:id="deviceLastMd5Label" />
-                                 </children>
-                              </HBox>
-                           </children>
-                        </VBox>
-                     </children>
-                  </HBox>
-                  <HBox alignment="CENTER_LEFT" spacing="50.0">
-                     <children>
-                        <JFXButton fx:id="deviceNewFileButton" onAction="#chooseDeviceSoftFileAction" prefHeight="27.0" prefWidth="75.0" style="-fx-background-color: aquamarine;" text="选择文件">
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </JFXButton>
-                        <VBox alignment="CENTER_LEFT" spacing="10.0">
-                           <children>
-                              <HBox alignment="CENTER_LEFT" spacing="5.0">
-                                 <children>
-                                    <Label text="软件版本：" />
-                                    <JFXTextField fx:id="deviceNewVersionField" prefWidth="110.0" />
-                                 </children>
-                              </HBox>
-                              <HBox alignment="CENTER_LEFT" spacing="5.0">
-                                 <children>
-                                    <Label text="文件名：" />
-                                    <Label fx:id="deviceNewFileNameLabel" />
-                                 </children>
-                              </HBox>
-                              <HBox alignment="CENTER_LEFT" spacing="5.0">
-                                 <children>
-                                    <Label text="文件大小：" />
-                                    <Label fx:id="deviceNewFileSizeLabel" />
-                                 </children>
-                              </HBox>
-                              <HBox alignment="CENTER_LEFT" spacing="5.0">
-                                 <children>
-                                    <Label text="MD5：" />
-                                    <Label fx:id="deviceNewFileMd5Label" />
-                                 </children>
-                              </HBox>
-                           </children>
-                        </VBox>
-                        <JFXButton fx:id="deviceUploadButton" onAction="#upLoadDeviceSoftFileAction" prefHeight="63.0" prefWidth="96.0" style="-fx-background-color: lightsalmon;" text="提交">
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </JFXButton>
-                     </children>
-                  </HBox>
-               </children>
-            </VBox>
+            </AnchorPane>
          </children>
-      </GridPane>
+      </StackPane>
    </children>
 </AnchorPane>

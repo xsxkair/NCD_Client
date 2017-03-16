@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXDialog?>
+<?import com.jfoenix.controls.JFXDialogLayout?>
+<?import com.jfoenix.controls.JFXPasswordField?>
 <?import com.jfoenix.controls.JFXSpinner?>
+<?import com.jfoenix.controls.JFXToggleNode?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
@@ -15,86 +23,158 @@
 
 <AnchorPane prefHeight="765.0" prefWidth="1240.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <VBox spacing="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="20.0">
+      <StackPane fx:id="rootStackPane" prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
+            <JFXDialog fx:id="setManagerDialog">
+               <JFXDialogLayout>
+					<heading>
+						<Label>设置管理员</Label>
+					</heading>
+					<body>
+						 <VBox alignment="CENTER_LEFT" spacing="20.0">
+						 	<HBox alignment="CENTER_LEFT" spacing="20.0">
+							 	<Label>选择管理员：</Label>
+							 	<JFXComboBox fx:id="managerListComboBox" />
+							 </HBox>
+							 <HBox alignment="CENTER_LEFT" spacing="20.0">
+							 	<Label>权限密码：</Label>
+							 	<JFXPasswordField fx:id="actionPasswordTextField" focusColor="#405aa8ff" unFocusColor="#4d4d4dff" />
+							 </HBox>
+						 </VBox>
+					</body>
+					<actions>
+						<JFXButton fx:id="cancelButton1" onAction="#closeDialogAction" styleClass="dialog-accept">取消</JFXButton>
+						<JFXButton fx:id="acceptButton1" onAction="#saveManagergAction" styleClass="dialog-accept">确认</JFXButton>
+					</actions>
+				</JFXDialogLayout>
+            </JFXDialog>
+            <JFXDialog fx:id="LogDialog">
+               <JFXDialogLayout>
+					<heading>
+						<Label>信息</Label>
+					</heading>
+					<body>
+						 <Label fx:id="dialogInfo" />
+					</body>
+					<actions>
+						<JFXButton fx:id="acceptButton2" onAction="#closeDialogAction" styleClass="dialog-accept">确认</JFXButton>
+					</actions>
+				</JFXDialogLayout>
+            </JFXDialog>
+            <VBox spacing="50.0">
                <children>
-                  <ImageView fx:id="GB_DeviceImg" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-                  <VBox alignment="BOTTOM_LEFT" spacing="10.0">
+                  <HBox fx:id="deviceInfoHBox" alignment="BOTTOM_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
                      <children>
-                        <HBox alignment="CENTER_LEFT" spacing="50.0">
+                        <ImageView fx:id="GB_DeviceImg" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                        <VBox fx:id="deviceInfoVBox" alignment="BOTTOM_LEFT" spacing="10.0">
                            <children>
-                              <Label text="设备ID：">
-                                 <font>
-                                    <Font name="System Bold" size="15.0" />
-                                 </font>
-                              </Label>
-                              <Label fx:id="GB_DeviceIDLabel" text="Device ID" />
-                           </children>
-                        </HBox>
-                        <HBox alignment="CENTER_LEFT" spacing="50.0">
-                           <children>
-                              <Label text="责任人：">
-                                 <font>
-                                    <Font name="System Bold" size="15.0" />
-                                 </font>
-                              </Label>
-                              <VBox alignment="CENTER_LEFT" spacing="10.0">
+                              <HBox alignment="CENTER_LEFT" spacing="50.0">
                                  <children>
+                                    <Label text="设备ID：">
+                                       <font>
+                                          <Font name="System Bold" size="15.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="GB_DeviceIDLabel" text="Device ID" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" spacing="50.0">
+                                 <children>
+                                    <Label text="版本号：">
+                                       <font>
+                                          <Font name="System Bold" size="15.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="GB_DeviceVersionLabel" text="Device ID" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" spacing="50.0">
+                                 <children>
+                                    <Label text="责任人：">
+                                       <font>
+                                          <Font name="System Bold" size="15.0" />
+                                       </font>
+                                    </Label>
                                     <HBox alignment="CENTER_LEFT" spacing="50.0">
                                        <children>
                                           <Label fx:id="GB_DevicerNameLabel" text="-" />
-                                          <Label fx:id="GB_DevicerAgeLabel" text="-" />
-                                          <Label fx:id="GB_DevicerSexLabel" text="-" />
-                                       </children>
-                                    </HBox>
-                                    <HBox alignment="CENTER_LEFT" spacing="50.0">
-                                       <children>
                                           <Label fx:id="GB_DevicerPhoneLabel" text="-" />
-                                          <Label fx:id="GB_DevicerJobLabel" text="-" />
                                        </children>
                                     </HBox>
-                                    <Label fx:id="GB_DevicerDescLabel" text="-" />
                                  </children>
-                              </VBox>
+                              </HBox>
+                              <HBox fx:id="managerHBox" alignment="CENTER_LEFT" spacing="50.0">
+                                 <children>
+                                    <Label text="管理员：">
+                                       <font>
+                                          <Font name="System Bold" size="15.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="GB_managerNameLabel" text="-" />
+                                    <Label fx:id="GB_managerPhoneLabel" text="-" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" spacing="5.0">
+                                 <children>
+                                    <Label text="设备安装地址：">
+                                       <font>
+                                          <Font name="System Bold" size="15.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="GB_DevicerAddrLabel" text="Device Address" />
+                                 </children>
+                              </HBox>
                            </children>
-                        </HBox>
-                        <HBox alignment="CENTER_LEFT" spacing="5.0">
-                           <children>
-                              <Label text="设备安装地址：">
-                                 <font>
-                                    <Font name="System Bold" size="15.0" />
-                                 </font>
-                              </Label>
-                              <Label fx:id="GB_DevicerAddrLabel" text="Device Address" />
-                           </children>
-                        </HBox>
+                        </VBox>
+                        <JFXButton fx:id="setManagerButton" onAction="#setManagerAction" ripplerFill="#bbeb3d" style="-fx-background-color: #4ae0db;" text="设置管理员" />
                      </children>
-                  </VBox>
-               </children>
-            </HBox>
-            <StackPane>
-               <children>
-                  <LineChart fx:id="GB_DeviceLineChart" animated="false" legendVisible="false" minHeight="500.0" title="设备月活跃度" verticalGridLinesVisible="false">
-                    <xAxis>
-                      <CategoryAxis fx:id="GB_DeviceXaxis" label="日期" side="BOTTOM" />
-                    </xAxis>
-                    <yAxis>
-                      <NumberAxis fx:id="GB_DeviceYaxis" label="测 试 数 目" side="LEFT" />
-                    </yAxis>
-                  </LineChart>
-                  <VBox fx:id="GB_FreshPane" alignment="CENTER" spacing="10.0" style="-fx-background-color: rgba(0, 0, 0, 0.2);" visible="false">
+                  </HBox>
+                  <StackPane>
                      <children>
-                        <JFXSpinner startingAngle="0.0" style="-fx-radius: 50;" />
-                        <Label text="正在加载数据，请稍后" />
+                        <LineChart fx:id="GB_DeviceLineChart" animated="false" legendVisible="false" minHeight="500.0" title="设备活跃度" verticalGridLinesVisible="false">
+                          <xAxis>
+                            <CategoryAxis fx:id="GB_DeviceXaxis" label="日期" side="BOTTOM" />
+                          </xAxis>
+                          <yAxis>
+                            <NumberAxis fx:id="GB_DeviceYaxis" label="测 试 数 目" side="LEFT" />
+                          </yAxis>
+                        </LineChart>
+                        <HBox alignment="TOP_RIGHT" spacing="20.0">
+                        	<children>
+                        		<JFXToggleNode>
+                        			<Label>年</Label>
+                                 <toggleGroup>
+                                    <ToggleGroup fx:id="viewTypeToggleGroup" />
+                                 </toggleGroup>
+                        		</JFXToggleNode>
+                        		<JFXToggleNode toggleGroup="$viewTypeToggleGroup">
+                        			<Label>月</Label>
+                        		</JFXToggleNode>
+                        		<JFXToggleNode toggleGroup="$viewTypeToggleGroup">
+                        			<Label>日</Label>
+                        		</JFXToggleNode>
+                        	</children>
+                           <StackPane.margin>
+                              <Insets right="20.0" />
+                           </StackPane.margin>
+                        </HBox>
+                        <VBox fx:id="GB_FreshPane" alignment="CENTER" spacing="10.0" style="-fx-background-color: rgba(0, 0, 0, 0.2);" visible="false">
+                           <children>
+                              <JFXSpinner startingAngle="0.0" style="-fx-radius: 50;" />
+                              <Label text="正在加载数据，请稍后" />
+                           </children>
+                           <cursor>
+                              <Cursor fx:constant="WAIT" />
+                           </cursor>
+                        </VBox>
                      </children>
-                     <cursor>
-                        <Cursor fx:constant="WAIT" />
-                     </cursor>
-                  </VBox>
+                  </StackPane>
                </children>
-            </StackPane>
+               <StackPane.margin>
+                  <Insets top="20.0" />
+               </StackPane.margin>
+            </VBox>
          </children>
-      </VBox>
+      </StackPane>
    </children>
 </AnchorPane>

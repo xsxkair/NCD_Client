@@ -20,7 +20,7 @@ public class ClientSocket {
 		try {
 			socket = new Socket();
 			remoteAddr = new InetSocketAddress(ip, 9001);
-			socket.connect(remoteAddr, 100);
+			socket.connect(remoteAddr, 1000);
 			in = socket.getInputStream();
 			out = socket.getOutputStream();
 			out.write(senddata.getBytes());

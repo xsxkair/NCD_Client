@@ -129,7 +129,7 @@ public class HttpRequest {
         return result;
     }
     
-    public static void uploadFile(File file, Integer version, Boolean isDevice) {  
+    public static Boolean uploadFile(File file, Integer version, int softType) {  
         try {  
   
             // 换行符  
@@ -147,10 +147,15 @@ public class HttpRequest {
             /*****结尾*****/
             StringBuilder endStr = new StringBuilder();
             
-            if(isDevice)
+            if(softType == 3)
             	url = new URL("http://116.62.108.201:8080/NCD_Server/deviceCodeUpload"); 
-            else
+            else if(softType == 2)
+            	url = new URL("http://116.62.108.201:8080/NCD_Server/cPathUpload");
+            else if(softType == 1)
             	url = new URL("http://116.62.108.201:8080/NCD_Server/clientUpload");
+            else {
+				return false;
+			}
             
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();  
             // 设置为POST情  
@@ -239,11 +244,13 @@ public class HttpRequest {
             		return true;
             }
             
-            return false;
+            
   
         } catch (Exception e) {  
             System.out.println("发送POST请求出现异常！" + e);  
             e.printStackTrace();  
-        }  
+        }
+        
+        return false;
     }  
 }

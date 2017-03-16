@@ -2,6 +2,7 @@ package com.xsx.ncd.handlers;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -16,7 +17,6 @@ import com.xsx.ncd.repository.UserRepository;
 import com.xsx.ncd.spring.UserSession;
 import com.xsx.ncd.spring.WorkPageSession;
 
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.ScheduledService;
@@ -44,6 +44,10 @@ public class DeviceHandler {
 	@FXML FlowPane DeviceThumbShowPane;
 	@FXML StackPane GB_FreshPane;
 	
+	private Image onImage = null;
+	private Image offImage = null;
+	private Image errorImage = null;
+	
 	@Autowired private WorkPageSession workPageSession;
 	@Autowired private UserRepository managerRepository;
 	@Autowired private UserSession managerSession;
@@ -70,11 +74,22 @@ public class DeviceHandler {
 			e.printStackTrace();
 		}
         
+        onImage = new Image(this.getClass().getResourceAsStream("/RES/deviceico_ok.png"));
+    	offImage = new Image(this.getClass().getResourceAsStream("/RES/deviceico_off.png"));
+    	errorImage = new Image(this.getClass().getResourceAsStream("/RES/deviceico_error.png"));
+        
         S_ReadDeviceInfoService = new ReadDeviceInfoService();
         S_ReadDeviceInfoService.setPeriod(Duration.minutes(5));
         
-        GB_FreshPane.visibleProperty().bind(S_ReadDeviceInfoService.stateProperty().isEqualTo(new SimpleObjectProperty<State>(State.RUNNING)));
-        
+        GB_FreshPane.visibleProperty().addListener((o, oldValue, newValue)->{
+        	if(newValue)
+        		devicepane.setCursor(Cursor.WAIT);
+        	else
+        		devicepane.setCursor(Cursor.DEFAULT);
+        });
+        S_ReadDeviceInfoService.stateProperty().addListener((o, oldValue, newValue)->{
+        	GB_FreshPane.setVisible(State.RUNNING.equals(newValue));
+        });
         S_ReadDeviceInfoService.lastValueProperty().addListener(new ChangeListener<List<Device>>() {
 
 			@Override
@@ -82,24 +97,25 @@ public class DeviceHandler {
 				// TODO Auto-generated method stub
 				long currenttime = System.currentTimeMillis();
 				Long devicetime = null;
+				Device device = null;
+				Image image = null;
 
 				DeviceThumbShowPane.getChildren().clear();
 				
 				if(arg2 != null){
 
-					for (Device device : arg2) {
-						
-						Image image = null;
+					for (int i=0; i<arg2.size(); i++) {
+						device = arg2.get(i);
 						devicetime = device.getTime();
 
 						if((devicetime == null) || ((currenttime > devicetime) && (currenttime - devicetime > 120000))){
-							image = new Image(this.getClass().getResourceAsStream("/RES/deviceico_off.png"));
+							image = offImage;
 						}
-						else if("OK".equals(device.getStatus())){
-							image = new Image(this.getClass().getResourceAsStream("/RES/deviceico_ok.png"));
+						else if("ok".equals(device.getStatus())){
+							image = onImage;
 						}
 						else {
-							image = new Image(this.getClass().getResourceAsStream("/RES/deviceico_error.png"));
+							image = errorImage;
 						}
 						
 						DeviceThumnPane temp = new DeviceThumnPane(image, device);
@@ -129,9 +145,9 @@ public class DeviceHandler {
 				if(devicepane.equals(newValue)){
 					S_ReadDeviceInfoService.restart();
 				}
-				
-				if(devicepane.equals(oldValue)){
+				else{
 					S_ReadDeviceInfoService.cancel();
+					DeviceThumbShowPane.getChildren().clear();
 				}
 			}
 		});
@@ -167,6 +183,13 @@ public class DeviceHandler {
 			
 			private List<Device> ReadDeviceInfoFun(){
 				
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 				if(managerSession.getFatherAccount() == null)
 					admin = managerRepository.findByAccount(managerSession.getAccount());
 				else
@@ -176,7 +199,7 @@ public class DeviceHandler {
 					return null;
 				
 				//查询管理员所管理的所有设备id
-				if(admin.getType() < 2)
+				if(admin.getType() < 3)
 					return deviceRepository.quaryAllDevice();
 				else
 					return deviceRepository.findByAccount(admin.getAccount());

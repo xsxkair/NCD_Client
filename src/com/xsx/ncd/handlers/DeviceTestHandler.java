@@ -12,23 +12,34 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXDialog;
 import com.xsx.ncd.define.DeviceTestTableItem;
+import com.xsx.ncd.define.ReportTableItem;
 import com.xsx.ncd.entity.LabTestData;
 import com.xsx.ncd.repository.LabTestDataRepository;
+import com.xsx.ncd.spring.UserSession;
 import com.xsx.ncd.spring.WorkPageSession;
 import com.xsx.ncd.tool.ClientSocket;
 
 import javafx.application.Platform;
-import javafx.concurrent.ScheduledService;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleListProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Cursor;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart.Data;
 import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
@@ -37,6 +48,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -44,20 +56,36 @@ import net.sf.json.JSONObject;
 public class DeviceTestHandler {
 	
 	private AnchorPane rootPane = null;
-	@FXML LineChart<Number, Number> GB_Chart;
+	
+	@FXML StackPane rootStackPane;
+	
+	@FXML JFXDialog logDialog;
+	@FXML Label dialogInfo;
+	@FXML JFXButton acceptButton;
 	
 	@FXML TextField GB_TestCountFiled;
 	@FXML TextField GB_TestRelayFiled;
 	@FXML TextField GB_DeviceIPField;
 	@FXML Button GB_StartTestButton;
-	@FXML Button GB_SaveDataButton;
+	
+	@FXML LineChart<Number, Number> GB_Chart;
+	
+	private ObservableList<Integer> tempSeriesDataList = null;
+	private List<LabTestData> labTestDatas = null;
+	private String deviceId = null;
 	private Integer testCount = null;
 	private Integer testDelayTime = null;
-	int testIndex = 0;
+
+	private IntegerProperty testIndex = null;
+	private Series<Number, Number> currentSeries = null;
+	private Series<Number, Number> tempSeries = null;
+	
+	private JSONObject  jsonarray = null;
+	private Map typeMap = new HashMap();
 	
 	@FXML TableView<DeviceTestTableItem> GB_TableView;
-	@FXML TableColumn GB_TableColumn0;
-	@FXML TableColumn GB_TableColumn1;
+	@FXML TableColumn<DeviceTestTableItem, String> GB_TableColumn0;
+	@FXML TableColumn<DeviceTestTableItem, Float> GB_TableColumn1;
 	
 	@FXML TextArea GB_LogTextArea;
 	
@@ -68,6 +96,7 @@ public class DeviceTestHandler {
 	
 	@Autowired WorkPageSession workPageSession;
 	@Autowired private LabTestDataRepository labTestDataRepository;
+	@Autowired UserSession userSession;
 
 	@PostConstruct
 	private void UI_Init(){
@@ -83,20 +112,64 @@ public class DeviceTestHandler {
 			e.printStackTrace();
 		};
 		
-		GB_TableColumn0.setCellValueFactory(new PropertyValueFactory("testDesc"));
-		//GB_TableColumn0.setCellFactory(TextFieldTableCell.forTableColumn());
+		rootStackPane.getChildren().remove(logDialog);
 		
-        GB_TableColumn1.setCellValueFactory(new PropertyValueFactory("tcValue"));
+		GB_TableColumn0.setCellValueFactory(new PropertyValueFactory<DeviceTestTableItem, String>("testDesc"));
+		GB_TableColumn0.setCellFactory(TextFieldTableCell.forTableColumn());
+		
+        GB_TableColumn1.setCellValueFactory(new PropertyValueFactory<DeviceTestTableItem, Float>("tcValue"));
 	
+        labTestDatas = new ArrayList<>();
+        
+        testIndex = new SimpleIntegerProperty();
+        testIndex.addListener((o, oldValue, newValue)->{
+        	System.out.println(newValue);
+        	if(newValue != null){
+        		System.out.println(newValue.intValue());
+        		currentSeries = GB_Chart.getData().get(newValue.intValue());
+        	}
+        });
+        
+        tempSeriesDataList = FXCollections.observableArrayList();
+
+        tempSeriesDataList.addListener(new ListChangeListener<Integer>() {
+
+			@Override
+			public void onChanged(javafx.collections.ListChangeListener.Change<? extends Integer> c) {
+				// TODO Auto-generated method stub
+				if (c.next()) {
+					if(c.wasAdded()){
+						for (Integer additem : c.getAddedSubList()) {
+							/*if(additem == 0xffff)
+								currentSeries.getData().clear();
+							else
+								currentSeries.getData().add(new Data<Number, Number>(currentSeries.getData().size(), additem));*/
+	                    }
+					}
+				}
+				
+					
+			}
+		});
+        
+        typeMap.put("data", int[].class);
+    	typeMap.put("status", int.class);
+        
         S_TestService = new TestService();
         S_TestService.messageProperty().addListener((o, oldValue, newValue)->{
         	GB_LogTextArea.appendText(newValue+"\n");
         });
+
         GB_StartTestButton.disableProperty().bind(S_TestService.runningProperty());
-        GB_SaveDataButton.disableProperty().bind(S_TestService.runningProperty());
         GB_TestCountFiled.disableProperty().bind(S_TestService.runningProperty());
+        
+        GB_TestRelayFiled.setText("1");
         GB_TestRelayFiled.disableProperty().bind(S_TestService.runningProperty());
-        GB_DeviceIPField.disableProperty().bind(S_TestService.runningProperty());
+        GB_DeviceIPField.disableProperty().bind(S_TestService.runningProperty()); 
+        
+        acceptButton.setOnMouseClicked((e)->{
+        	logDialog.close();
+		});
         
         loader = null;
         in = null;
@@ -106,6 +179,32 @@ public class DeviceTestHandler {
 		workPageSession.setWorkPane(rootPane);
 	}
 	
+	private void showLogsDialog(String logs) {
+		dialogInfo.setText(logs);
+		logDialog.show(rootStackPane);
+	}
+	
+	public boolean readDeviceInfo(String iphost) {
+		String devicestr = null;
+		JSONObject jsonObject = null;
+    	Map typeMap = new HashMap();
+    	
+		devicestr = ClientSocket.ComWithServer(iphost, "Read Device Info");
+		
+		if(devicestr != null){
+			jsonObject = JSONObject.fromObject(devicestr);
+			Map output1 = (Map)JSONObject.toBean(jsonObject, Map.class,typeMap);
+			deviceId = (String)output1.get("deviceid");
+			
+			typeMap = null;
+			jsonObject = null;
+			return true;
+		}
+		typeMap = null;
+		jsonObject = null;
+		return false;
+	}
+
 	@FXML
 	public void GB_SelectSeriesAction(MouseEvent e){
 /*		MouseButton button = e.getButton();
@@ -130,171 +229,55 @@ public class DeviceTestHandler {
 	
 	@FXML
 	public void GB_StartTestAction(ActionEvent e){
+	
+		testIndex.set((int) (Math.random()*100));
+/*		rootPane.setCursor(Cursor.WAIT);
+		
+		LabTestData labTestData = null;
+		
 		try {
 			testCount = Integer.valueOf(GB_TestCountFiled.getText());
-		} catch (Exception exception) {
+			testDelayTime = Integer.valueOf(GB_TestRelayFiled.getText());
+		} catch (Exception ex) {
 			// TODO: handle exception
+			testCount = null;
+			testDelayTime = null;
+		}
+		
+		if((testCount == null) || (testDelayTime == null)){
+			rootPane.setCursor(Cursor.DEFAULT);
+			
+			showLogsDialog("格式不正确！");
 			return;
 		}
 		
-		if(testCount.intValue() <= 0)
+		if(!readDeviceInfo(GB_DeviceIPField.getText())){
+			rootPane.setCursor(Cursor.DEFAULT);
+			
+			showLogsDialog("IP无法连接！");
 			return;
+		}
 		
+		labTestDatas.clear();
 		GB_Chart.getData().clear();
 		GB_TableView.getItems().clear();
 		for (int i=0; i<testCount.intValue(); i++) {
-			GB_Chart.getData().add(new Series<>());
-			GB_TableView.getItems().add(new DeviceTestTableItem(new LabTestData()));
+			tempSeries = new Series<>();
+			tempSeries.setName(String.format("%d", i+1));
+			GB_Chart.getData().add(tempSeries);
+			GB_TableView.getItems().add(new DeviceTestTableItem());
+			
+			labTestData = new LabTestData();
+			labTestData.setDid(deviceId);
+			labTestData.setUserid(userSession.getAccount());
+			labTestData.setTindex(String.format("%d/%d", i+1, testCount));
+			labTestDatas.add(labTestData);
 		}
-		Series<Number,Number>[] series = new Series[testCount];
-		
-		try {
-			testDelayTime = Integer.valueOf(GB_TestRelayFiled.getText());
-		} catch (Exception exception) {
-			// TODO: handle exception
-			testDelayTime = 1;
-		}
-		
-		if(testDelayTime <= 0)
-			testDelayTime = 1;
 		
 		S_TestService.restart();
+		
+		rootPane.setCursor(Cursor.DEFAULT);*/
 	}
-	
-	@FXML
-	public void GB_SaveDataAction(ActionEvent e){
-
-	}
-	
-/*	public void SaveData_Fun(String filepath){
-
-		ButtonType loginButtonType = new ButtonType("确定", ButtonData.OK_DONE);
-		Dialog<String> dialog = new Dialog<>();
-		
-		dialog.getDialogPane().getButtonTypes().add(loginButtonType);
-		
-		
-		FileInputStream myfileinput = null;
-		try {
-			myfileinput = new FileInputStream(filepath);	
-		} catch (FileNotFoundException e2) {
-			// TODO Auto-generated catch block
-
-		}
-		
-		XSSFWorkbook wb = null;
-		if(myfileinput != null){
-			try {
-				wb = new XSSFWorkbook(myfileinput);
-			} catch (IOException e1) {
-					// TODO Auto-generated catch block
-				dialog.getDialogPane().setContentText("文件打开错误，请重试！");
-				dialog.showAndWait();
-				return;
-			}
-		}
-		else{
-			wb = new XSSFWorkbook();
-		}
-
-		XSSFSheet mysheet = null;
-		
-		if(wb.getNumberOfSheets() == 0){
-			mysheet = wb.createSheet(S_TesterBean.get().getUsername());
-		}
-		else {
-			mysheet = wb.getSheetAt(wb.getNumberOfSheets()-1);
-		}
-		
-		XSSFRow myrow0 = mysheet.getRow(0);
-		if(myrow0 == null)
-			myrow0 = mysheet.createRow(0);
-		int rownum = myrow0.getLastCellNum();
-		if(rownum == -1)
-			rownum += 1;
-		
-		for (int i = 0; i < GB_TestData.size(); i++) {
-			//第0行
-			XSSFRow myrow4 = mysheet.getRow(0);
-			if(myrow4 == null)
-				myrow4 = mysheet.createRow(0);
-			
-			XSSFCell Cell0 = myrow4.createCell(i+rownum);
-			Cell0.setCellType(HSSFCell.CELL_TYPE_STRING);
-			Cell0.setCellValue(GB_TestData.get(i).my_descProperty().get());
-			
-			//第一行
-			XSSFRow myrow1 = mysheet.getRow(1);
-			if(myrow1 == null)
-				myrow1 = mysheet.createRow(1);
-			
-			XSSFCell Cell1 = myrow1.createCell(i+rownum);
-			Cell1.setCellType(HSSFCell.CELL_TYPE_STRING);
-			Cell1.setCellValue(GB_TestData.get(i).getMy_seires().getName());
-
-			//第二行
-			XSSFRow myrow2 = mysheet.getRow(2);
-			if(myrow2 == null)
-				myrow2 = mysheet.createRow(2);
-			
-			XSSFCell Cell2 = myrow2.createCell(i+rownum);
-			Cell2.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
-			Cell2.setCellValue(GB_TestData.get(i).my_T_C_biliProperty().doubleValue());
-			
-			//第三行
-			XSSFRow myrow3 = mysheet.getRow(3);
-			if(myrow3 == null)
-				myrow3 = mysheet.createRow(3);
-			
-			XSSFCell Cell3 = myrow3.createCell(i+rownum);
-			Cell3.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
-			Cell3.setCellValue(GB_TestData.get(i).my_T_TC_biliProperty().doubleValue());
-			
-			for (int j = 0; j < GB_TestData.get(i).getMy_seires().getData().size(); j++) {
-				XSSFRow temprow = mysheet.getRow(j+4);
-				if(temprow == null)
-					temprow = mysheet.createRow(j+4);
-				
-				XSSFCell tempcell = temprow.createCell(i+rownum);
-				tempcell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
-				tempcell.setCellValue(GB_TestData.get(i).getMy_seires().getData().get(j).getYValue().doubleValue());
-			}
-		}
-
-		FileOutputStream out;
-		try {
-			out = new FileOutputStream(filepath);
-			try {
-				wb.write(out);
-				out.flush();
-				out.close();
-				LastSaveDirectory = filepath;
-				
-				dialog.getDialogPane().setContentText("保存成功！");
-				dialog.showAndWait();
-				
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				dialog.getDialogPane().setContentText("保存失败！");
-				dialog.showAndWait();
-			}
-			
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			dialog.getDialogPane().setContentText("保存失败！");
-			dialog.showAndWait();
-		}finally {
-			try {
-				wb.close();
-				myfileinput.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
-	}
-	*/
 	
 	class TestService extends Service<Void>{
 		
@@ -316,18 +299,16 @@ public class DeviceTestHandler {
 				
 				String str;
 				int retryNum = 0;
+				DeviceTestTableItem deviceTestTableItem = null;
+
+				LabTestData labTestData = null;
 				
-				JSONObject  jsonarray;
-				Map typeMap = new HashMap();
-				typeMap.put("data", int[].class);
-	        	typeMap.put("status", int.class);
-	        	ArrayList<Integer> tempdata = new ArrayList<>();
-	        	DeviceTestTableItem labTestDataItem = null;
-				
-	        	testIndex = 0;
+	        	testIndex.set(0);
 
 				while(true){
 
+					labTestData = labTestDatas.get(testIndex.get());
+					
 					//启动测试
 					retryNum = 0;
 					while((retryNum++) < retryMaxNum){
@@ -358,46 +339,36 @@ public class DeviceTestHandler {
 					
 					//读曲线数据
 					retryNum = 0;
-					tempdata.clear();
+
 					while(retryNum < retryMaxNum){
 						str = ClientSocket.ComWithServer(GB_DeviceIPField.getText(), "Read Test Data");
 						if(str != null){
-
+							retryNum = 0;
+							System.out.println(str);
 							jsonarray = JSONObject.fromObject(str);
 							Map output1 = (Map)JSONObject.toBean(jsonarray, Map.class, typeMap);
 
 							List<Integer> data = (List<Integer>) output1.get("data");
 							int status = (int) output1.get("status");
-
-							tempdata.addAll(data);
 							
-							Platform.runLater(() -> {
-								int serieldatasize;
-								
-								Series<Number, Number> mySeries = GB_Chart.getData().get(testIndex);
-								serieldatasize = mySeries.getData().size();
-								for (int i=0; i<data.size(); i++) {
-									if(data.get(i) == 0xffff){
-										mySeries.getData().clear();
-										serieldatasize = mySeries.getData().size();
-										tempdata.clear();
-									}
-									else{
-										Data datap = new Data<Number, Number>((serieldatasize+i), data.get(i));
-										mySeries.getData().add(datap);
-									}
-								}
-							});
+							
+							try {
+								tempSeriesDataList.addAll(data);
+							} catch (Exception e) {
+								// TODO: handle exception
+								e.printStackTrace();
+							}
+							
+							
+							data = null;
+							jsonarray = null;
 							
 							if(status == 0){
-								JSONArray jsonList = JSONArray.fromObject( tempdata );
-								labTestDataItem = GB_TableView.getItems().get(testIndex);
-								labTestDataItem.setTestDesc(""+testIndex);
-								labTestDataItem.setTcValue(new Float(testIndex));
-								labTestDataItem.getLabTestData().setSerie(jsonList.toString());
+								JSONArray jsonList = JSONArray.fromObject( currentSeries.getData().toArray() );
+								labTestData.setSerie(jsonList.toString());
 								
 								try {
-									labTestDataRepository.save(labTestDataItem.getLabTestData());
+									labTestDataRepository.save(labTestData);
 								} catch (Exception e) {
 									// TODO: handle exception
 									e.printStackTrace();
@@ -422,9 +393,11 @@ public class DeviceTestHandler {
 						return null;
 					}
 					
-					testIndex++;
+					testIndex.add(1);
+					System.out.println(testIndex.get());
+					System.out.println(testCount);
 					
-					if(testIndex >= testCount)
+					if(testIndex.get() >= testCount)
 						break;
 
 					try {

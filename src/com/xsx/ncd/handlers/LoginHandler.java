@@ -83,7 +83,7 @@ public class LoginHandler {
     			protected boolean computeValue() {
     				// TODO Auto-generated method stub
     				
-    				if(UserNameText.getLength() > 0 && UserPasswordText.getLength() >0)
+    				if(UserNameText.getLength() > 0 && UserPasswordText.getLength() >= 6)
     					return false;
     				else
     					return true;
@@ -158,10 +158,10 @@ public class LoginHandler {
 		if(tempuser != null){
 			UserPasswordText.setText(null);
 			s_Stage.close();
+			s_Stage = null;
 			
 			userSession.setUser(tempuser);
 			mainContainHandler.startWorkActivity();
-
 		}
 		else {
 			ButtonType loginButtonType = new ButtonType("È·¶¨", ButtonData.OK_DONE);

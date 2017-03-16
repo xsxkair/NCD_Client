@@ -1,38 +1,35 @@
 package com.xsx.ncd.application;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.util.Optional;
-import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.swing.filechooser.FileSystemView;
 
-import com.jfoenix.svg.SVGGlyphLoader;
-import com.xsx.ncd.define.SoftInfo;
-import com.xsx.ncd.entity.NcdSoft;
+import com.jfoenix.controls.JFXSpinner;
 import com.xsx.ncd.handlers.LoginHandler;
-import com.xsx.ncd.repository.NcdSoftRepository;
 import com.xsx.ncd.spring.SpringFacktory;
 
 import javafx.application.Application;
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.event.EventHandler;
+import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaPlayer.Status;
 import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
+import net.jimmc.jshortcut.JShellLink;
 
 public class AppStart extends Application{
 	
@@ -55,18 +52,37 @@ public class AppStart extends Application{
 			}
 		});
 		
+		//播放视频
 		Media pick = new Media(this.getClass().getResource("/RES/纽康度-Welcome.mp4").toExternalForm());
         MediaPlayer player = new MediaPlayer(pick);
         
         player.play();
-       
+        
         //Add a mediaView, to display the media. Its necessary !
         //This mediaView is added to a Pane
         MediaView mediaView = new MediaView(player);
         mediaView.setFitWidth(500);
         
-		AnchorPane root = new AnchorPane(mediaView);
+        //加载图标
+        JFXSpinner spinner = new JFXSpinner();
+        spinner.setPrefSize(8, 8);
+        spinner.setVisible(false);
+        spinner.setOpacity(0.5);
+        AnchorPane.setBottomAnchor(spinner, 5.0);
+        AnchorPane.setRightAnchor(spinner, 5.0);
+        
+        player.setOnEndOfMedia(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				spinner.setVisible(true);
+			}
+		});
+        
+		AnchorPane root = new AnchorPane(mediaView, spinner);
 		root.setStyle("-fx-border-color:red");
+		root.setCursor(Cursor.WAIT);
 		
 		primaryStage.getIcons().add(new Image(this.getClass().getResourceAsStream("/RES/logo.png")));
 		primaryStage.setScene(new Scene(root, 500, 281));
@@ -77,21 +93,6 @@ public class AppStart extends Application{
 		LoadResourceTask loadResourceTask = new LoadResourceTask();
 		new Thread(loadResourceTask).start();
 		
-		player.currentTimeProperty().addListener(new ChangeListener<Duration>() {
-
-			@Override
-			public void changed(ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) {
-				// TODO Auto-generated method stub
-				
-				if(loadResourceTask.getValue() != null && loadResourceTask.getValue().equals(true)){
-					if(player.getMedia().getDuration().subtract(newValue).lessThan(new Duration(200))){
-						SpringFacktory.getCtx().getBean(LoginHandler.class).startLoginActivity();
-						primaryStage.close();
-					}
-				}
-			}
-        });
-		
 		loadResourceTask.valueProperty().addListener(new ChangeListener<Boolean>() {
 
 			@Override
@@ -99,11 +100,8 @@ public class AppStart extends Application{
 				// TODO Auto-generated method stub
 				
 				if(newValue){
-
-					if(player.getMedia().getDuration().subtract(player.getCurrentTime()).lessThan(new Duration(200))){
-						SpringFacktory.getCtx().getBean(LoginHandler.class).startLoginActivity();
-						primaryStage.close();
-					}
+					SpringFacktory.getCtx().getBean(LoginHandler.class).startLoginActivity();
+					primaryStage.close();
 				}
 				else{
 					 Alert alert = new Alert(AlertType.ERROR);

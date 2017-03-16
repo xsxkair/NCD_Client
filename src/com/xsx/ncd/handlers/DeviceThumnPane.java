@@ -23,14 +23,14 @@ public class DeviceThumnPane extends VBox{
 		deviceimage.setFitWidth(150);
 		deviceimage.setFitHeight(123);
 		Label deviceid = new Label(device.getDid());
-		deviceid.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
+		deviceid.setFont(Font.font("微软雅黑", FontWeight.BOLD, 16));
 		
 		this.setCursor(Cursor.HAND);
 		this.setAlignment(Pos.CENTER);
 		getChildren().addAll(deviceimage, deviceid);
 		
-		this.setPadding(new Insets(15, 15, 15, 15));
-		this.setStyle("-fx-background-color:#D8EFF2");
+		this.setPadding(new Insets(10, 5, 10, 5));
+		this.setSpacing(10);
 		
 		//提示
 		Label userLabel = new Label("责任人："+ device.getName());

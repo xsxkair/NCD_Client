@@ -3,7 +3,6 @@
 <?import com.jfoenix.controls.JFXSpinner?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
@@ -12,6 +11,7 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
@@ -29,12 +29,12 @@
                   <Font size="15.0" />
                </font>
             </Label>
-            <HBox fx:id="GB_FilterHbox" alignment="CENTER_LEFT" spacing="20.0">
+            <FlowPane fx:id="GB_FilterFlowPane" hgap="10.0">
                <children>
                   <HBox alignment="CENTER_LEFT" spacing="5.0">
                      <children>
                         <Label text="测试项目：" />
-                        <TextField fx:id="GB_TestItemFilterTextfield" prefWidth="110.0" />
+                        <TextField fx:id="GB_TestItemFilterTextfield" prefWidth="100.0" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" spacing="5.0">
@@ -46,13 +46,13 @@
                   <HBox alignment="CENTER_LEFT" spacing="5.0">
                      <children>
                         <Label text="测试人员：" />
-                        <TextField fx:id="GB_TesterFilterTextfield" prefWidth="110.0" />
+                        <TextField fx:id="GB_TesterFilterTextfield" prefWidth="100.0" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" spacing="5.0">
                      <children>
                         <Label text="测试设备：" />
-                        <ComboBox fx:id="GB_TestDeviceFilterCombox" prefWidth="100.0" />
+                        <ComboBox fx:id="GB_TestDeviceFilterCombox" prefWidth="140.0" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" spacing="5.0">
@@ -67,32 +67,22 @@
                         <ComboBox fx:id="GB_ReportResultFilterCombox" prefWidth="100.0" />
                      </children>
                   </HBox>
+                  <StackPane fx:id="refreshToggleNode" prefHeight="25.0" prefWidth="25.0">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                     <FlowPane.margin>
+                        <Insets left="20.0" />
+                     </FlowPane.margin>
+                  </StackPane>
                </children>
-               <padding>
+               <StackPane.margin>
                   <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
-               </padding>
-            </HBox>
+               </StackPane.margin>
+            </FlowPane>
          </children>
       </StackPane>
-      <HBox alignment="CENTER_RIGHT" spacing="30.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="60.0">
-         <children>
-            <Button mnemonicParsing="false" onAction="#RefreshButtonActionHandle" prefWidth="100.0" text="刷新" textAlignment="JUSTIFY">
-               <font>
-                  <Font size="18.0" />
-               </font>
-               <HBox.margin>
-                  <Insets />
-               </HBox.margin>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Button>
-         </children>
-         <padding>
-            <Insets left="5.0" right="5.0" />
-         </padding>
-      </HBox>
-      <TableView fx:id="GB_TableView" editable="true" prefHeight="200.0" prefWidth="200.0" styleClass="edge-to-edge" AnchorPane.bottomAnchor="55.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="101.0">
+      <TableView fx:id="GB_TableView" editable="true" prefHeight="200.0" prefWidth="200.0" styleClass="edge-to-edge" AnchorPane.bottomAnchor="55.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0">
         <columns>
           <TableColumn fx:id="TableColumn1" prefWidth="50.0" text="索引" />
             <TableColumn fx:id="TableColumn2" prefWidth="100.0" text="项目名称" />

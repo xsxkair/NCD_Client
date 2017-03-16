@@ -11,6 +11,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.hibernate.boot.spi.AdditionalJaxbMappingProducer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,13 +21,24 @@ import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXDialog;
+import com.jfoenix.controls.JFXPasswordField;
+import com.jfoenix.controls.JFXToggleNode;
+import com.xsx.ncd.define.SoftInfo;
 import com.xsx.ncd.entity.Device;
+import com.xsx.ncd.entity.NcdSoft;
 import com.xsx.ncd.entity.User;
 import com.xsx.ncd.entity.TestData;
 import com.xsx.ncd.handlers.ReportListHandler.QueryReportService.QueryReportTask;
 import com.xsx.ncd.repository.DeviceRepository;
+import com.xsx.ncd.repository.NcdSoftRepository;
+import com.xsx.ncd.repository.UserRepository;
+import com.xsx.ncd.spring.UserSession;
 import com.xsx.ncd.spring.WorkPageSession;
 
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
@@ -48,12 +60,14 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -66,22 +80,39 @@ import javafx.util.Duration;
 public class DeviceDetailHandler {
 	
 	private AnchorPane rootpane;
+	@FXML StackPane rootStackPane;
 	
 	private Pane fatherPane;
 	
-	private Device S_Device ;
+	private Device S_Device = null;
+	private User currentUser = null;
+	private User tempUser = null;
 	
+	@FXML JFXDialog setManagerDialog;
+	@FXML JFXComboBox<User> managerListComboBox;
+	@FXML JFXPasswordField actionPasswordTextField;
+	@FXML JFXButton cancelButton1;
+	@FXML JFXButton acceptButton1;
+	
+	@FXML JFXDialog LogDialog;
+	@FXML Label dialogInfo;
+	@FXML JFXButton acceptButton2;
+	
+	@FXML HBox deviceInfoHBox;
 	@FXML ImageView GB_DeviceImg;
-	
 	@FXML Label GB_DeviceIDLabel;
+	@FXML Label GB_DeviceVersionLabel;
 	@FXML Label GB_DevicerNameLabel;
-	@FXML Label GB_DevicerAgeLabel;
-	@FXML Label GB_DevicerSexLabel;
 	@FXML Label GB_DevicerPhoneLabel;
-	@FXML Label GB_DevicerJobLabel;
-	@FXML Label GB_DevicerDescLabel;
 	@FXML Label GB_DevicerAddrLabel;
 	
+	@FXML VBox deviceInfoVBox;
+	@FXML HBox managerHBox;
+	@FXML Label GB_managerNameLabel;
+	@FXML Label GB_managerPhoneLabel;
+	@FXML JFXButton setManagerButton;
+	
+	@FXML ToggleGroup viewTypeToggleGroup;
 	@FXML LineChart<String, Number> GB_DeviceLineChart;
 	private Series<String, Number> chartseries;
 	@FXML CategoryAxis GB_DeviceXaxis;
@@ -94,6 +125,9 @@ public class DeviceDetailHandler {
 	
 	@Autowired private WorkPageSession workPageSession;
 	@Autowired private DeviceRepository deviceRepository;
+	@Autowired private NcdSoftRepository ncdSoftRepository;
+	@Autowired private UserRepository userRepository;
+	@Autowired private UserSession userSession;
 	
 	private QueryDeviceActivenessService s_QueryDeviceActivenessService;
 	
@@ -110,9 +144,32 @@ public class DeviceDetailHandler {
 			e.printStackTrace();
 		}
         
+        rootStackPane.getChildren().remove(LogDialog);
+        rootStackPane.getChildren().remove(setManagerDialog);
+        
+        acceptButton1.disableProperty().bind(new BooleanBinding() {
+			
+        	{
+        		bind(managerListComboBox.getSelectionModel().selectedItemProperty());
+        		bind(actionPasswordTextField.lengthProperty());
+        	}
+			@Override
+			protected boolean computeValue() {
+				// TODO Auto-generated method stub
+				if((managerListComboBox.getSelectionModel().getSelectedItem() != null) && (actionPasswordTextField.getLength() > 0))
+					return false;
+				else
+					return true;
+			}
+		});
+        
         myMenuItem1 = new MenuItem("刷新");
         myMenuItem2 = new MenuItem("返回");
         myContextMenu = new ContextMenu(myMenuItem1, myMenuItem2);
+        
+        viewTypeToggleGroup.selectedToggleProperty().addListener((o, oldValue, newValue)->{
+        	s_QueryDeviceActivenessService.restart();
+        });
         
         chartseries = new Series<>();
        
@@ -123,13 +180,23 @@ public class DeviceDetailHandler {
         	if(rootpane.equals(newValue)){
         		fatherPane = oldValue;
         		
+        		currentUser = userRepository.findByAccount(userSession.getAccount());
+        		deviceInfoHBox.getChildren().remove(setManagerButton);
+        		deviceInfoVBox.getChildren().remove(managerHBox);
+        		if(currentUser.getType() <= 2){
+        			deviceInfoHBox.getChildren().add(setManagerButton);
+        			deviceInfoVBox.getChildren().add(3, managerHBox);
+        		}
+        		
         		UpDeviceInfo();
         		
-        		s_QueryDeviceActivenessService.restart();
+        		viewTypeToggleGroup.selectToggle(viewTypeToggleGroup.getToggles().get(1));
 			}
         	else if (rootpane.equals(oldValue)) {
         		s_QueryDeviceActivenessService.cancel();
 				S_Device = null;
+				tempUser = null;
+				currentUser = null;
 				chartseries.getData().clear();
 			}
         });
@@ -222,33 +289,94 @@ public class DeviceDetailHandler {
 		
 		Image image = null;
 		
-		Device device = deviceRepository.findById(S_Device.getId());
-		
-		Long devicetime = device.getTime();
+		Long devicetime = S_Device.getTime();
 		long currenttime = System.currentTimeMillis();
 
 		if((devicetime == null) || ((currenttime > devicetime) && (currenttime - devicetime > 120000))){
 			image = new Image(this.getClass().getResourceAsStream("/RES/deviceico_off.png"));
 		}
-		else if("OK".equals(device.getStatus())){
+		else if("OK".equals(S_Device.getStatus())){
 			image = new Image(this.getClass().getResourceAsStream("/RES/deviceico_ok.png"));
 		}
 		else {
 			image = new Image(this.getClass().getResourceAsStream("/RES/deviceico_error.png"));
 		}
 		
-		GB_DeviceImg.setImage(image);;
+		GB_DeviceImg.setImage(image);
 		
-		GB_DeviceIDLabel.setText(device.getDid());
-		GB_DevicerNameLabel.setText(device.getName());
+		GB_DeviceIDLabel.setText(S_Device.getDid());
 		
-		GB_DevicerAgeLabel.setText(device.getAge());
-		GB_DevicerSexLabel.setText(device.getSex());
-		GB_DevicerPhoneLabel.setText(device.getPhone());
-		GB_DevicerJobLabel.setText(device.getJob());
-		GB_DevicerDescLabel.setText(device.getDsc());
-		GB_DevicerAddrLabel.setText(device.getAddr());
+		Integer version = S_Device.getDversion();
+		
+		if(version != null){
+			
+			StringBuffer tempStr = new StringBuffer();
+			tempStr.append(String.format("V%d.%d.%02d", version/1000, version%1000/100, version%100));
+			
+			//读取设备程序最新版本信息
+			NcdSoft ncdSoft = ncdSoftRepository.findNcdSoftByName("Device");
+			if((ncdSoft != null) && (ncdSoft.getVersion().intValue() > version.intValue()))
+			{
+				tempStr.append(String.format("( V%d.%d.%02d )", ncdSoft.getVersion()/1000, ncdSoft.getVersion()%1000/100, 
+						ncdSoft.getVersion()%100));
+			}
 
+			GB_DeviceVersionLabel.setText(tempStr.toString());
+			
+			tempStr = null;
+		}
+		else
+			GB_DeviceVersionLabel.setText("无");
+
+		GB_DevicerNameLabel.setText(S_Device.getName());
+		GB_DevicerPhoneLabel.setText(S_Device.getPhone());
+		GB_DevicerAddrLabel.setText(S_Device.getAddr());
+
+		GB_managerNameLabel.setText("无");
+		GB_managerPhoneLabel.setText("无");
+		if(S_Device.getAccount() != null){
+			tempUser = userRepository.findByAccount(S_Device.getAccount());
+			
+			if(tempUser != null){
+				GB_managerNameLabel.setText(tempUser.getName());
+				GB_managerPhoneLabel.setText(tempUser.getPhone());
+			}
+		} 
+	}
+	
+	@FXML
+	public void setManagerAction() {
+		
+		managerListComboBox.getItems().setAll(userRepository.queryAllFatherManager());
+		actionPasswordTextField.clear();
+		
+		setManagerDialog.show(rootStackPane);
+	}
+	
+	@FXML
+	public void saveManagergAction() {
+		
+		if(currentUser.getPassword().equals(actionPasswordTextField.getText())){
+			S_Device.setAccount(managerListComboBox.getSelectionModel().getSelectedItem().getAccount());
+			
+			deviceRepository.save(S_Device);
+			
+			dialogInfo.setText("成功！");
+			LogDialog.show(rootStackPane);
+		}
+		else {
+			dialogInfo.setText("密码错误！");
+			LogDialog.show(rootStackPane);
+		}
+	}
+
+	@FXML
+	public void closeDialogAction() {
+		if(setManagerDialog.isVisible())
+			setManagerDialog.close();
+		
+		if(LogDialog.isVisible())
+			LogDialog.close();
 	}
 	
 	//查询当前设备的活跃度
@@ -266,9 +394,26 @@ public class DeviceDetailHandler {
 			protected List<Object[]> call(){
 					// TODO Auto-generated method stub
 
-					return deviceRepository.queryDeviceActiveness(S_Device.getDid());
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
+				
+				JFXToggleNode tempToggleNode = (JFXToggleNode) viewTypeToggleGroup.getSelectedToggle();
+				String viewType = ((Label)(tempToggleNode.getGraphic())).getText();
+	        	if(viewType.equals("年")){
+	        		return deviceRepository.queryDeviceActivenessByYear(S_Device.getDid());
+	        	}
+	        	else if(viewType.equals("月")){
+	        		return deviceRepository.queryDeviceActivenessByMonth(S_Device.getDid());
+	        	}
+	        	else {
+	        		return deviceRepository.queryDeviceActivenessByDay(S_Device.getDid());
+	        	}
 			}
-		}	
+		}
+	}	
 	
 }

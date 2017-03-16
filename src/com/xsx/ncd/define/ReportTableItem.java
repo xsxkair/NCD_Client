@@ -2,6 +2,8 @@ package com.xsx.ncd.define;
 
 
 
+import java.sql.Timestamp;
+
 import com.xsx.ncd.entity.Card;
 import com.xsx.ncd.entity.Device;
 import com.xsx.ncd.entity.TestData;
@@ -15,96 +17,63 @@ public class ReportTableItem {
 	private String tester;
 	private String deviceid;
 	private String simpleid;
-	private String username;
 	private String reportresult;
 	
-	private TestData testdata;
-	private Device device;
-	private Card card;
-	private User user;
+	private Integer dataIndex;			//数据库中数据的主键
 
-	public ReportTableItem(Integer index, TestData testdata, Device device, Card card, User user) {
+	public ReportTableItem(Integer index, String testitem, Timestamp testdate, Float testresult, String danwei, String tester,
+			String deviceid, String simpleid, String reportresult, Integer dataIndex) {
+		
+		StringBuffer stringBuffer = new StringBuffer();
+		stringBuffer.append(testresult);
+		stringBuffer.append(" ");
+		stringBuffer.append(danwei);
+		
 		this.index = index;
-		this.testdata = testdata;
-		this.device = device;
-		this.card = card;
-		this.user = user;
+		this.testitem = testitem;
+		this.testdate = testdate;
+		this.testresult = stringBuffer.toString();
+		this.tester = tester;
+		this.deviceid = deviceid;
+		this.simpleid = simpleid;
+		this.reportresult = reportresult;
+		this.dataIndex = dataIndex;
 	}
 
 	public Integer getIndex() {
 		return index;
 	}
 
-	public void setIndex(Integer index) {
-		this.index = index;
-	}
-
 	public String getTestitem() {
-		return this.card.getItem();
-	}
-
-	public void setTestitem(String testitem) {
-		this.testitem = testitem;
+		return this.testitem;
 	}
 
 	public java.sql.Timestamp getTestdate() {
-		return testdata.getTesttime();
-	}
-
-	public void setTestdate(java.sql.Timestamp testdate) {
-		this.testdate = testdate;
+		return testdate;
 	}
 
 	public String getTestresult() {
-		return testdata.getA_v() + this.card.getDanwei();
-	}
-
-	public void setTestresult(String testresult) {
-		this.testresult = testresult;
+		return testresult;
 	}
 
 	public String getTester() {
-		return testdata.getT_name();
-	}
-
-	public void setTester(String tester) {
-		this.tester = tester;
+		return this.tester;
 	}
 
 	public String getDeviceid() {
-		return this.device.getDid();
-	}
-
-	public void setDeviceid(String deviceid) {
-		this.deviceid = deviceid;
+		return this.deviceid;
 	}
 
 	public String getSimpleid() {
-		return testdata.getSid();
-	}
-
-	public void setSimpleid(String simpleid) {
-		this.simpleid = simpleid;
-	}
-
-	public String getUsername() {
-		return this.user.getName();
+		return this.simpleid;
 	}
 
 	public String getReportresult() {
-		return testdata.getResult();
+		return this.reportresult;
 	}
 
-	public void setReportresult(String reportresult) {
-		this.reportresult = reportresult;
-	}
-
-	public TestData getTestdata() {
-		return testdata;
-	}
-
-	public void setTestdata(TestData testdata) {
-		this.testdata = testdata;
+	public Integer getDataIndex() {
+		return dataIndex;
 	}
 
 }

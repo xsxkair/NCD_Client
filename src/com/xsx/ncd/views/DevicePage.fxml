@@ -21,8 +21,8 @@
       </ScrollPane>
       <StackPane fx:id="GB_FreshPane" prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Region prefHeight="696.0" prefWidth="1200.0" style="-fx-background-color: rgba(0, 0, 0, 0.4);" />
-            <JFXSpinner />
+            <Region prefHeight="696.0" prefWidth="1200.0" style="-fx-background-color: rgba(0, 0, 0, 0.2);" />
+            <JFXSpinner radius="50.0" />
          </children>
       </StackPane>
    </children>
