@@ -55,7 +55,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Window;
 
 @Component
-public class MyInfoHandler {
+public class MyInfoHandler implements HandlerTemplet{
 
 	private AnchorPane rootpane;
 	
@@ -101,6 +101,7 @@ public class MyInfoHandler {
 	private WorkPageSession workPageSession;
 	
 	@PostConstruct
+	@Override
 	public void UI_Init(){
 
 		FXMLLoader loader = new FXMLLoader();
@@ -248,7 +249,8 @@ public class MyInfoHandler {
         in = null;
 	}
 	
-	public void ShowMyInfoPage(){
+	@Override
+	public void showPane(){
 		workPageSession.setWorkPane(rootpane);
 	}
 	
@@ -307,5 +309,11 @@ public class MyInfoHandler {
 	private void showModifyLogsDialog(String logs) {
 		dialogInfo.setText(logs);
 		modifyLogDialog.show(rootStackPane);
+	}
+
+	@Override
+	public void showPane(Object object) {
+		// TODO Auto-generated method stub
+		
 	}
 }

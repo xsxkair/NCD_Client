@@ -63,7 +63,7 @@ import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 
 @Component
-public class CardRecordHandler {
+public class CardRecordHandler implements HandlerTemplet{
 	
 	private AnchorPane rootpane;
 	
@@ -108,7 +108,8 @@ public class CardRecordHandler {
 	private SystemSetData systemSetData;
 	
 	@PostConstruct
-	private void UI_Init() {
+	@Override
+	public void UI_Init() {
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(this.getClass().getResource("/com/xsx/ncd/views/CardRecordPage.fxml"));
         InputStream in = this.getClass().getResourceAsStream("/com/xsx/ncd/views/CardRecordPage.fxml");
@@ -197,7 +198,8 @@ public class CardRecordHandler {
         in = null;
 	}
 	
-	public void ShowCardRecordPage(){
+	@Override
+	public void showPane(){
 		workPageSession.setWorkPane(rootpane);
 	}
 	
@@ -272,5 +274,11 @@ public class CardRecordHandler {
 				return data;	
 			}
 		}
+	}
+
+	@Override
+	public void showPane(Object object) {
+		// TODO Auto-generated method stub
+		
 	}
 }

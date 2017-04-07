@@ -3,118 +3,217 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1240.0" styleClass="homepage" stylesheets="@mainuistyle.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1024.0" style="-fx-background-color: white;" stylesheets="@MainUI.css" xmlns="http://javafx.com/javafx/8.0.102" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <FlowPane fx:id="GB_MenuFlowPane" prefHeight="40.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <AnchorPane fx:id="GB_HeadPane" style="-fx-background-color: #10518c;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <HBox fx:id="GB_TodayHbox" alignment="CENTER" onMouseClicked="#GB_MyWorkSpaceAction">
+            <HBox fx:id="GB_MenuHBox" alignment="CENTER" spacing="30.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="10.0">
                <children>
-                  <Label prefHeight="39.0" text="工作台" textFill="#c2671f">
-                     <graphic>
-                        <ImageView fx:id="GB_WorkSpaceIcoView" fitHeight="27.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true" />
-                     </graphic>
-                     <font>
-                        <Font name="System Bold" size="15.0" />
-                     </font>
-                  </Label>
+                  <StackPane fx:id="GB_WorkSpaceStackPane" styleClass="mainitem" stylesheets="@MainUI.css">
+                     <children>
+                        <Label text="工作台" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                           <StackPane.margin>
+                              <Insets top="62.0" />
+                           </StackPane.margin>
+                        </Label>
+                        <ImageView fitHeight="78.0" fitWidth="78.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../../RES/gzt.png" />
+                           </image>
+                           <StackPane.margin>
+                              <Insets top="-10.0" />
+                           </StackPane.margin>
+                        </ImageView>
+                     </children>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </StackPane>
+                  <StackPane fx:id="GB_ReportManagerStackPane" styleClass="mainitem">
+                     <children>
+                        <ImageView fitHeight="78.0" fitWidth="78.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../../RES/bggl.png" />
+                           </image>
+                           <StackPane.margin>
+                              <Insets top="-10.0" />
+                           </StackPane.margin>
+                        </ImageView>
+                        <Label text="报告管理" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                           <StackPane.margin>
+                              <Insets top="62.0" />
+                           </StackPane.margin>
+                        </Label>
+                     </children>
+                  </StackPane>
+                  <StackPane fx:id="GB_DeviceStackPane" styleClass="mainitem">
+                     <children>
+                        <ImageView fitHeight="78.0" fitWidth="78.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../../RES/sbxx.png" />
+                           </image>
+                           <StackPane.margin>
+                              <Insets top="-10.0" />
+                           </StackPane.margin>
+                        </ImageView>
+                        <Label text="设备信息" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                           <StackPane.margin>
+                              <Insets top="62.0" />
+                           </StackPane.margin>
+                        </Label>
+                     </children>
+                  </StackPane>
+                  <StackPane fx:id="GB_CardStackPane" styleClass="mainitem">
+                     <children>
+                        <ImageView fitHeight="78.0" fitWidth="78.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../../RES/card.png" />
+                           </image>
+                           <StackPane.margin>
+                              <Insets top="-10.0" />
+                           </StackPane.margin>
+                        </ImageView>
+                        <Label text="试剂卡管理" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                           <StackPane.margin>
+                              <Insets top="62.0" />
+                           </StackPane.margin>
+                        </Label>
+                     </children>
+                  </StackPane>
+                  <StackPane fx:id="GB_ToolStackPane" styleClass="mainitem">
+                     <children>
+                        <ImageView fitHeight="78.0" fitWidth="78.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../../RES/gj.png" />
+                           </image>
+                           <StackPane.margin>
+                              <Insets top="-10.0" />
+                           </StackPane.margin>
+                        </ImageView>
+                        <Label text="工具" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                           <StackPane.margin>
+                              <Insets top="62.0" />
+                           </StackPane.margin>
+                        </Label>
+                     </children>
+                  </StackPane>
+                  <StackPane fx:id="GB_UsersStackPane" styleClass="mainitem">
+                     <children>
+                        <ImageView fitHeight="78.0" fitWidth="78.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../../RES/rygl.png" />
+                           </image>
+                           <StackPane.margin>
+                              <Insets top="-10.0" />
+                           </StackPane.margin>
+                        </ImageView>
+                        <Label text="人员管理" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                           <StackPane.margin>
+                              <Insets top="62.0" />
+                           </StackPane.margin>
+                        </Label>
+                     </children>
+                  </StackPane>
+                  <StackPane fx:id="GB_AboutUsStackPane" styleClass="mainitem">
+                     <children>
+                        <ImageView fitHeight="78.0" fitWidth="78.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../../RES/gy.png" />
+                           </image>
+                           <StackPane.margin>
+                              <Insets top="-10.0" />
+                           </StackPane.margin>
+                        </ImageView>
+                        <Label text="关于" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                           <StackPane.margin>
+                              <Insets top="62.0" />
+                           </StackPane.margin>
+                        </Label>
+                     </children>
+                  </StackPane>
                </children>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
             </HBox>
-            <MenuBar fx:id="GB_MenuBar" style="-fx-background-color: transparent;">
-              <menus>
-                <Menu fx:id="GB_ReportMenu" mnemonicParsing="false" style="-fx-font-size: 14;" text="报告管理">
-                  <items>
-                    <MenuItem mnemonicParsing="false" onAction="#ReportThumbAction" text="报告概览" />
-                        <MenuItem mnemonicParsing="false" onAction="#QueryReportAction" text="报告查询" />
-                  </items>
-                </Menu>
-                <Menu fx:id="GB_DeviceMenu" mnemonicParsing="false" style="-fx-font-size: 14;" text="设备信息">
-                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#ShowDevicesAction" text="我的设备" />
-                     </items>
-                  </Menu>
-                <Menu fx:id="GB_CardMenu" mnemonicParsing="false" style="-fx-font-size: 14;" text="检测卡管理">
-                  <items>
-                    <MenuItem mnemonicParsing="false" onAction="#GB_ShowCardRepertoryAction" text="查看库存" />
-                        <MenuItem mnemonicParsing="false" onAction="#GB_CardInOutAction" text="试剂卡出入库" />
-                        <MenuItem mnemonicParsing="false" onAction="#GB_ShowCardInOutRecordAction" text="出入库记录" />
-                  </items>
-                </Menu>
-                  <Menu fx:id="GB_CheckMenu" mnemonicParsing="false" style="-fx-font-size: 14;" text="维护保养">
-                    <items>
-                      <MenuItem mnemonicParsing="false" text="Action 1" />
-                    </items>
-                  </Menu>
-                  <Menu fx:id="GB_ToolMenu" mnemonicParsing="false" style="-fx-font-size: 14;" text="工具">
-                     <items>
-                        <MenuItem fx:id="GB_ConnectDeviceMenuItem" mnemonicParsing="false" onAction="#GB_DeviceTestAction" text="连接设备" />
-                        <MenuItem fx:id="GB_QRCodeMenuItem" mnemonicParsing="false" onAction="#GB_MakeQRCodeAction" text="二维码" />
-                        <MenuItem fx:id="GB_SoftClientMenuItem" mnemonicParsing="false" onAction="#GB_SoftManagementAction" text="软件管理" />
-                     </items>
-                  </Menu>
-                  <Menu fx:id="GB_UserManagementMenu" mnemonicParsing="false" style="-fx-font-size: 14;" text="人员管理">
-                    <items>
-                        <MenuItem fx:id="MyInfoMenuItem" mnemonicParsing="false" onAction="#MyInfoAction" text="我的信息" />
-                        <MenuItem fx:id="AdminManagementItem" mnemonicParsing="false" onAction="#AdminManagementAction" text="管理员管理" />
-                        <MenuItem fx:id="SalerManagementMenuItem" mnemonicParsing="false" onAction="#SalerManagementAction" text="销售人员管理" />
-                        <MenuItem fx:id="LabberManagementMenuItem" mnemonicParsing="false" onAction="#LabberManagementAction" text="研发人员管理" />
-                        <MenuItem fx:id="ManagerMenuItem" mnemonicParsing="false" onAction="#ManagerAction" text="审核人管理" />
-                        <MenuItem fx:id="QualityControlMenuItem" mnemonicParsing="false" onAction="#QualityControlAction" text="品控管理" />
-                        <MenuItem fx:id="ChildManagerMenuItem" mnemonicParsing="false" onAction="#ChildManagerAction" text="我的人员" />
-                    </items>
-                  </Menu>
-                  <Menu fx:id="GB_SystemSetMenu" mnemonicParsing="false" style="-fx-font-size: 14;" text="设置" />
-                  <Menu fx:id="GB_AboutMenu" mnemonicParsing="false" style="-fx-font-size: 14;" text="关于">
-                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#AboutMeAction" text="关于" />
-                     </items>
-                  </Menu>
-              </menus>
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-            </MenuBar>
+            <HBox alignment="BOTTOM_CENTER" spacing="20.0" AnchorPane.bottomAnchor="12.0" AnchorPane.rightAnchor="10.0">
+               <children>
+                  <HBox fx:id="GB_MyInfoHBox" alignment="BOTTOM_CENTER" spacing="5.0">
+                     <children>
+                        <ImageView fitHeight="27.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../../RES/mine.png" />
+                           </image>
+                        </ImageView>
+                        <Text fx:id="GB_UserNameText" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="张雄">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Text>
+                     </children>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </HBox>
+                  <HBox fx:id="GB_UserOutHBox" alignment="BOTTOM_CENTER" spacing="5.0">
+                     <children>
+                        <ImageView fitHeight="27.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../../RES/zhuxiao.png" />
+                           </image>
+                        </ImageView>
+                        <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="注销">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Text>
+                     </children>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </HBox>
+               </children>
+            </HBox>
+            <AnchorPane prefHeight="6.0" style="-fx-background-color: linear-gradient(to bottom, #dd425c 50%, #b8213a 50%);" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+               <effect>
+                  <DropShadow />
+               </effect>
+            </AnchorPane>
          </children>
+      </AnchorPane>
+      <FlowPane fx:id="GB_SecondeItemFlowPane" alignment="CENTER_LEFT" columnHalignment="CENTER" hgap="30.0" maxHeight="35.0" prefHeight="35.0" style="-fx-background-color: #dfdbd4; -fx-background-radius: 30 30 0 0;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="108.0">
+         <padding>
+            <Insets left="50.0" />
+         </padding>
       </FlowPane>
-      <AnchorPane fx:id="GB_RootPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0" />
-      <HBox alignment="CENTER" prefHeight="40.0" spacing="15.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="0.0">
-         <children>
-            <Label fx:id="GB_SignedManagerLable" alignment="CENTER" graphicTextGap="1.0" nodeOrientation="LEFT_TO_RIGHT" onMouseClicked="#GB_SignedManagerAction" text="管理员" textAlignment="JUSTIFY" textFill="#bf3256">
-               <graphic>
-                  <ImageView fx:id="GB_SignedManagerIcoView" fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../../../../RES/Userico.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-               <font>
-                  <Font name="System Bold" size="17.0" />
-               </font>
-            </Label>
-            <Label onMouseClicked="#GB_SignOutAction" text="注销">
-               <font>
-                  <Font size="14.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Label>
-         </children>
-      </HBox>
+      <AnchorPane fx:id="GB_RootPane" style="-fx-background-color: white;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="148.0" />
    </children>
 </AnchorPane>

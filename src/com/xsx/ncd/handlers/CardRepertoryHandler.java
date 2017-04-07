@@ -54,7 +54,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
 @Component
-public class CardRepertoryHandler {
+public class CardRepertoryHandler implements HandlerTemplet{
 	
 	private AnchorPane rootpane;
 
@@ -94,7 +94,8 @@ public class CardRepertoryHandler {
 	};
 
 	@PostConstruct
-	private void UI_Init() {
+	@Override
+	public void UI_Init() {
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(this.getClass().getResource("/com/xsx/ncd/views/CardRepertoryPage.fxml"));
         InputStream in = this.getClass().getResourceAsStream("/com/xsx/ncd/views/CardRepertoryPage.fxml");
@@ -234,7 +235,8 @@ public class CardRepertoryHandler {
         in = null;
 	}
 	
-	public void ShowCardRepertoryPage(){
+	@Override
+	public void showPane(){
 		workPageSession.setWorkPane(rootpane);
 	}
 	
@@ -343,6 +345,11 @@ public class CardRepertoryHandler {
 				return objectList;
 			}
 		}
+	}
+	@Override
+	public void showPane(Object object) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

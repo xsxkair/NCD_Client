@@ -44,7 +44,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Window;
 
 @Component
-public class CardInOutHandler {
+public class CardInOutHandler implements HandlerTemplet{
 
 	private AnchorPane rootpane;
 	
@@ -66,7 +66,8 @@ public class CardInOutHandler {
 	@Autowired private UserRepository managerRepository;
 	
 	@PostConstruct
-	private void UI_Init() {
+	@Override
+	public void UI_Init() {
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(this.getClass().getResource("/com/xsx/ncd/views/CardInOutPage.fxml"));
         InputStream in = this.getClass().getResourceAsStream("/com/xsx/ncd/views/CardInOutPage.fxml");
@@ -98,7 +99,8 @@ public class CardInOutHandler {
         in = null;
 	}
 	
-	public void ShowCardInOutPage() {
+	@Override
+	public void showPane() {
 		workPageSession.setWorkPane(rootpane);
 	}
 	
@@ -227,5 +229,11 @@ public class CardInOutHandler {
 		dialog.getDialogPane().setContentText("²Ù×÷³É¹¦£¡");
 		dialog.getDialogPane().getButtonTypes().add(loginButtonType);
 		dialog.showAndWait();
+	}
+
+	@Override
+	public void showPane(Object object) {
+		// TODO Auto-generated method stub
+		
 	}
 }

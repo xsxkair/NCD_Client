@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import org.omg.PortableServer.IMPLICIT_ACTIVATION_POLICY_ID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -48,7 +49,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
 @Component
-public class ChildUserHandler implements EventHandler<MouseEvent>{
+public class ChildUserHandler implements EventHandler<MouseEvent>, HandlerTemplet{
 
 	private AnchorPane rootpane;
 	
@@ -102,6 +103,7 @@ public class ChildUserHandler implements EventHandler<MouseEvent>{
 	private WorkPageSession workPageSession;
 	
 	@PostConstruct
+	@Override
 	public void UI_Init(){
 
 		FXMLLoader loader = new FXMLLoader();
@@ -216,7 +218,8 @@ public class ChildUserHandler implements EventHandler<MouseEvent>{
         in = null;
 	}
 	
-	public void ShowUserPage(){
+	@Override
+	public void showPane(){
 		workPageSession.setWorkPane(rootpane);
 	}
 	
@@ -353,5 +356,11 @@ public class ChildUserHandler implements EventHandler<MouseEvent>{
 					);
 		else
 			sVGGlyph.setFill(Color.GREY);
+	}
+
+	@Override
+	public void showPane(Object object) {
+		// TODO Auto-generated method stub
+		
 	}
 }

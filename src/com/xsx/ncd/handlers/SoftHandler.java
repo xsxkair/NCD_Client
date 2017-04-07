@@ -37,7 +37,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 
 @Component
-public class SoftHandler {
+public class SoftHandler implements HandlerTemplet{
 
 	private AnchorPane rootpane;
 	@FXML StackPane rootStackPane;
@@ -71,6 +71,7 @@ public class SoftHandler {
 	@Autowired private NcdSoftRepository ncdSoftRepository;
 	
 	@PostConstruct
+	@Override
 	public void UI_Init(){
 
 		FXMLLoader loader = new FXMLLoader();
@@ -137,7 +138,8 @@ public class SoftHandler {
         in = null;
 	}
 	
-	public void ShowSoftPage(){
+	@Override
+	public void showPane(){
 		workPageSession.setWorkPane(rootpane);
 	}
 	
@@ -272,5 +274,11 @@ public class SoftHandler {
 				}
 			}
 		}
+	}
+
+	@Override
+	public void showPane(Object object) {
+		// TODO Auto-generated method stub
+		
 	}
 }

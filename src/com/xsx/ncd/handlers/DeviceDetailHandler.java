@@ -2,23 +2,11 @@ package com.xsx.ncd.handlers;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigInteger;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
-import org.hibernate.boot.spi.AdditionalJaxbMappingProducer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.domain.Sort.Order;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
 import com.jfoenix.controls.JFXButton;
@@ -26,12 +14,9 @@ import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXToggleNode;
-import com.xsx.ncd.define.SoftInfo;
 import com.xsx.ncd.entity.Device;
 import com.xsx.ncd.entity.NcdSoft;
 import com.xsx.ncd.entity.User;
-import com.xsx.ncd.entity.TestData;
-import com.xsx.ncd.handlers.ReportListHandler.QueryReportService.QueryReportTask;
 import com.xsx.ncd.repository.DeviceRepository;
 import com.xsx.ncd.repository.NcdSoftRepository;
 import com.xsx.ncd.repository.UserRepository;
@@ -39,10 +24,6 @@ import com.xsx.ncd.spring.UserSession;
 import com.xsx.ncd.spring.WorkPageSession;
 
 import javafx.beans.binding.BooleanBinding;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -56,10 +37,7 @@ import javafx.scene.chart.XYChart.Data;
 import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
@@ -71,10 +49,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Path;
 import javafx.scene.text.Font;
-import javafx.util.Duration;
 
 @Component
 public class DeviceDetailHandler {
@@ -295,7 +270,7 @@ public class DeviceDetailHandler {
 		if((devicetime == null) || ((currenttime > devicetime) && (currenttime - devicetime > 120000))){
 			image = new Image(this.getClass().getResourceAsStream("/RES/deviceico_off.png"));
 		}
-		else if("OK".equals(S_Device.getStatus())){
+		else if("ok".equals(S_Device.getStatus())){
 			image = new Image(this.getClass().getResourceAsStream("/RES/deviceico_ok.png"));
 		}
 		else {

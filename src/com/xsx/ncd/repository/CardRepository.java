@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.xsx.ncd.entity.Card;
 
-public interface CardRepository extends JpaRepository<Card, Integer>{
+public interface CardRepository extends JpaRepository<Card, Integer>, MyCardDao{
 	
 	public Card findCardByCid(String cid);
 	

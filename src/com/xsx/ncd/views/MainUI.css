@@ -1,0 +1,75 @@
+/*主面板*/
+
+.seconditem{
+	-fx-background-image :  url(../../../../RES/buttonun.png);
+}
+
+.seconditem : hover{
+	-fx-border-color: red;
+	-fx-border-width:2;
+	-fx-cursor:HAND;
+}
+
+
+/*今日数据表*/
+.table-view:focused{
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header-background .label {
+  -fx-text-fill: #1b3f82;
+  -fx-background-color : #e0dbd5;
+  -fx-font-weight : bold;
+  -fx-font-size : 20;
+  -fx-border-width: 0px;
+}
+
+.table-view .column-header {
+ 	-fx-background-color : white;
+	-fx-size : 35;
+	-fx-padding: 1px; /* 0 */
+}
+
+.table-view .table-cell {
+	-fx-text-fill: #1b3f82;
+	-fx-border-width : 1px;
+	-fx-border-color : white;
+}
+
+.table-row-cell{
+	-fx-background-color: -fx-table-cell-border-color, #eeeff1;
+	-fx-background-insets: 0, 0 0 1 0;
+	-fx-padding: 0.0em; /* 0 */
+}
+
+.table-row-cell:odd {
+  	-fx-background-color: -fx-table-cell-border-color, #eeeff1;
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-padding: 0.0em; /* 0 */
+}
+
+.table-row-cell:selected {
+    -fx-background-color: paleturquoise ;
+    -fx-background-insets: 0;
+    -fx-background-radius: 1;
+}
+
+.table-row-cell:hover{
+	-fx-background-color: -fx-table-cell-border-color, salmon ;
+}
+
+.table-view > .virtual-flow > .scroll-bar:vertical,
+.table-view > .virtual-flow > .scroll-bar:vertical > .track,
+.table-view > .virtual-flow > .scroll-bar:vertical > .track-background, 
+.table-view > .virtual-flow > .scroll-bar:horizontal,
+.table-view > .virtual-flow > .scroll-bar:horizontal > .track,
+.table-view > .virtual-flow > .scroll-bar:horizontal > .track-background {
+    -fx-background-color: transparent;
+}
+
+
+
+.table-view > .virtual-flow > .scroll-bar > .increment-button, 
+.table-view > .virtual-flow > .scroll-bar > .decrement-button {
+    -fx-opacity: 0;
+}

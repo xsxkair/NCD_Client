@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXDialog?>
+<?import com.jfoenix.controls.JFXDialogLayout?>
+<?import com.jfoenix.controls.JFXPasswordField?>
+<?import com.jfoenix.controls.JFXProgressBar?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="700.0" prefWidth="1247.0" xmlns="http://javafx.com/javafx/8.0.102" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <StackPane fx:id="rootStackPane" layoutX="10.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+         <JFXDialog fx:id="UserDialog">
+               <JFXDialogLayout>
+					<heading>
+						<Label>密码确认</Label>
+					</heading>
+					<body>
+						<HBox>
+							<children>
+								<Label text="操作密码：" />
+								<JFXPasswordField fx:id="adminPasswordTextField" />
+							</children>
+						</HBox>
+					</body>
+					<actions>
+						<JFXButton onAction="#CancelAction" styleClass="dialog-accept">取消</JFXButton>
+						<JFXButton fx:id="acceptButton" onAction="#ConfirmAction" styleClass="dialog-accept">确认</JFXButton>
+					</actions>
+				</JFXDialogLayout>
+            </JFXDialog>
+            <JFXDialog fx:id="numDialog">
+               <JFXDialogLayout>
+					<heading/>
+					<body>
+						<HBox>
+							<children>
+								<Label text="导出数目：" />
+								<JFXTextField fx:id="OutNumTextField" text="密码" />
+							</children>
+						</HBox>
+					</body>
+					<actions>
+						<JFXButton onAction="#CancelAction" styleClass="dialog-accept">取消</JFXButton>
+						<JFXButton fx:id="acceptButton1" onAction="#ConfirmAction1" styleClass="dialog-accept">确认</JFXButton>
+					</actions>
+				</JFXDialogLayout>
+            </JFXDialog>
+            <JFXDialog fx:id="logDialog">
+               <content>
+                  <JFXDialogLayout>
+                     <heading>
+                        <Label />
+                     </heading>
+                     <body>
+                        <Label fx:id="dialogInfo" />
+                     </body>
+                     <actions>
+                        <JFXButton onAction="#CancelAction" styleClass="dialog-accept">确认</JFXButton>
+                     </actions>
+                  </JFXDialogLayout>
+               </content>
+            </JFXDialog>
+            <AnchorPane>
+               <children>
+                  <VBox spacing="50.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0">
+                     <children>
+                        <VBox spacing="10.0">
+                           <children>
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <Label prefWidth="100.0" text="生产批号：" />
+                                    <Label fx:id="GB_PihaoLabel" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="5.0" right="5.0" />
+                                 </padding>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <Label prefWidth="100.0" text="项目名称：" />
+                                    <Label fx:id="GB_ItemLabel" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="5.0" right="5.0" />
+                                 </padding>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <Label prefWidth="100.0" text="小数点个数：" />
+                                    <Label fx:id="GB_PointLabel" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="5.0" right="5.0" />
+                                 </padding>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <Label prefWidth="100.0" text="单位：" />
+                                    <Label fx:id="GB_DanweiLabel" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="5.0" right="5.0" />
+                                 </padding>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <Label prefWidth="100.0" text="最低检测浓度：" />
+                                    <Label fx:id="GB_LowestLabel" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="5.0" right="5.0" />
+                                 </padding>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <Label prefWidth="100.0" text="最高检测浓度：" />
+                                    <Label fx:id="GB_highstLabel" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="5.0" right="5.0" />
+                                 </padding>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <Label prefWidth="100.0" text="参考值：" />
+                                    <Label fx:id="GB_NormalLabel" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="5.0" right="5.0" />
+                                 </padding>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <Label prefWidth="100.0" text="测试通道：" />
+                                    <Label fx:id="GB_ChannelLabel" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="5.0" right="5.0" />
+                                 </padding>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <Label prefWidth="100.0" text="T线位置：" />
+                                    <Label fx:id="GB_TLocationLabel" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="5.0" right="5.0" />
+                                 </padding>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <Label prefWidth="100.0" text="C线位置：" />
+                                    <Label fx:id="GB_CLocationLabel" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="5.0" right="5.0" />
+                                 </padding>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <Label prefWidth="100.0" text="反应时间：" />
+                                    <Label fx:id="GB_WaittimeLabel" />
+                                    <Label text="分钟" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="5.0" right="5.0" />
+                                 </padding>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <Label prefWidth="100.0" text="过期时间：" />
+                                    <Label fx:id="GB_OuttimeLabel" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="5.0" right="5.0" />
+                                 </padding>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <Label prefWidth="100.0" text="临界逢高比1：" />
+                                    <Label fx:id="GB_PeakLabel1" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="5.0" right="5.0" />
+                                 </padding>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <Label prefWidth="100.0" text="临界逢高比2：" />
+                                    <Label fx:id="GB_PeakLabel2" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="5.0" right="5.0" />
+                                 </padding>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" spacing="5.0">
+                                 <children>
+                                    <Label text="曲线1：">
+                                       <HBox.margin>
+                                          <Insets />
+                                       </HBox.margin>
+                                       <padding>
+                                          <Insets right="10.0" />
+                                       </padding>
+                                    </Label>
+                                    <Label fx:id="GB_Qu1ALabel" />
+                                    <Label text="x^2">
+                                       <padding>
+                                          <Insets right="10.0" />
+                                       </padding>
+                                    </Label>
+                                    <Label fx:id="GB_Qu1BLabel" />
+                                    <Label text="x">
+                                       <padding>
+                                          <Insets right="10.0" />
+                                       </padding>
+                                    </Label>
+                                    <Label fx:id="GB_Qu1CLabel" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="5.0" right="5.0" />
+                                 </padding>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" spacing="5.0">
+                                 <padding>
+                                    <Insets left="5.0" right="5.0" />
+                                 </padding>
+                                 <children>
+                                    <Label text="曲线2：">
+                                       <padding>
+                                          <Insets right="10.0" />
+                                       </padding>
+                                    </Label>
+                                    <Label fx:id="GB_Qu2ALabel" />
+                                    <Label text="x^2">
+                                       <padding>
+                                          <Insets right="10.0" />
+                                       </padding>
+                                    </Label>
+                                    <Label fx:id="GB_Qu2BLabel" />
+                                    <Label text="x">
+                                       <padding>
+                                          <Insets right="10.0" />
+                                       </padding>
+                                    </Label>
+                                    <Label fx:id="GB_Qu2CLabel" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" spacing="5.0">
+                                 <padding>
+                                    <Insets left="5.0" right="5.0" />
+                                 </padding>
+                                 <children>
+                                    <Label text="曲线3：">
+                                       <padding>
+                                          <Insets right="10.0" />
+                                       </padding>
+                                    </Label>
+                                    <Label fx:id="GB_Qu3ALabel" />
+                                    <Label text="x^2">
+                                       <padding>
+                                          <Insets right="10.0" />
+                                       </padding>
+                                    </Label>
+                                    <Label fx:id="GB_Qu3BLabel" />
+                                    <Label text="x">
+                                       <padding>
+                                          <Insets right="10.0" />
+                                       </padding>
+                                    </Label>
+                                    <Label fx:id="GB_Qu3CLabel" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" spacing="5.0">
+                                 <padding>
+                                    <Insets left="5.0" right="5.0" />
+                                 </padding>
+                                 <children>
+                                    <Label text="提交信息：" textFill="RED">
+                                       <padding>
+                                          <Insets right="10.0" />
+                                       </padding>
+                                       <font>
+                                          <Font size="20.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="GB_UpInfoLabel" textFill="#58d5ef">
+                                       <font>
+                                          <Font size="20.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" spacing="5.0">
+                                 <padding>
+                                    <Insets left="5.0" right="5.0" />
+                                 </padding>
+                                 <children>
+                                    <Label text="审核信息：" textFill="RED">
+                                       <padding>
+                                          <Insets right="10.0" />
+                                       </padding>
+                                       <font>
+                                          <Font size="20.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="GB_ManageInfoLabel" textFill="#58d5ef">
+                                       <font>
+                                          <Font size="20.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                        <HBox fx:id="GB_ManageHBox" spacing="50.0">
+                           <children>
+                           	<Button contentDisplay="CENTER" mnemonicParsing="false" onAction="#GB_CardOutAction" prefHeight="50.0" prefWidth="100.0" style="-fx-background-color: indianred;" text="导出">
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </Button>
+                              <Button fx:id="GB_CardOKButton" contentDisplay="CENTER" mnemonicParsing="false" onAction="#GB_CardOKAction" prefHeight="50.0" prefWidth="100.0" style="-fx-background-color: mediumaquamarine;" text="合格">
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </Button>
+                              <Button fx:id="GB_CardErrorButton" contentDisplay="CENTER" mnemonicParsing="false" onAction="#GB_CardErrorAction" prefHeight="50.0" prefWidth="100.0" style="-fx-background-color: indianred;" text="不合格">
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </Button>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <StackPane fx:id="GB_FreshPane" prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: rgba(0, 0, 0, 0.2);" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <JFXProgressBar fx:id="GB_FreshProgressBar" />
+                     </children>
+                  </StackPane>
+               </children>
+            </AnchorPane>
+         </children>
+      </StackPane>
+   </children>
+</AnchorPane>

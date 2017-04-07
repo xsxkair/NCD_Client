@@ -83,7 +83,7 @@ public class AppStart extends Application{
 		AnchorPane root = new AnchorPane(mediaView, spinner);
 		root.setStyle("-fx-border-color:red");
 		root.setCursor(Cursor.WAIT);
-		
+
 		primaryStage.getIcons().add(new Image(this.getClass().getResourceAsStream("/RES/logo.png")));
 		primaryStage.setScene(new Scene(root, 500, 281));
 		primaryStage.initStyle(StageStyle.UNDECORATED);

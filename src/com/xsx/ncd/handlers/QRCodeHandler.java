@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
@@ -34,6 +36,7 @@ import com.xsx.ncd.tool.DescyTool;
 
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Service;
@@ -53,6 +56,7 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -61,10 +65,10 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 
 @Component
-public class QRCodeHandler {
+public class QRCodeHandler implements HandlerTemplet{
 	
 	private AnchorPane rootPane = null;
-	
+	private Pane fatherPane = null;
 	@FXML private StackPane rootStackPane;
 	
 	//告警信息
@@ -77,57 +81,36 @@ public class QRCodeHandler {
 	@FXML JFXButton acceptButton;
 		
 	@FXML TextField GB_PihaoField;
-	
-	@FXML
-	JFXComboBox<String> GB_ItemNameCom;
-	
-	@FXML
-	JFXComboBox<Integer> GB_ChannelCom;
-	
-	@FXML
-	TextField GB_TLocationField;
-	
-	@FXML
-	TextField GB_WaitTimeField;
-	
-	@FXML
-	TextField GB_CLocation;
-	
+	@FXML JFXComboBox<String> GB_ItemNameCom;
+	@FXML JFXComboBox<Integer> GB_ChannelCom;
+	@FXML TextField GB_TLocationField;
+	@FXML TextField GB_WaitTimeField;
+	@FXML TextField GB_CLocation;
 	@FXML JFXDatePicker GB_OutDatePick;
-	
 	@FXML TextField GB_FenDuan1Field;
 	@FXML TextField GB_FenDuan2Field;
-	
 	@FXML HBox GB_BQ1Hbox;
 	@FXML TextField GB_BQ1AField;
 	@FXML TextField GB_BQ1BField;
 	@FXML TextField GB_BQ1CField;
-	
 	@FXML HBox GB_BQ2Hbox;
 	@FXML TextField GB_BQ2AField;
 	@FXML TextField GB_BQ2BField;
 	@FXML TextField GB_BQ2CField;
-	
 	@FXML HBox GB_BQ3Hbox;
 	@FXML TextField GB_BQ3AField;
 	@FXML TextField GB_BQ3BField;
 	@FXML TextField GB_BQ3CField;
 	
-	@FXML TextField GB_QRNumField;
-	@FXML ToggleButton GB_TestOnlyToggleButton;
-	@FXML Button GB_MakeQRCodeButton;
+	@FXML Button GB_MakeQRCodeButton1;
 	
 	@FXML VBox GB_FreshPane;
 	@FXML private JFXProgressBar GB_Spinner;
 	
-	@FXML private TextArea GB_BasicText;
-	@FXML private TextArea GB_LogsArea;
-	
-	private MakeQRCodeService makeQRCodeService;
-	private String savePath = null;
-	private Card card;
-	private Boolean upLoadCardInfo = false;
-	private Integer qrCodeNum = null;
+	private SimpleIntegerProperty cardId = null;
+	private Card card = null;
+	private User admin = null;
+
 	
 	@Autowired private WorkPageSession workPageSession;
 	@Autowired private CardRepository cardRepository;
@@ -139,6 +122,7 @@ public class QRCodeHandler {
 	@Autowired private UserSession userSession;
 	
 	@PostConstruct
+	@Override
 	public void UI_Init(){
 		
 		FXMLLoader loader = new FXMLLoader();
@@ -155,15 +139,43 @@ public class QRCodeHandler {
         rootStackPane.getChildren().remove(UserDialog);
         rootStackPane.getChildren().remove(logDialog);
         
-        makeQRCodeService = new MakeQRCodeService();
-        GB_FreshPane.visibleProperty().bind(makeQRCodeService.runningProperty());
-        GB_Spinner.progressProperty().bind(makeQRCodeService.progressProperty());
-        
         GB_ItemNameCom.getItems().addAll("NT-proBNP", "CK-MB", "cTnI", "Myo");
         GB_ChannelCom.getItems().addAll(0, 1, 2, 3, 4, 5, 6, 7);
         
+        cardId = new SimpleIntegerProperty();
+        cardId.addListener((o, oldValue, newValue)->{
+        	System.out.println(newValue);
+        	if(newValue.intValue() < 0){
+				card = new Card();
+				GB_MakeQRCodeButton1.setVisible(false);
+        	}
+			else{
+				card = cardRepository.findOne(newValue.intValue());
+				GB_MakeQRCodeButton1.setVisible(true);
+			}
+			
+			if(card == null)
+				showLogsDialog("错误！");
+			else
+				showCardInfo();
+        });
+
+        workPageSession.getWorkPane().addListener(new ChangeListener<Pane>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Pane> observable, Pane oldValue, Pane newValue) {
+				// TODO Auto-generated method stub
+				if(rootPane.equals(newValue)){
+
+					fatherPane = oldValue;
+				}
+				else {
+					card = null;
+				}
+			}
+		});
         
-        
+
         GB_BQ2Hbox.disableProperty().bind(new BooleanBinding() {
 			{
 				bind(GB_FenDuan1Field.lengthProperty());
@@ -214,34 +226,59 @@ public class QRCodeHandler {
 			}
 		});
 		
-		GB_MakeQRCodeButton.disableProperty().bind(new BooleanBinding() {
-			{
-				bind(GB_QRNumField.textProperty());
-			}
-			@Override
-			protected boolean computeValue() {
-				// TODO Auto-generated method stub
-				
-				try {
-					qrCodeNum = Integer.valueOf(GB_QRNumField.getText());
-				} catch (NumberFormatException e) {
-					// TODO: handle exception
-					qrCodeNum = null;
-				}
-				
-				if((qrCodeNum != null) && (qrCodeNum.intValue() > 0))
-					return false;
-				else
-					return true;
-			}
-		});
-		
 		loader = null;
         in = null;
 	}
 
-	public void showQRCodePage(){
+	@Override
+	public void showPane(Object cardId){
+		this.cardId.setValue(((Integer)cardId).intValue());
+		
 		workPageSession.setWorkPane(rootPane);
+	}
+	
+	private void showCardInfo(){
+
+		if(card.getId() != null){
+			GB_PihaoField.setText(card.getCid());
+			GB_ItemNameCom.getSelectionModel().select(card.getItem());
+			GB_ChannelCom.getSelectionModel().select(card.getChannel());
+			GB_TLocationField.setText(card.getT_l().toString());
+			GB_CLocation.setText(card.getC_l().toString());
+			GB_WaitTimeField.setText(card.getWaitt().toString());
+			GB_OutDatePick.setValue(card.getOutdate().toLocalDate());
+			GB_FenDuan1Field.setText(card.getFend1().toString());
+			GB_FenDuan2Field.setText(card.getFend2().toString());
+			GB_BQ1AField.setText((card.getQu1_a() == null)?"0":card.getQu1_a().toString());
+			GB_BQ1BField.setText((card.getQu1_b() == null)?"0":card.getQu1_b().toString());
+			GB_BQ1CField.setText((card.getQu1_c() == null)?"0":card.getQu1_c().toString());
+			GB_BQ2AField.setText((card.getQu2_a() == null)?"0":card.getQu2_a().toString());
+			GB_BQ2BField.setText((card.getQu2_b() == null)?"0":card.getQu2_b().toString());
+			GB_BQ2CField.setText((card.getQu2_c() == null)?"0":card.getQu2_c().toString());
+			GB_BQ3AField.setText((card.getQu3_a() == null)?"0":card.getQu3_a().toString());
+			GB_BQ3BField.setText((card.getQu3_b() == null)?"0":card.getQu3_b().toString());
+			GB_BQ3CField.setText((card.getQu3_c() == null)?"0":card.getQu3_c().toString());
+		}
+		else{
+			GB_PihaoField.clear();
+			GB_ItemNameCom.getSelectionModel().select(null);
+			GB_ChannelCom.getSelectionModel().select(null);
+			GB_TLocationField.clear();
+			GB_CLocation.clear();
+			GB_WaitTimeField.clear();
+			GB_OutDatePick.setValue(null);
+			GB_FenDuan1Field.clear();
+			GB_FenDuan2Field.clear();
+			GB_BQ1AField.clear();
+			GB_BQ1BField.clear();
+			GB_BQ1CField.clear();
+			GB_BQ2AField.clear();
+			GB_BQ2BField.clear();
+			GB_BQ2CField.clear();
+			GB_BQ3AField.clear();
+			GB_BQ3BField.clear();
+			GB_BQ3CField.clear();
+		}
 	}
 	
 	private Boolean combinContent() {
@@ -289,6 +326,18 @@ public class QRCodeHandler {
 			card.setNormal(cardConstInfo.getNormalresult());
 			card.setDanwei(cardConstInfo.getMeasure());
 			
+			card.setMaker(userSession.getAccount());
+			card.setUptime(new Timestamp(System.currentTimeMillis()));
+			
+			if(card.getMstatus() == null){
+				card.setMstatus("未审核");
+			}
+			else if (!card.getMstatus().equals("未审核")) {
+				showLogsDialog("禁止修改");
+				showCardInfo();
+				return false;
+			}
+			
 			return true;
 			
 		}catch(Exception e){
@@ -305,39 +354,36 @@ public class QRCodeHandler {
 	
 	@FXML
 	public void GB_MakeQRCodeAction(){
-		card = new Card();
 		if(combinContent()){
-			DirectoryChooser dirchoose = new DirectoryChooser();
-			dirchoose.setTitle("二维码生成文件夹");
-			
-			File selectedFile = dirchoose.showDialog(null);
-			 
-			if(selectedFile != null){
-				savePath = selectedFile.getPath();
-				
-				adminPasswordTextField.clear();
-				UserDialog.show(rootStackPane);
-			 }
+			adminPasswordTextField.clear();
+			UserDialog.show(rootStackPane);
 		}
+	}
+	
+	@FXML 
+	public void GB_ReturnAction(){
+		workPageSession.setWorkPane(fatherPane);
 	}
 	
 	@FXML
 	public void ConfirmAction(){
 		
-		User admin = userRepository.findByAccount(userSession.getAccount());
-		if(!admin.getPassword().equals(adminPasswordTextField.getText())){
+		UserDialog.close();
+		
+		admin = userRepository.findByAccountAndPassword(userSession.getAccount(), adminPasswordTextField.getText());
+		if(admin == null){
 			showLogsDialog("密码错误，无此权限！");
 			return;
 		}
 		
+		//如果不是未审核，说明已经审核过的，不能修改
+		if(!card.getMstatus().equals("未审核")){
+			showLogsDialog("禁止修改！");
+			return;
+		}
+		
 		try {
-			//只是测试用
-			if(!GB_TestOnlyToggleButton.isSelected())
-				cardRepository.save(card);
-
-			makeQRCodeService.restart();
-			
-			UserDialog.close();
+			cardRepository.save(card);
 		} catch (Exception e) {
 			// TODO: handle exception
 			showLogsDialog("数据上传失败，禁止生成！");
@@ -353,128 +399,10 @@ public class QRCodeHandler {
 		if(UserDialog.isVisible())
 			UserDialog.close();
 	}
-	
-	@FXML
-	public void GB_PreSeeQRCodeAction(){
-		StringBuffer content = new StringBuffer();
-		 SimpleDateFormat matter = new SimpleDateFormat( "yyMMdd");
-		 card = new Card();
-		if(combinContent()){
-			content.delete(0, content.length());
-			
-			content.append(card.getItem()+"#"+card.getChannel()+"#"+card.getT_l()+"#"+
-					card.getFend1()+"#"+card.getFend2()+"#");
-			
-			content.append(card.getQu1_a()+"#"+card.getQu1_b()+"#"+card.getQu1_c()+"#");
 
-			if(card.getFend1().floatValue() > 0)
-				content.append(card.getQu2_a()+"#"+card.getQu2_b()+"#"+card.getQu2_c()+"#");
-			
-			if(card.getFend2().floatValue() > 0)
-				content.append(card.getQu3_a()+"#"+card.getQu3_b()+"#"+card.getQu3_c()+"#");
-			
-			content.append(card.getWaitt()+"#"+card.getC_l()+"#"+card.getCid()+"#"+String .format("%05d",1)+
-					"#");
-			
-			String date = matter.format(card.getOutdate());
-			content.append(date+"#");
-			
-			content.append(String.valueOf(CRC16.CalCRC16(content.toString().getBytes(), content.length())));
-			
-			GB_BasicText.setText(content.toString());
-		}
-	}
-	
-	class MakeQRCodeService extends Service<Void>{
+	@Override
+	public void showPane() {
+		// TODO Auto-generated method stub
 		
-		@Override
-		protected Task<Void> createTask() {
-			// TODO Auto-generated method stub
-			return new MakeQRCodeTask();
-		}
-		
-		class MakeQRCodeTask extends Task<Void>{
-
-			@Override
-			protected Void call(){
-	        	StringBuffer content = new StringBuffer();
-	        	SimpleDateFormat matter = new SimpleDateFormat( "yyMMdd");
-	        	
-	        	try {
-	        		//创建文本保存二维码数据
-		        	File file = new File(savePath+"/"+card.getCid()+".txt");
-		        	FileWriter writer = null;
-		        	
-		        	//原数据文本保存
-		        	File s_file = new File(savePath+"/"+card.getCid()+"_S.txt");
-		        	FileWriter s_writer = null;
-		        	
-		        	if (!file.exists()){
-		        		file.createNewFile();
-		        	}
-		        	writer = new FileWriter(file);
-
-		        	if (!s_file.exists()){
-		        		s_file.createNewFile();
-		        	}
-		        	s_writer = new FileWriter(s_file);
-
-		        	for(int i=0; i<qrCodeNum.intValue(); i++){
-		        		
-		        		content.delete(0, content.length());
-		    			
-		    			content.append(card.getItem()+"#"+card.getChannel()+"#"+card.getT_l()+"#"+
-		    					card.getFend1()+"#"+card.getFend2()+"#");
-		    			
-		    			content.append(card.getQu1_a()+"#"+card.getQu1_b()+"#"+card.getQu1_c()+"#");
-
-		    			if(card.getFend1().floatValue() > 0)
-		    				content.append(card.getQu2_a()+"#"+card.getQu2_b()+"#"+card.getQu2_c()+"#");
-		    			
-		    			if(card.getFend2().floatValue() > 0)
-		    				content.append(card.getQu3_a()+"#"+card.getQu3_b()+"#"+card.getQu3_c()+"#");
-		    			
-		    			content.append(card.getWaitt()+"#"+card.getC_l()+"#"+card.getCid()+"#"+String .format("%05d",i)+
-		    					"#");
-		    			
-		    			String date = matter.format(card.getOutdate());
-		    			content.append(date+"#");
-		    			
-		    			content.append(String.valueOf(CRC16.CalCRC16(content.toString().getBytes(), content.length())));
-
-		        		String tempstr = content.toString();
-		        		
-		        		String tempstr2 = DescyTool.Des(tempstr);
-		        		
-		        		if(tempstr2 != null){
-
-		        			writer.write(tempstr2+"\r\n");
-							writer.flush();
-		                	
-							s_writer.write(tempstr+"\r\n");
-							s_writer.flush();
-		        		}
-		        		
-		        		updateProgress(i, qrCodeNum.intValue());
-		        		try {
-							Thread.sleep(10);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-		        	}
-		            
-		        	writer.close();
-					s_writer.close();
-				} catch (Exception e) {
-					// TODO: handle exception
-					e.printStackTrace();
-				}
-	        	
-				
-				return null;
-			}
-
-		}
 	}
 }

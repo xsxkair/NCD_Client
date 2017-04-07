@@ -1,8 +1,6 @@
 
 package com.xsx.ncd.handlers;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -48,7 +46,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
 @Component
-public class UserHandler implements EventHandler<MouseEvent>{
+public class UserHandler implements EventHandler<MouseEvent>, HandlerTemplet{
 
 	private AnchorPane rootpane;
 	
@@ -134,6 +132,7 @@ public class UserHandler implements EventHandler<MouseEvent>{
 	private WorkPageSession workPageSession;
 	
 	@PostConstruct
+	@Override
 	public void UI_Init(){
 
 		FXMLLoader loader = new FXMLLoader();
@@ -343,8 +342,9 @@ public class UserHandler implements EventHandler<MouseEvent>{
         in = null;
 	}
 	
-	public void ShowUserPage(int userType){
-		this.userType.set(userType);
+	@Override
+	public void showPane(Object userType){
+		this.userType.set(((Integer)userType).intValue());
 		workPageSession.setWorkPane(rootpane);
 	}
 	
@@ -605,5 +605,11 @@ public class UserHandler implements EventHandler<MouseEvent>{
 					);
 		else
 			sVGGlyph.setFill(Color.GREY);
+	}
+
+	@Override
+	public void showPane() {
+		// TODO Auto-generated method stub
+		
 	}
 }

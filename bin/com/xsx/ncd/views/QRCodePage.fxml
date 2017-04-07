@@ -6,21 +6,17 @@
 <?import com.jfoenix.controls.JFXDialog?>
 <?import com.jfoenix.controls.JFXDialogLayout?>
 <?import com.jfoenix.controls.JFXPasswordField?>
-<?import com.jfoenix.controls.JFXProgressBar?>
-<?import com.jfoenix.controls.JFXToggleButton?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="700.0" prefWidth="1247.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="700.0" prefWidth="1247.0" xmlns="http://javafx.com/javafx/8.0.102" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <StackPane fx:id="rootStackPane" layoutX="10.0" layoutY="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
          <children>
@@ -60,227 +56,194 @@
             </JFXDialog>
             <AnchorPane>
                <children>
-                  <HBox spacing="100.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+                  <VBox spacing="50.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
-                        <VBox spacing="50.0">
+                        <VBox spacing="10.0">
                            <children>
-                              <VBox spacing="10.0">
+                              <HBox alignment="CENTER_LEFT">
                                  <children>
-                                    <HBox alignment="CENTER_LEFT">
-                                       <children>
-                                          <Label prefWidth="100.0" text="批号" />
-                                          <TextField fx:id="GB_PihaoField" />
-                                       </children>
-                                       <padding>
-                                          <Insets left="5.0" right="5.0" />
-                                       </padding>
-                                    </HBox>
-                                    <HBox alignment="CENTER_LEFT">
-                                       <children>
-                                          <Label prefWidth="100.0" text="测试项目" />
-                                          <JFXComboBox fx:id="GB_ItemNameCom" prefWidth="160.0" />
-                                       </children>
-                                       <padding>
-                                          <Insets left="5.0" right="5.0" />
-                                       </padding>
-                                    </HBox>
-                                    <HBox alignment="CENTER_LEFT">
-                                       <children>
-                                          <Label prefWidth="100.0" text="测试通道" />
-                                          <JFXComboBox fx:id="GB_ChannelCom" prefWidth="160.0" />
-                                       </children>
-                                       <padding>
-                                          <Insets left="5.0" right="5.0" />
-                                       </padding>
-                                    </HBox>
-                                    <HBox alignment="CENTER_LEFT">
-                                       <children>
-                                          <Label prefWidth="100.0" text="T线位置" />
-                                          <TextField fx:id="GB_TLocationField" />
-                                       </children>
-                                       <padding>
-                                          <Insets left="5.0" right="5.0" />
-                                       </padding>
-                                    </HBox>
-                                    <HBox alignment="CENTER_LEFT">
-                                       <children>
-                                          <Label prefWidth="100.0" text="C线位置" />
-                                          <TextField fx:id="GB_CLocation" />
-                                       </children>
-                                       <padding>
-                                          <Insets left="5.0" right="5.0" />
-                                       </padding>
-                                    </HBox>
-                                    <HBox alignment="CENTER_LEFT">
-                                       <children>
-                                          <Label prefWidth="100.0" text="反应时间" />
-                                          <TextField fx:id="GB_WaitTimeField" />
-                                       </children>
-                                       <padding>
-                                          <Insets left="5.0" right="5.0" />
-                                       </padding>
-                                    </HBox>
-                                    <HBox alignment="CENTER_LEFT">
-                                       <children>
-                                          <Label prefWidth="100.0" text="过期时间" />
-                                          <JFXDatePicker fx:id="GB_OutDatePick" />
-                                       </children>
-                                       <padding>
-                                          <Insets left="5.0" right="5.0" />
-                                       </padding>
-                                    </HBox>
-                                    <HBox alignment="CENTER_LEFT">
-                                       <children>
-                                          <Label prefWidth="100.0" text="临界峰高比1" />
-                                          <TextField fx:id="GB_FenDuan1Field" />
-                                       </children>
-                                       <padding>
-                                          <Insets left="5.0" right="5.0" />
-                                       </padding>
-                                    </HBox>
-                                    <HBox alignment="CENTER_LEFT">
-                                       <children>
-                                          <Label prefWidth="100.0" text="临界峰高比2" />
-                                          <TextField fx:id="GB_FenDuan2Field" />
-                                       </children>
-                                       <padding>
-                                          <Insets left="5.0" right="5.0" />
-                                       </padding>
-                                    </HBox>
+                                    <Label prefWidth="100.0" text="批号" />
+                                    <TextField fx:id="GB_PihaoField" />
                                  </children>
-                              </VBox>
-                              <VBox spacing="10.0">
+                                 <padding>
+                                    <Insets left="5.0" right="5.0" />
+                                 </padding>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT">
                                  <children>
-                                    <VBox spacing="10.0">
-                                       <children>
-                                          <HBox fx:id="GB_BQ1Hbox" alignment="CENTER_LEFT" spacing="5.0">
-                                             <children>
-                                                <Label text="曲线1：">
-                                                   <HBox.margin>
-                                                      <Insets />
-                                                   </HBox.margin>
-                                                   <padding>
-                                                      <Insets right="10.0" />
-                                                   </padding>
-                                                </Label>
-                                                <TextField fx:id="GB_BQ1AField" prefWidth="80.0" />
-                                                <Label text="x^2">
-                                                   <padding>
-                                                      <Insets right="10.0" />
-                                                   </padding>
-                                                </Label>
-                                                <TextField fx:id="GB_BQ1BField" prefWidth="80.0" />
-                                                <Label text="x">
-                                                   <padding>
-                                                      <Insets right="10.0" />
-                                                   </padding>
-                                                </Label>
-                                                <TextField fx:id="GB_BQ1CField" prefWidth="80.0" />
-                                             </children>
-                                             <padding>
-                                                <Insets left="5.0" right="5.0" />
-                                             </padding>
-                                          </HBox>
-                                          <HBox fx:id="GB_BQ2Hbox" alignment="CENTER_LEFT" spacing="5.0">
-                                             <children>
-                                                <Label text="曲线2：">
-                                                   <padding>
-                                                      <Insets right="10.0" />
-                                                   </padding>
-                                                </Label>
-                                                <TextField fx:id="GB_BQ2AField" prefWidth="80.0" />
-                                                <Label text="x^2">
-                                                   <padding>
-                                                      <Insets right="10.0" />
-                                                   </padding>
-                                                </Label>
-                                                <TextField fx:id="GB_BQ2BField" prefWidth="80.0" />
-                                                <Label text="x">
-                                                   <padding>
-                                                      <Insets right="10.0" />
-                                                   </padding>
-                                                </Label>
-                                                <TextField fx:id="GB_BQ2CField" prefWidth="80.0" />
-                                             </children>
-                                             <padding>
-                                                <Insets left="5.0" right="5.0" />
-                                             </padding>
-                                          </HBox>
-                                          <HBox fx:id="GB_BQ3Hbox" alignment="CENTER_LEFT" spacing="5.0">
-                                             <children>
-                                                <Label text="曲线3：">
-                                                   <padding>
-                                                      <Insets right="10.0" />
-                                                   </padding>
-                                                </Label>
-                                                <TextField fx:id="GB_BQ3AField" prefWidth="80.0" />
-                                                <Label text="x^2">
-                                                   <padding>
-                                                      <Insets right="10.0" />
-                                                   </padding>
-                                                </Label>
-                                                <TextField fx:id="GB_BQ3BField" prefWidth="80.0" />
-                                                <Label text="x">
-                                                   <padding>
-                                                      <Insets right="10.0" />
-                                                   </padding>
-                                                </Label>
-                                                <TextField fx:id="GB_BQ3CField" prefWidth="80.0" />
-                                             </children>
-                                             <padding>
-                                                <Insets left="5.0" right="5.0" />
-                                             </padding>
-                                          </HBox>
-                                       </children>
-                                    </VBox>
+                                    <Label prefWidth="100.0" text="测试项目" />
+                                    <JFXComboBox fx:id="GB_ItemNameCom" prefWidth="160.0" />
                                  </children>
-                              </VBox>
+                                 <padding>
+                                    <Insets left="5.0" right="5.0" />
+                                 </padding>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <Label prefWidth="100.0" text="测试通道" />
+                                    <JFXComboBox fx:id="GB_ChannelCom" prefWidth="160.0" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="5.0" right="5.0" />
+                                 </padding>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <Label prefWidth="100.0" text="T线位置" />
+                                    <TextField fx:id="GB_TLocationField" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="5.0" right="5.0" />
+                                 </padding>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <Label prefWidth="100.0" text="C线位置" />
+                                    <TextField fx:id="GB_CLocation" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="5.0" right="5.0" />
+                                 </padding>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <Label prefWidth="100.0" text="反应时间" />
+                                    <TextField fx:id="GB_WaitTimeField" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="5.0" right="5.0" />
+                                 </padding>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <Label prefWidth="100.0" text="过期时间" />
+                                    <JFXDatePicker fx:id="GB_OutDatePick" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="5.0" right="5.0" />
+                                 </padding>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <Label prefWidth="100.0" text="临界峰高比1" />
+                                    <TextField fx:id="GB_FenDuan1Field" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="5.0" right="5.0" />
+                                 </padding>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <Label prefWidth="100.0" text="临界峰高比2" />
+                                    <TextField fx:id="GB_FenDuan2Field" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="5.0" right="5.0" />
+                                 </padding>
+                              </HBox>
                            </children>
                         </VBox>
-                        <VBox spacing="50.0">
+                        <VBox spacing="10.0">
                            <children>
-                              <HBox alignment="CENTER_LEFT" spacing="20.0">
+                              <VBox spacing="10.0">
                                  <children>
-                                    <Button mnemonicParsing="false" onAction="#GB_PreSeeQRCodeAction" prefHeight="80.0" prefWidth="125.0" text="预览" />
-                                    <TextArea fx:id="GB_BasicText" prefRowCount="5" />
-                                 </children>
-                              </HBox>
-                              <HBox alignment="CENTER_LEFT" spacing="20.0">
-                                 <children>
-                                    <HBox alignment="CENTER_LEFT">
+                                    <HBox fx:id="GB_BQ1Hbox" alignment="CENTER_LEFT" spacing="5.0">
                                        <children>
-                                          <Label text="数目：" />
-                                          <TextField fx:id="GB_QRNumField" prefWidth="80.0">
+                                          <Label text="曲线1：">
                                              <HBox.margin>
-                                                <Insets right="50.0" />
+                                                <Insets />
                                              </HBox.margin>
-                                          </TextField>
+                                             <padding>
+                                                <Insets right="10.0" />
+                                             </padding>
+                                          </Label>
+                                          <TextField fx:id="GB_BQ1AField" prefWidth="80.0" />
+                                          <Label text="x^2">
+                                             <padding>
+                                                <Insets right="10.0" />
+                                             </padding>
+                                          </Label>
+                                          <TextField fx:id="GB_BQ1BField" prefWidth="80.0" />
+                                          <Label text="x">
+                                             <padding>
+                                                <Insets right="10.0" />
+                                             </padding>
+                                          </Label>
+                                          <TextField fx:id="GB_BQ1CField" prefWidth="80.0" />
                                        </children>
+                                       <padding>
+                                          <Insets left="5.0" right="5.0" />
+                                       </padding>
                                     </HBox>
-                                    <JFXToggleButton fx:id="GB_TestOnlyToggleButton" text="仅做测试">
-                                       <tooltip>
-                                          <Tooltip text="选中，则表明当前二维码不提交服务器，仅作为测试用！" />
-                                       </tooltip>
-                                    </JFXToggleButton>
-                                    <Button fx:id="GB_MakeQRCodeButton" contentDisplay="CENTER" mnemonicParsing="false" onAction="#GB_MakeQRCodeAction" prefHeight="52.0" prefWidth="115.0" style="-fx-background-color: cadetblue; -fx-background-radius: 10;" text="开始生成二维码">
-                                       <cursor>
-                                          <Cursor fx:constant="HAND" />
-                                       </cursor>
-                                    </Button>
+                                    <HBox fx:id="GB_BQ2Hbox" alignment="CENTER_LEFT" spacing="5.0">
+                                       <children>
+                                          <Label text="曲线2：">
+                                             <padding>
+                                                <Insets right="10.0" />
+                                             </padding>
+                                          </Label>
+                                          <TextField fx:id="GB_BQ2AField" prefWidth="80.0" />
+                                          <Label text="x^2">
+                                             <padding>
+                                                <Insets right="10.0" />
+                                             </padding>
+                                          </Label>
+                                          <TextField fx:id="GB_BQ2BField" prefWidth="80.0" />
+                                          <Label text="x">
+                                             <padding>
+                                                <Insets right="10.0" />
+                                             </padding>
+                                          </Label>
+                                          <TextField fx:id="GB_BQ2CField" prefWidth="80.0" />
+                                       </children>
+                                       <padding>
+                                          <Insets left="5.0" right="5.0" />
+                                       </padding>
+                                    </HBox>
+                                    <HBox fx:id="GB_BQ3Hbox" alignment="CENTER_LEFT" spacing="5.0">
+                                       <children>
+                                          <Label text="曲线3：">
+                                             <padding>
+                                                <Insets right="10.0" />
+                                             </padding>
+                                          </Label>
+                                          <TextField fx:id="GB_BQ3AField" prefWidth="80.0" />
+                                          <Label text="x^2">
+                                             <padding>
+                                                <Insets right="10.0" />
+                                             </padding>
+                                          </Label>
+                                          <TextField fx:id="GB_BQ3BField" prefWidth="80.0" />
+                                          <Label text="x">
+                                             <padding>
+                                                <Insets right="10.0" />
+                                             </padding>
+                                          </Label>
+                                          <TextField fx:id="GB_BQ3CField" prefWidth="80.0" />
+                                       </children>
+                                       <padding>
+                                          <Insets left="5.0" right="5.0" />
+                                       </padding>
+                                    </HBox>
                                  </children>
-                              </HBox>
+                              </VBox>
                            </children>
                         </VBox>
+                        <HBox spacing="50.0">
+                           <children>
+                              <Button fx:id="GB_MakeQRCodeButton" contentDisplay="CENTER" mnemonicParsing="false" onAction="#GB_MakeQRCodeAction" prefHeight="52.0" prefWidth="115.0" style="-fx-background-color: cadetblue; -fx-background-radius: 10;" text="提交数据">
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Button>
+                              <Button fx:id="GB_MakeQRCodeButton1" contentDisplay="CENTER" mnemonicParsing="false" onAction="#GB_ReturnAction" prefHeight="52.0" prefWidth="115.0" style="-fx-background-color: navajowhite; -fx-background-radius: 10;" text="取消">
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Button>
+                           </children>
+                        </HBox>
                      </children>
-                  </HBox>
-                  <TextArea fx:id="GB_LogsArea" prefColumnCount="50" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="500.0" />
-                  <VBox fx:id="GB_FreshPane" alignment="CENTER" spacing="10.0" style="-fx-background-color: rgba(0, 0, 0, 0.2);" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <children>
-                        <JFXProgressBar fx:id="GB_Spinner" />
-                     </children>
-                     <cursor>
-                        <Cursor fx:constant="WAIT" />
-                     </cursor>
                   </VBox>
                </children>
             </AnchorPane>

@@ -12,7 +12,7 @@ import com.xsx.ncd.entity.User;
 public class ReportTableItem {
 	private Integer index;
 	private String testitem;
-	private java.sql.Timestamp testdate;
+	private String testdate;
 	private String testresult;
 	private String tester;
 	private String deviceid;
@@ -31,7 +31,7 @@ public class ReportTableItem {
 		
 		this.index = index;
 		this.testitem = testitem;
-		this.testdate = testdate;
+		this.testdate = testdate.toString();
 		this.testresult = stringBuffer.toString();
 		this.tester = tester;
 		this.deviceid = deviceid;
@@ -48,7 +48,7 @@ public class ReportTableItem {
 		return this.testitem;
 	}
 
-	public java.sql.Timestamp getTestdate() {
+	public String getTestdate() {
 		return testdate;
 	}
 

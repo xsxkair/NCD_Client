@@ -34,6 +34,11 @@ public class Card {
 	private Float qu3_a;
 	private Float qu3_b;
 	private Float qu3_c;
+	private java.sql.Timestamp uptime;
+	private String maker;
+	private String manager;
+	private java.sql.Timestamp managetime;
+	private String mstatus;
 	
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Id
@@ -227,6 +232,47 @@ public class Card {
 
 	public void setQu3_c(Float qu3_c) {
 		this.qu3_c = qu3_c;
+	}
+
+
+	public java.sql.Timestamp getUptime() {
+		return uptime;
+	}
+
+	public void setUptime(java.sql.Timestamp uptime) {
+		this.uptime = uptime;
+	}
+
+	public java.sql.Timestamp getManagetime() {
+		return managetime;
+	}
+
+	public void setManagetime(java.sql.Timestamp managetime) {
+		this.managetime = managetime;
+	}
+
+	public String getMaker() {
+		return maker;
+	}
+
+	public void setMaker(String maker) {
+		this.maker = maker;
+	}
+
+	public String getManager() {
+		return manager;
+	}
+
+	public void setManager(String manager) {
+		this.manager = manager;
+	}
+
+	public String getMstatus() {
+		return mstatus;
+	}
+
+	public void setMstatus(String mstatus) {
+		this.mstatus = mstatus;
 	}
 
 	@Override

@@ -6,7 +6,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TitledPane?>
@@ -19,9 +18,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="765.0" prefWidth="1240.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="765.0" prefWidth="1240.0" xmlns="http://javafx.com/javafx/8.0.102" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Button mnemonicParsing="false" />
       <ScrollPane fitToWidth="true" pannable="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0">
@@ -288,11 +286,6 @@
                                           <VBox alignment="CENTER" prefHeight="180.0" prefWidth="338.0" spacing="15.0" GridPane.columnIndex="1" GridPane.rowSpan="3">
                                              <children>
                                                 <JFXButton fx:id="S_CommitReportButton" onAction="#S_CommitReportAction" ripplerFill="#4ca861" style="-fx-background-color: mediumturquoise;" text="提交报告">
-                                                   <font>
-                                                      <Font size="20.0" />
-                                                   </font>
-                                                </JFXButton>
-                                                <JFXButton onAction="#GB_PrintfReportAction" style="-fx-background-color: seagreen;" text="打印报告">
                                                    <font>
                                                       <Font size="20.0" />
                                                    </font>

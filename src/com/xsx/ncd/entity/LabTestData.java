@@ -40,6 +40,9 @@ public class LabTestData {
 	public void setUserid(String userid) {
 		this.userid = userid;
 	}
+	public String getUserid() {
+		return userid;
+	}
 	public java.sql.Timestamp getTesttime() {
 		return testtime;
 	}

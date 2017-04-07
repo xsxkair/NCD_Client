@@ -1,0 +1,18 @@
+.chart-series-line{
+	-fx-stroke-width:1;
+}
+
+.DataPointPane{
+	-fx-stroke-width:0;
+	-fx-pref-height:2;
+	-fx-pref-width:2;
+}
+.BigDataPoint{
+	-fx-scale-x:5;
+	-fx-scale-y:5;
+	-fx-cursor:hand ;
+}
+.SelectDataPoint{
+	-fx-scale-x:1;
+	-fx-scale-y:1;
+}

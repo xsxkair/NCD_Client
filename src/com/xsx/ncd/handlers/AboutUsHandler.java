@@ -20,7 +20,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 @Component
-public class AboutUsHandler {
+public class AboutUsHandler implements HandlerTemplet{
 
 	private Stage s_Stage = null;
 	private AnchorPane root = null;
@@ -29,7 +29,8 @@ public class AboutUsHandler {
 	private Image logoImage = null;
 	
 	@PostConstruct
-	private void UI_Init(){
+	@Override
+	public void UI_Init(){
         FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(this.getClass().getResource("/com/xsx/ncd/views/AboutUsStage.fxml"));
         InputStream in = this.getClass().getResourceAsStream("/com/xsx/ncd/views/AboutUsStage.fxml");
@@ -48,9 +49,10 @@ public class AboutUsHandler {
         loader = null;
         in = null;
 	}
-	
-	public void ShowAbout(){
-		
+
+	@Override
+	public void showPane() {
+		// TODO Auto-generated method stub
 		if(s_Stage == null){
 			s_Stage = new Stage();
 			s_Stage.initModality(Modality.APPLICATION_MODAL);
@@ -66,5 +68,11 @@ public class AboutUsHandler {
 		}
    
 		s_Stage.show();
+	}
+
+	@Override
+	public void showPane(Object object) {
+		// TODO Auto-generated method stub
+		
 	}
 }

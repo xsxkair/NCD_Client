@@ -48,7 +48,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
 @Component
-public class ReportOverViewPage {
+public class ReportOverViewPage implements HandlerTemplet{
 	
 	private AnchorPane rootpane;
 	
@@ -92,6 +92,7 @@ public class ReportOverViewPage {
 	@Autowired private TestDataRepository testDataRepository;
 
 	@PostConstruct
+	@Override
 	public void UI_Init(){
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(this.getClass().getResource("/com/xsx/ncd/views/ReportOverViewPage.fxml"));
@@ -358,7 +359,8 @@ public class ReportOverViewPage {
         in = null;
 	}
 	
-	public void ShowReportOverViewPage(){
+	@Override
+	public void showPane(){
 		workPageSession.setWorkPane(rootpane);
 	}
 	
@@ -498,6 +500,12 @@ public class ReportOverViewPage {
 				return datas;
 			}
 		}
+	}
+
+	@Override
+	public void showPane(Object object) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

@@ -34,11 +34,17 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 
 @Component
@@ -48,11 +54,18 @@ public class LoginHandler {
 	
 	private Scene s_Scene;
 	
-	@FXML JFXTextField UserNameText;
+	@FXML TextField UserNameText;
 	
-	@FXML JFXPasswordField UserPasswordText;
+	@FXML PasswordField UserPasswordText;
 	
 	@FXML JFXButton LoginButton;
+	@FXML ImageView	GB_CloseButton;
+	
+	private Image closeImage1 = null;
+	private Image closeImage2 = null;
+	
+	private double initX;
+    private double initY;
 	
 	@Autowired private UserRepository userRepository;
 	@Autowired private UserSession userSession;
@@ -73,39 +86,58 @@ public class LoginHandler {
         
         try {
         	root = loader.load(in);
-        	
-        	LoginButton.disableProperty().bind(new BooleanBinding() {
-    			{
-    				bind(UserNameText.textProperty());
-    				bind(UserPasswordText.textProperty());
-    			}
-    			@Override
-    			protected boolean computeValue() {
-    				// TODO Auto-generated method stub
-    				
-    				if(UserNameText.getLength() > 0 && UserPasswordText.getLength() >= 6)
-    					return false;
-    				else
-    					return true;
-    			}
-    		});
-    		
-    		UserPasswordText.focusedProperty().addListener((o, oldVal, newVal) -> {
-
-    			if (!newVal) UserPasswordText.validate();
-    		});
-    		
-    		UserNameText.focusedProperty().addListener((o, oldVal, newVal) -> {
-    			if (!newVal) UserNameText.validate();
-    		});
-
-    		s_Scene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
-    		s_Scene.getStylesheets().add(this.getClass().getResource("/com/xsx/ncd/views/login.css").toExternalForm());
-    		
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+        
+        s_Scene = new Scene(root, Color.TRANSPARENT);
+        root.setOnMousePressed(new EventHandler<MouseEvent>() {
+
+            public void handle(MouseEvent me) {
+
+                initX = me.getScreenX() - s_Stage.getX();
+
+                initY = me.getScreenY() - s_Stage.getY();
+            }
+        });
+
+    	root.setOnMouseDragged(new EventHandler<MouseEvent>() {
+
+            public void handle(MouseEvent me) {
+
+            	s_Stage.setX(me.getScreenX() - initX);
+
+            	s_Stage.setY(me.getScreenY() - initY);
+            }
+        });
+    	
+    	LoginButton.disableProperty().bind(new BooleanBinding() {
+			{
+				bind(UserNameText.lengthProperty());
+				bind(UserPasswordText.lengthProperty());
+			}
+			@Override
+			protected boolean computeValue() {
+				// TODO Auto-generated method stub
+				
+				if(UserNameText.getLength() > 0 && UserPasswordText.getLength() >= 6)
+					return false;
+				else
+					return true;
+			}
+		});
+        
+        closeImage1 = new Image(this.getClass().getResourceAsStream("/RES/close1.png"));
+        closeImage2 = new Image(this.getClass().getResourceAsStream("/RES/close2.png"));
+        
+        GB_CloseButton.setOnMouseEntered((e)->{
+        	GB_CloseButton.setImage(closeImage2);
+        });
+        
+        GB_CloseButton.setOnMouseExited((e)->{
+        	GB_CloseButton.setImage(closeImage1);
+        });
         
         loader = null;
         in = null;
@@ -129,22 +161,9 @@ public class LoginHandler {
 		ncdSoft = null;
 		
 		s_Stage = new Stage();
-			 
-		s_Stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-					
-			@Override
-			public void handle(WindowEvent event) {
-					// TODO Auto-generated method stub
-				s_Stage.close();
-				System.exit(0);
-			}
-		});
-			
+		s_Stage.initStyle(StageStyle.TRANSPARENT);
 		s_Stage.getIcons().add(new Image(this.getClass().getResourceAsStream("/RES/logo.png")));
-
-		s_Stage.setTitle("µÇÂ¼");
-			        
-		s_Stage.setResizable(true);
+		s_Stage.setResizable(false);
 		s_Stage.setScene(s_Scene);
  
 		s_Stage.show();
@@ -161,6 +180,7 @@ public class LoginHandler {
 			s_Stage = null;
 			
 			userSession.setUser(tempuser);
+
 			mainContainHandler.startWorkActivity();
 		}
 		else {
@@ -174,4 +194,9 @@ public class LoginHandler {
 		tempuser = null;
 	}
 	
+	@FXML
+	public void GB_CloseAction(){
+		s_Stage.close();
+		System.exit(0);
+	}
 }

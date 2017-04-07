@@ -36,7 +36,7 @@ import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 
 @Component
-public class DeviceHandler {
+public class DeviceHandler implements HandlerTemplet{
 	
 	private AnchorPane devicepane;
 		
@@ -61,7 +61,8 @@ public class DeviceHandler {
 	private User admin = null;
 	
 	@PostConstruct
-	private void UI_Init(){
+	@Override
+	public void UI_Init(){
 		
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(this.getClass().getResource("/com/xsx/ncd/views/DevicePage.fxml"));
@@ -161,7 +162,8 @@ public class DeviceHandler {
         in = null;
 	}
 	
-	public void showDeviceListPane(){
+	@Override
+	public void showPane(){
 		workPageSession.setWorkPane(devicepane);
 	}
 	
@@ -205,5 +207,11 @@ public class DeviceHandler {
 					return deviceRepository.findByAccount(admin.getAccount());
 			}
 		}
+	}
+
+	@Override
+	public void showPane(Object object) {
+		// TODO Auto-generated method stub
+		
 	}
 }

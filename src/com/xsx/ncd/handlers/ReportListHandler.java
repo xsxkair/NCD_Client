@@ -64,7 +64,7 @@ import javafx.scene.paint.Color;
 import javafx.util.Callback;
 
 @Component
-public class ReportListHandler {
+public class ReportListHandler implements HandlerTemplet{
 	
 	private AnchorPane reportpane;
 	
@@ -118,7 +118,8 @@ public class ReportListHandler {
 	@Autowired private ReportDetailHandler reportDetailHandler;
 	
 	@PostConstruct
-	private void UI_Init(){
+	@Override
+	public void UI_Init(){
 		
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(this.getClass().getResource("/com/xsx/ncd/views/ReportListPage.fxml"));
@@ -297,7 +298,8 @@ public class ReportListHandler {
         in = null;
 	}
 
-	public void showReportListPage() {
+	@Override
+	public void showPane() {
 		workPageSession.setWorkPane(reportpane);
 	}
 	
@@ -546,7 +548,6 @@ public class ReportListHandler {
 					return null;
 				}
 				
-
 				java.sql.Date tempdate = null;
 				try {
 					tempdate = java.sql.Date.valueOf(GB_TestTimeFilterDateChoose.getValue());
@@ -575,5 +576,11 @@ public class ReportListHandler {
 				return data;
 			}
 		}
+	}
+
+	@Override
+	public void showPane(Object object) {
+		// TODO Auto-generated method stub
+		
 	}
 }

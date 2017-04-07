@@ -142,8 +142,14 @@ public class ReportDetailHandler {
     			S_DeviceLocationLabel.setText(device.getAddr());
     			
     			//试剂卡信息
-    			S_CardidLabel.setText(card.getCid());
-    			S_ItemNameLabel.setText(card.getItem());
+    			if(card != null){
+    				S_CardidLabel.setText(card.getCid());
+    				S_ItemNameLabel.setText(card.getItem());
+    			}
+    			else{
+    				S_CardidLabel.setText("null");
+    				S_ItemNameLabel.setText("null");
+    			}
     			
     			//操作人信息
     			S_TesterNameLabel.setText(testData.getT_name());
@@ -160,7 +166,12 @@ public class ReportDetailHandler {
     			S_CardTempLabel.setText("试剂卡温度："+testData.getO_t()+" ℃");
     			S_EnTempLabel.setText("环境温度："+testData.getE_t()+" ℃");
     			S_TesttimeLabel.setText("测试时间："+ testData.getTesttime());
-    			S_TestResultLabel.setText(testData.getA_v()+" " + card.getDanwei());
+    			if(testData.getT_re().equals("Ok"))
+    				S_TestResultLabel.setText(testData.getA_v()+" " + card.getDanwei());
+    			else{
+    				S_TestResultLabel.setText("Error");
+    				S_TestResultLabel.setStyle("-fx-text-fill: red");
+    			}
     			
     			//测试信息
     	        seriesdata = new ArrayList<>();
@@ -242,7 +253,7 @@ public class ReportDetailHandler {
         		seriesdata = null;
         		jsonArray = null;
         	}
-        		
+        	
 		});
 
         

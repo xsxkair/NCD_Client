@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,7 +26,9 @@ import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
+import com.sun.javafx.scene.control.skin.TableColumnHeader;
 import com.sun.org.apache.bcel.internal.generic.NEW;
+import com.sun.xml.internal.ws.api.pipe.NextAction;
 import com.xsx.ncd.define.ReportTableItem;
 import com.xsx.ncd.entity.Card;
 import com.xsx.ncd.entity.Device;
@@ -48,6 +51,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Pagination;
@@ -65,10 +69,11 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.util.Callback;
 
 @Component
-public class TodayWorkHandler {
+public class TodayWorkHandler implements HandlerTemplet{
 
 	private AnchorPane rootpane;
 
@@ -76,7 +81,7 @@ public class TodayWorkHandler {
 	@FXML TableView<ReportTableItem> GB_TableView;
 	@FXML TableColumn<ReportTableItem, Integer> TableColumn1;
 	@FXML TableColumn<ReportTableItem, String> TableColumn2;
-	@FXML TableColumn<ReportTableItem, java.sql.Timestamp> TableColumn3;
+	@FXML TableColumn<ReportTableItem, String> TableColumn3;
 	@FXML TableColumn<ReportTableItem, String> TableColumn4;
 	@FXML TableColumn<ReportTableItem, String> TableColumn5;
 	@FXML TableColumn<ReportTableItem, String> TableColumn6;
@@ -108,6 +113,7 @@ public class TodayWorkHandler {
 	private List<Object[]> tempData = null;
 
 	@PostConstruct
+	@Override
 	public void UI_Init() {
 			
 		FXMLLoader loader = new FXMLLoader();
@@ -128,8 +134,8 @@ public class TodayWorkHandler {
         TableColumn2.setCellValueFactory(new PropertyValueFactory<ReportTableItem, String>("testitem"));
         TableColumn2.setCellFactory(new TableColumnModel<ReportTableItem, String>());
         
-        TableColumn3.setCellValueFactory(new PropertyValueFactory<ReportTableItem, java.sql.Timestamp>("testdate"));
-        TableColumn3.setCellFactory(new TableColumnModel<ReportTableItem, java.sql.Timestamp>());
+        TableColumn3.setCellValueFactory(new PropertyValueFactory<ReportTableItem, String>("testdate"));
+        TableColumn3.setCellFactory(new TableColumnModel<ReportTableItem, String>());
         
         TableColumn4.setCellValueFactory(new PropertyValueFactory<ReportTableItem, String>("testresult"));
         TableColumn4.setCellFactory(new TableColumnModel<ReportTableItem, String>());
@@ -173,7 +179,7 @@ public class TodayWorkHandler {
         });
         
         GB_FreshPane.visibleProperty().bind(queryReportService.runningProperty());
-
+		
         workPageSession.getWorkPane().addListener((o, oldValue, newValue)->{
         	
         	if(rootpane.equals(newValue)){
@@ -231,7 +237,8 @@ public class TodayWorkHandler {
         in = null;
 	}
 	
-	public void showTodayReportPage() {
+	@Override
+	public void showPane() {
 		workPageSession.setWorkPane(rootpane);
 	}
 	
@@ -239,7 +246,7 @@ public class TodayWorkHandler {
 		
 	    @Override
 	    public TableCell<T, S> call(TableColumn<T, S> param) {
-	    	TextFieldTableCell<T, S> cell = new TextFieldTableCell<>();
+	    	TextFieldTableCell<T, S> cell = new TextFieldTableCell<T, S>();
 	    	
 	    	cell.setAlignment(Pos.CENTER);
 	    	cell.setEditable(false);
@@ -260,8 +267,7 @@ public class TodayWorkHandler {
 						}
 					}
 				}
-			});
-	    	
+			});	    	
 	        return cell;
 	    }
 	}
@@ -288,7 +294,7 @@ public class TodayWorkHandler {
 				List<String> deviceList;
 				
 				//π‹¿Ì‘±
-				User admin;
+				User admin = null;
 				
 				try {
 					Thread.sleep(1000);
@@ -320,5 +326,12 @@ public class TodayWorkHandler {
 				return results;
 			}
 		}
+	}
+
+
+	@Override
+	public void showPane(Object object) {
+		// TODO Auto-generated method stub
+		
 	}
 }

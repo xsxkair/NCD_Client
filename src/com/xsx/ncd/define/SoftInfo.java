@@ -5,7 +5,7 @@ public class SoftInfo {
 	
 	public static final String softName = "CPath";
 	
-	public static final Integer softVersion = 1002;
+	public static final Integer softVersion = 1006;
 	
 	public static final String softDesc = null;
 	
