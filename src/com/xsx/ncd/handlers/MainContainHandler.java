@@ -2,17 +2,13 @@ package com.xsx.ncd.handlers;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.annotation.PostConstruct;
 
-import org.aspectj.weaver.Position;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.jfoenix.svg.SVGGlyph;
-import com.sun.org.apache.bcel.internal.generic.NEW;
 import com.xsx.ncd.entity.User;
 import com.xsx.ncd.spring.UserSession;
 import com.xsx.ncd.spring.WorkPageSession;
@@ -21,9 +17,6 @@ import com.xsx.ncd.tool.JFXDecorator;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Cursor;
@@ -36,9 +29,6 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.PickResult;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -46,7 +36,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 @Component
 public class MainContainHandler {
@@ -94,7 +83,6 @@ public class MainContainHandler {
 	private String[] userSecondButtonText = {"我的信息", "管理员管理", "销售人员", "研发人员", "审核人管理", "品控人员", "我的人员"};
 	
 	private User user = null;
-	private StringBuffer tempStr = null;
 	
 	private double initX;
     private double initY;
@@ -307,6 +295,7 @@ public class MainContainHandler {
         	StackPane tempS = (StackPane) menus;
         	
         	tempS.setOnMouseClicked((e)->{
+        		System.out.println("xsx");
         		if(!tempS.equals(selectMenu)){
         			Object userData = tempS.getUserData();
             		
@@ -333,7 +322,7 @@ public class MainContainHandler {
         	});
         	
         	tempS.setOnMouseExited((e)->{
-        		if(!tempS.equals(selectMenu)){
+        		if(tempS.getChildren().contains(menuHoverd)){
         			tempS.getChildren().remove(menuHoverd);
         			tempS.setCursor(Cursor.DEFAULT);
         		}
@@ -449,6 +438,8 @@ public class MainContainHandler {
 		s_Scene = new Scene(decorator, decorator.getPrefWidth(), decorator.getPrefHeight());
 		s_Stage.getIcons().add(new Image(this.getClass().getResourceAsStream("/RES/logo.png")));
 	    s_Stage.setScene(s_Scene);
+	    s_Stage.setMinWidth(1024);
+	    s_Stage.setMinHeight(600);
 		s_Stage.show();
 	}
 	

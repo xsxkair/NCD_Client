@@ -182,7 +182,7 @@ public class CardInfoHandler implements HandlerTemplet{
 			@Override
 			protected boolean computeValue() {
 				// TODO Auto-generated method stub
-						
+
 				try {
 					makeNum = Integer.valueOf(OutNumTextField.getText());
 				} catch (Exception e) {

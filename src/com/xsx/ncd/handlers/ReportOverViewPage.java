@@ -263,14 +263,13 @@ public class ReportOverViewPage implements HandlerTemplet{
 		node1.setGraphic(label1);
 		node1.setToggleGroup(GB_ViewTimeToggleGroup);
 		node1.setUserData("年");
-		node1.setSelected(true);
 		
 		JFXToggleNode node2 = new JFXToggleNode();		
 		Label label2 = new Label("月");
 		node2.setGraphic(label2);
 		node2.setToggleGroup(GB_ViewTimeToggleGroup);
 		node2.setUserData("月");
-		
+		node2.setSelected(true);
 		
 		JFXToggleNode node3 = new JFXToggleNode();		
 		Label label3 = new Label("日");

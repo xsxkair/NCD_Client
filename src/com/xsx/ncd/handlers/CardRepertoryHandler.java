@@ -178,8 +178,6 @@ public class CardRepertoryHandler implements HandlerTemplet{
                     sp.toFront();
                     sp.setCursor(Cursor.TEXT);
 				}
-        		
-        		System.out.println(GB_CardDeviceChart.getXAxis());
         	}
         });
         

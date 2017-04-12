@@ -209,11 +209,11 @@
             </AnchorPane>
          </children>
       </AnchorPane>
-      <FlowPane fx:id="GB_SecondeItemFlowPane" alignment="CENTER_LEFT" columnHalignment="CENTER" hgap="30.0" maxHeight="35.0" prefHeight="35.0" style="-fx-background-color: #dfdbd4; -fx-background-radius: 30 30 0 0;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="108.0">
+      <FlowPane fx:id="GB_SecondeItemFlowPane" alignment="CENTER_LEFT" columnHalignment="CENTER" hgap="30.0" maxHeight="35.0" prefHeight="35.0" style="-fx-background-color: #dfdbd4; -fx-background-radius: 30 30 0 0;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="103.0">
          <padding>
             <Insets left="50.0" />
          </padding>
       </FlowPane>
-      <AnchorPane fx:id="GB_RootPane" style="-fx-background-color: white;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="148.0" />
+      <AnchorPane fx:id="GB_RootPane" style="-fx-background-color: white;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="138.0" />
    </children>
 </AnchorPane>

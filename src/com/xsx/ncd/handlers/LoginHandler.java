@@ -2,7 +2,6 @@ package com.xsx.ncd.handlers;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 
 import javax.annotation.PostConstruct;
 
@@ -10,42 +9,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXPasswordField;
-import com.jfoenix.controls.JFXTextField;
+import com.jfoenix.controls.JFXDialog;
 import com.xsx.ncd.define.SoftInfo;
-import com.xsx.ncd.entity.Device;
 import com.xsx.ncd.entity.User;
 import com.xsx.ncd.entity.NcdSoft;
-import com.xsx.ncd.handlers.ReportOverViewPage.QueryTodayReportNumByStatusService.QueryReportTask;
 import com.xsx.ncd.repository.UserRepository;
 import com.xsx.ncd.repository.NcdSoftRepository;
 import com.xsx.ncd.spring.UserSession;
-import com.xsx.ncd.spring.SpringFacktory;
-
 import javafx.beans.binding.BooleanBinding;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.concurrent.Service;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.stage.WindowEvent;
 
 @Component
 public class LoginHandler {
@@ -54,10 +41,12 @@ public class LoginHandler {
 	
 	private Scene s_Scene;
 	
+	@FXML StackPane GB_RootStackPane;
+	@FXML JFXDialog GB_LogDialog;
+	@FXML Label logContent;
+	@FXML JFXButton acceptButton;
 	@FXML TextField UserNameText;
-	
 	@FXML PasswordField UserPasswordText;
-	
 	@FXML JFXButton LoginButton;
 	@FXML ImageView	GB_CloseButton;
 	
@@ -90,6 +79,8 @@ public class LoginHandler {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+        
+        GB_RootStackPane.getChildren().remove(GB_LogDialog);
         
         s_Scene = new Scene(root, Color.TRANSPARENT);
         root.setOnMousePressed(new EventHandler<MouseEvent>() {
@@ -139,6 +130,11 @@ public class LoginHandler {
         	GB_CloseButton.setImage(closeImage1);
         });
         
+        acceptButton.setOnAction((e)->{
+        	if(GB_LogDialog.isVisible())
+        		GB_LogDialog.close();
+        });
+        
         loader = null;
         in = null;
 	}
@@ -184,14 +180,15 @@ public class LoginHandler {
 			mainContainHandler.startWorkActivity();
 		}
 		else {
-			ButtonType loginButtonType = new ButtonType("È·¶¨", ButtonData.OK_DONE);
-			Dialog<String> dialog = new Dialog<>();
-			dialog.getDialogPane().setContentText("µÇÂ½Ê§°Ü£¡");
-			dialog.getDialogPane().getButtonTypes().add(loginButtonType);
-			dialog.showAndWait();
+			showLogs("Login Failed !");
 		}
 		
 		tempuser = null;
+	}
+	
+	private void showLogs(String log) {
+		logContent.setText(log);
+		GB_LogDialog.show(GB_RootStackPane);
 	}
 	
 	@FXML

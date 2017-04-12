@@ -2,14 +2,11 @@ package com.xsx.ncd.application;
 
 import java.util.Optional;
 
-import javax.swing.filechooser.FileSystemView;
-
 import com.jfoenix.controls.JFXSpinner;
 import com.xsx.ncd.handlers.LoginHandler;
 import com.xsx.ncd.spring.SpringFacktory;
 
 import javafx.application.Application;
-import javafx.beans.binding.BooleanBinding;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
@@ -23,13 +20,10 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaPlayer.Status;
 import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
-import javafx.util.Duration;
-import net.jimmc.jshortcut.JShellLink;
 
 public class AppStart extends Application{
 	
@@ -123,7 +117,6 @@ public class AppStart extends Application{
 		@Override
 		protected Boolean call() {
 			// TODO Auto-generated method stub
-
 			try {
 				
 				//初始化spring，创建bean

@@ -25,11 +25,14 @@ import com.xsx.ncd.spring.SystemSetData;
 import com.xsx.ncd.spring.WorkPageSession;
 
 import javafx.beans.binding.StringBinding;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import javafx.css.PseudoClass;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -107,6 +110,8 @@ public class ReportListHandler implements HandlerTemplet{
 	private List<ReportTableItem> reportTableItems = null;
 
 	private TableRow row = null;
+	private static final PseudoClass myWarnPseudoClass = PseudoClass.getPseudoClass("warn");
+	private static final PseudoClass myErrorPseudoClass = PseudoClass.getPseudoClass("error");
 	
 	@Autowired private TestDataRepository testDataRepository;
 	@Autowired private UserRepository managerRepository;
@@ -177,6 +182,34 @@ public class ReportListHandler implements HandlerTemplet{
         
         TableColumn8.setCellValueFactory(new PropertyValueFactory<ReportTableItem, String>("reportresult"));
         TableColumn8.setCellFactory(new TableColumnModel<ReportTableItem, String>());
+        
+        GB_TableView.setRowFactory(tv -> {
+			TableRow<ReportTableItem> row = new TableRow<ReportTableItem>();
+			BooleanProperty columnHover = new SimpleBooleanProperty();
+
+            // when the mouse hovers over the cell, set the columnHover to indicate 
+            // the mouse is over the column:
+			row.itemProperty().addListener((o, oldValue, newValue) -> {
+				if(newValue == null){
+					row.pseudoClassStateChanged(myErrorPseudoClass, false);
+					row.pseudoClassStateChanged(myWarnPseudoClass, false);
+				}
+				else if(newValue.getTestresult().startsWith("Error")){
+					row.pseudoClassStateChanged(myErrorPseudoClass, true);
+					row.pseudoClassStateChanged(myWarnPseudoClass, false);
+				}
+				else if(newValue.getTestresult().startsWith("<") || newValue.getTestresult().startsWith(">")){
+					row.pseudoClassStateChanged(myErrorPseudoClass, false);
+					row.pseudoClassStateChanged(myWarnPseudoClass, true);
+				}
+				else{
+					row.pseudoClassStateChanged(myErrorPseudoClass, false);
+					row.pseudoClassStateChanged(myWarnPseudoClass, false);
+				}
+            });
+            
+            return row;
+		});
         
         GB_ReportResultFilterCombox.getItems().add(null);
         GB_ReportResultFilterCombox.getItems().addAll("未审核", "合格", "不合格");
@@ -268,7 +301,7 @@ public class ReportListHandler implements HandlerTemplet{
 						object = datas.get(i);
 						reportTableItems.add(new ReportTableItem(i+1+GB_Pagination.getCurrentPageIndex()*systemSetData.getPageSize(), 
 								(String)object[5], (java.sql.Timestamp)object[1], (Float)object[2], (String)object[6], (String)object[3], 
-								(String)object[7], (String)object[4], (String)object[8], (Integer)object[0]));
+								(String)object[7], (String)object[4], (String)object[8], (Integer)object[0], (String)object[9]));
 					}
 					
 					GB_TableView.getItems().setAll(reportTableItems);
@@ -279,8 +312,6 @@ public class ReportListHandler implements HandlerTemplet{
 			}
 			
 		});
-		
-        reportpane.getStylesheets().add(this.getClass().getResource("/com/xsx/ncd/views/reportpage.css").toExternalForm());
         
         GB_Pagination.setSkin(new coutompanition(GB_Pagination));
         GB_Pagination.setStyle("-fx-page-information-visible: false");

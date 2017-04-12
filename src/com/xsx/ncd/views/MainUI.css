@@ -55,7 +55,15 @@
 }
 
 .table-row-cell:hover{
-	-fx-background-color: -fx-table-cell-border-color, salmon ;
+	-fx-background-color: -fx-table-cell-border-color, AQUA ;
+}
+
+.table-row-cell: warn{
+	-fx-background-color: -fx-table-cell-border-color, khaki   ;
+}
+
+.table-row-cell: error{
+	-fx-background-color: -fx-table-cell-border-color, indianred  ;
 }
 
 .table-view > .virtual-flow > .scroll-bar:vertical,
@@ -72,4 +80,42 @@
 .table-view > .virtual-flow > .scroll-bar > .increment-button, 
 .table-view > .virtual-flow > .scroll-bar > .decrement-button {
     -fx-opacity: 0;
+}
+
+.table-row-cell : warn{
+	-fx-text-fill: red;
+	-fx-background-color: -fx-table-cell-border-color, beige ;
+}
+.table-row-cell : error{
+	-fx-text-fill: blue;
+	-fx-background-color: -fx-table-cell-border-color, greenyellow ;
+} 
+
+/*报告详情页*/
+#GB_TestLineChart > .chart-title {
+	-fx-text-fill : #1a3f83;
+     -fx-padding : 0 0 10 0;
+}
+
+#GB_ReportDescTextArea : focused{
+    -fx-background-color: red;
+}
+
+
+/*荧光曲线*/
+.reportDetailPoint{
+	-fx-border-width : 2px;
+	-fx-background-color : #25292D;
+	-fx-text-fill : red;
+	-fx-font-size : 15;
+	-fx-background-radius : 5;
+}
+
+#GB_TestLineChart .chart-series-line{
+	-fx-stroke-width : 2;
+}
+
+.BigDataPoint{
+	-fx-scale-x : 5;
+	-fx-scale-y : 5;
 }

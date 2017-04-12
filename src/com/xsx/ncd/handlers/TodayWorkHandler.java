@@ -3,38 +3,15 @@ package com.xsx.ncd.handlers;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.PostConstruct;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
-import org.apache.commons.lang.ObjectUtils.Null;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.domain.Sort.Order;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
-import com.sun.javafx.scene.control.skin.TableColumnHeader;
-import com.sun.org.apache.bcel.internal.generic.NEW;
-import com.sun.xml.internal.ws.api.pipe.NextAction;
 import com.xsx.ncd.define.ReportTableItem;
-import com.xsx.ncd.entity.Card;
-import com.xsx.ncd.entity.Device;
 import com.xsx.ncd.entity.User;
-import com.xsx.ncd.entity.TestData;
-import com.xsx.ncd.repository.CardRepository;
 import com.xsx.ncd.repository.DeviceRepository;
 import com.xsx.ncd.repository.UserRepository;
 import com.xsx.ncd.repository.TestDataRepository;
@@ -42,16 +19,14 @@ import com.xsx.ncd.spring.UserSession;
 import com.xsx.ncd.spring.SystemSetData;
 import com.xsx.ncd.spring.WorkPageSession;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import javafx.css.PseudoClass;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Pagination;
@@ -59,17 +34,12 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
-import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.util.Callback;
 
 @Component
@@ -86,8 +56,6 @@ public class TodayWorkHandler implements HandlerTemplet{
 	@FXML TableColumn<ReportTableItem, String> TableColumn5;
 	@FXML TableColumn<ReportTableItem, String> TableColumn6;
 	@FXML TableColumn<ReportTableItem, String> TableColumn7;
-	
-	Tooltip tooltip = null;
 	
 	@FXML Pagination GB_Pagination;
 	
@@ -106,12 +74,12 @@ public class TodayWorkHandler implements HandlerTemplet{
 	@Autowired private SystemSetData systemSetData;
 	@Autowired private WorkPageSession workPageSession;
 	@Autowired private ReportDetailHandler reportDetailHandler;
-	@Autowired private CardRepository cardRepository;
 	
 	private QueryReportService queryReportService = null;
 	private List<ReportTableItem> reportTableItems = null;
 	private List<Object[]> tempData = null;
 
+	@SuppressWarnings("unchecked")
 	@PostConstruct
 	@Override
 	public void UI_Init() {
@@ -149,6 +117,32 @@ public class TodayWorkHandler implements HandlerTemplet{
         TableColumn7.setCellValueFactory(new PropertyValueFactory<ReportTableItem, String>("simpleid"));
         TableColumn7.setCellFactory(new TableColumnModel<ReportTableItem, String>());
 
+        PseudoClass myWarnPseudoClass = PseudoClass.getPseudoClass("warn");
+        PseudoClass myErrorPseudoClass = PseudoClass.getPseudoClass("error");
+        GB_TableView.setRowFactory(tv -> new TableRow<ReportTableItem>() {
+            @Override
+            public void updateItem(ReportTableItem item, boolean empty) {
+                super.updateItem(item, empty);
+                
+                if(item == null || item.getTestresult() == null){
+                	pseudoClassStateChanged(myWarnPseudoClass, false);
+                	pseudoClassStateChanged(myErrorPseudoClass, false);
+                }
+                else if(item.getTestresult().startsWith("<") || item.getTestresult().startsWith(">")){
+                	pseudoClassStateChanged(myWarnPseudoClass, true);
+                	pseudoClassStateChanged(myErrorPseudoClass, false);
+                }
+                else if (item.getTestresult().startsWith("Error")) {
+                	pseudoClassStateChanged(myErrorPseudoClass, true);
+                	pseudoClassStateChanged(myWarnPseudoClass, false);
+				}
+                else{
+                	pseudoClassStateChanged(myWarnPseudoClass, false);
+                	pseudoClassStateChanged(myErrorPseudoClass, false);
+                }
+            }
+        });
+        
         myContextMenu = new ContextMenu(myMenuItem1, myMenuItem2, myMenuItem3, myMenuItem4);
         
         queryReportService = new QueryReportService();
@@ -168,7 +162,7 @@ public class TodayWorkHandler implements HandlerTemplet{
 					object = tempData.get(i);
 					reportTableItems.add(new ReportTableItem(i+1+GB_Pagination.getCurrentPageIndex()*systemSetData.getPageSize(), 
 							(String)object[5], (java.sql.Timestamp)object[1], (Float)object[2], (String)object[6], (String)object[3], 
-							(String)object[7], (String)object[4], null, (Integer)object[0]));
+							(String)object[7], (String)object[4], null, (Integer)object[0], (String)object[8]));
 				}
 				
 				GB_TableView.getItems().setAll(reportTableItems);
@@ -203,16 +197,12 @@ public class TodayWorkHandler implements HandlerTemplet{
 		});
 		
 		//刷新
-		myMenuItem1.setOnAction(new EventHandler<ActionEvent>() {
+		myMenuItem1.setOnAction((e)-> {
 
-			@Override
-			public void handle(ActionEvent event) {
-				// TODO Auto-generated method stub
-				if(GB_Pagination.getCurrentPageIndex() != 0)
-					GB_Pagination.setCurrentPageIndex(0);
-				else
-					queryReportService.restart();
-			}
+			if(GB_Pagination.getCurrentPageIndex() != 0)
+				GB_Pagination.setCurrentPageIndex(0);
+			else
+				queryReportService.restart();
 		});
 		
 		//查看报告
@@ -226,8 +216,6 @@ public class TodayWorkHandler implements HandlerTemplet{
 			}
 		});
 			
-		rootpane.getStylesheets().add(this.getClass().getResource("/com/xsx/ncd/views/reportpage.css").toExternalForm());
-        
 		AnchorPane.setTopAnchor(rootpane, 0.0);
         AnchorPane.setBottomAnchor(rootpane, 0.0);
         AnchorPane.setLeftAnchor(rootpane, 0.0);

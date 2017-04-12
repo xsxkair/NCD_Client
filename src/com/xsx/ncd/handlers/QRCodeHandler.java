@@ -144,7 +144,6 @@ public class QRCodeHandler implements HandlerTemplet{
         
         cardId = new SimpleIntegerProperty();
         cardId.addListener((o, oldValue, newValue)->{
-        	System.out.println(newValue);
         	if(newValue.intValue() < 0){
 				card = new Card();
 				GB_MakeQRCodeButton1.setVisible(false);

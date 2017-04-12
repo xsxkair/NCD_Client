@@ -17,10 +17,10 @@ public class TestDataRepositoryImpl implements MyTestDataDao{
 		Object[] result = new Object[2];
 		
 		StringBuffer sqlHead1 = new StringBuffer("select count(td.id) FROM TestData td ");
-		StringBuffer sqlHead2 = new StringBuffer("SELECT td.id, td.testtime, td.a_v, td.t_name, td.sid, c.item, c.danwei, "
-				+ "d.did FROM TestData td left join Device d on d.did=td.did "
-        		+ "left join Card c on c.cid=td.cid "
-        		+ "left join User u on u.account=td.account ");
+		StringBuffer sqlHead2 = new StringBuffer("SELECT td.id, td.testtime, td.a_v, td.t_name, td.sid, c.item, c.danwei, ");
+				sqlHead2.append("d.did, td.t_re FROM TestData td left join Device d on d.did=td.did ");
+				sqlHead2.append("left join Card c on c.cid=td.cid ");
+				sqlHead2.append("left join User u on u.account=td.account ");
 		//定义SQL   
         StringBuffer sql1 =  new StringBuffer("where td.result='未审核' AND td.did in(:devicelist) ");
 
@@ -60,8 +60,8 @@ public class TestDataRepositoryImpl implements MyTestDataDao{
 		// TODO Auto-generated method stub
 		java.sql.Date tempdate = new java.sql.Date(System.currentTimeMillis());
 		
-		StringBuffer sqlHead1 = new StringBuffer("SELECT t.result,COUNT(t.id) FROM TestData t where DATE(t.handletime)=:testdate "
-				+ "and t.did in (:devicelist) GROUP BY (t.result)");
+		StringBuffer sqlHead1 = new StringBuffer("SELECT t.result,COUNT(t.id) FROM TestData t where DATE(t.handletime)=:testdate ");
+				sqlHead1.append("and t.did in (:devicelist) GROUP BY (t.result)");
         
         Query query = em.createQuery(sqlHead1.toString());
         
@@ -80,9 +80,9 @@ public class TestDataRepositoryImpl implements MyTestDataDao{
 		// TODO Auto-generated method stub
 		java.sql.Date tempdate = new java.sql.Date(System.currentTimeMillis());
 
-		StringBuffer sqlHead1 = new StringBuffer("SELECT c.item, COUNT(t.id) FROM TestData t left join Card c on c.cid=t.cid "
-				+ "where DATE(t.testtime)=:testdate "
-				+ "and t.did in (:devicelist) GROUP BY (c.item)");
+		StringBuffer sqlHead1 = new StringBuffer("SELECT c.item, COUNT(t.id) FROM TestData t left join Card c on c.cid=t.cid ");
+			sqlHead1.append("where DATE(t.testtime)=:testdate ");
+			sqlHead1.append("and t.did in (:devicelist) GROUP BY (c.item)");
         
         Query query = em.createQuery(sqlHead1.toString());
         
@@ -101,9 +101,9 @@ public class TestDataRepositoryImpl implements MyTestDataDao{
 		// TODO Auto-generated method stub
 		java.sql.Date tempdate = new java.sql.Date(System.currentTimeMillis());
 
-		StringBuffer sqlHead1 = new StringBuffer("SELECT d.did, COUNT(t.id) FROM TestData t left join Device d on d.did=t.did "
-				+ "where DATE(t.testtime)=:testdate "
-				+ "and t.did in (:devicelist) GROUP BY (d.did)");
+		StringBuffer sqlHead1 = new StringBuffer("SELECT d.did, COUNT(t.id) FROM TestData t left join Device d on d.did=t.did ");
+				sqlHead1.append("where DATE(t.testtime)=:testdate ");
+				sqlHead1.append("and t.did in (:devicelist) GROUP BY (d.did)");
         
         Query query = em.createQuery(sqlHead1.toString());
         
@@ -145,10 +145,10 @@ public class TestDataRepositoryImpl implements MyTestDataDao{
 		
 		sql.append("count(t.id) ");
 		
-		sql.append("from TestData t left join Device d on d.did=t.did "
-				+ "left join Card c on c.cid=t.cid "
-        		+ "left join User u on u.account=t.account "
-        		+ "where t.did in (:devicelist) Group By ");
+		sql.append("from TestData t left join Device d on d.did=t.did ");
+			sql.append("left join Card c on c.cid=t.cid ");
+			sql.append("left join User u on u.account=t.account ");
+			sql.append("where t.did in (:devicelist) Group By ");
 		
 		//项目分组
 		if(isItem.equals("项目分组"))
@@ -188,12 +188,12 @@ public class TestDataRepositoryImpl implements MyTestDataDao{
 		Object[] reportObject = new Object[2];
 		
 		StringBuffer sqlHead1 = new StringBuffer("select count(t.id) FROM TestData t ");
-		StringBuffer sqlHead2 = new StringBuffer("SELECT t.id, t.testtime, t.a_v, t.t_name, t.sid, c.item, c.danwei, d.did, t.result FROM TestData t ");
+		StringBuffer sqlHead2 = new StringBuffer("SELECT t.id, t.testtime, t.a_v, t.t_name, t.sid, c.item, c.danwei, d.did, t.result, t.t_re FROM TestData t ");
 		//定义SQL   
-        StringBuffer sql =  new StringBuffer("left join Device d on d.did=t.did "
-        		+ "left join Card c on c.cid=t.cid "
-        		+ "left join User u on u.account=t.account "
-        		+ "where ");
+        StringBuffer sql =  new StringBuffer("left join Device d on d.did=t.did ");
+        	sql.append("left join Card c on c.cid=t.cid ");
+        	sql.append("left join User u on u.account=t.account ");
+        	sql.append("where ");
         
         if(deviceId != null)
         	sql.append("t.did = :deviceid ");
@@ -278,6 +278,8 @@ public class TestDataRepositoryImpl implements MyTestDataDao{
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
+			
+			return null;
 		}
         
         

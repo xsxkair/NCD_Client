@@ -1,13 +1,10 @@
 package com.xsx.ncd.define;
 
-
-
 import java.sql.Timestamp;
 
-import com.xsx.ncd.entity.Card;
-import com.xsx.ncd.entity.Device;
-import com.xsx.ncd.entity.TestData;
-import com.xsx.ncd.entity.User;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.xsx.ncd.spring.SpringFacktory;
 
 public class ReportTableItem {
 	private Integer index;
@@ -20,14 +17,39 @@ public class ReportTableItem {
 	private String reportresult;
 	
 	private Integer dataIndex;			//数据库中数据的主键
+	private CardConstInfo cardConstInfo = null;
 
 	public ReportTableItem(Integer index, String testitem, Timestamp testdate, Float testresult, String danwei, String tester,
-			String deviceid, String simpleid, String reportresult, Integer dataIndex) {
+			String deviceid, String simpleid, String reportresult, Integer dataIndex, String t_re) {
 		
 		StringBuffer stringBuffer = new StringBuffer();
-		stringBuffer.append(testresult);
-		stringBuffer.append(" ");
-		stringBuffer.append(danwei);
+		
+		if("Ok".equals(t_re)){
+			
+			cardConstInfo = SpringFacktory.getCardConstInfoByItem(testitem);
+			
+			if(cardConstInfo == null)
+				stringBuffer.append("Error");
+			else {
+				if(testresult < cardConstInfo.getLowestresult()){
+					stringBuffer.append('<');
+					stringBuffer.append(cardConstInfo.getLowestresult());
+				}
+				else if (testresult > cardConstInfo.getHighestresult()) {
+					stringBuffer.append('>');
+					stringBuffer.append(cardConstInfo.getHighestresult());
+				}
+				else {
+					stringBuffer.append(testresult);
+				}
+				
+				stringBuffer.append(" ");
+				stringBuffer.append(danwei);
+			}
+		}
+		else{
+			stringBuffer.append("Error");
+		}
 		
 		this.index = index;
 		this.testitem = testitem;
@@ -38,6 +60,9 @@ public class ReportTableItem {
 		this.simpleid = simpleid;
 		this.reportresult = reportresult;
 		this.dataIndex = dataIndex;
+		
+		stringBuffer.setLength(0);
+		stringBuffer = null;
 	}
 
 	public Integer getIndex() {

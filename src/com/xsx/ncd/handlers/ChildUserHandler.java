@@ -179,9 +179,6 @@ public class ChildUserHandler implements EventHandler<MouseEvent>, HandlerTemple
 			@Override
 			protected boolean computeValue() {
 				// TODO Auto-generated method stub
-				System.out.println(userAccountTextField.getLength());
-				System.out.println(userPasswordTextField.getLength());
-				System.out.println(adminPasswordTextField.getLength());
 				if((userAccountTextField.getLength() > 0) && (userPasswordTextField.getLength() >= 6) &&
 						(adminPasswordTextField.getLength() >= 6))
 					return false;
