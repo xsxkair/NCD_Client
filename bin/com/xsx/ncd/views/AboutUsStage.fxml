@@ -1,29 +1,93 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="281.0" prefWidth="457.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="800.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8.0.102" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Label layoutX="198.0" layoutY="25.0" text="NCD" textFill="#183166">
-         <font>
-            <Font name="Kunstler Script" size="42.0" />
-         </font>
-      </Label>
-      <Label layoutX="198.0" layoutY="89.0" text="NCD YGFXY Client v1.00" textFill="#5382a1">
-         <font>
-            <Font name="System Bold" size="17.0" />
-         </font>
-      </Label>
-      <Label layoutX="35.0" layoutY="205.0" text="武汉纽康度生物科技股份有限公司">
-         <font>
-            <Font size="13.0" />
-         </font>
-      </Label>
-      <ImageView fx:id="logoImageView" fitHeight="89.0" fitWidth="116.0" layoutX="35.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true" />
-      <Label layoutX="35.0" layoutY="176.0" text="027-12345678" />
-      <Label layoutX="35.0" layoutY="244.0" text="Copyright © 2012, 2014, Oracle and/or its affiliates. All rights reserved." />
+      <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #205890;" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="100.0">
+         <children>
+            <HBox spacing="20.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <ImageView fitHeight="62.0" fitWidth="81.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../../RES/logo1.png" />
+                     </image>
+                  </ImageView>
+                  <VBox alignment="BOTTOM_LEFT" spacing="10.0">
+                     <children>
+                        <Label text="武汉纽康度生物科技股份有限公司">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Label text="Wuhan Newcando Biotechnology Co.,Ltd">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+               </children>
+               <padding>
+                  <Insets left="20.0" top="20.0" />
+               </padding>
+            </HBox>
+            <VBox alignment="CENTER_LEFT" spacing="15.0" style="-fx-background-color: white;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="100.0">
+               <children>
+                  <Label text="公司地址： 武汉市东湖高新技术开发区高新大道 858 号生物医药园加速器二期 A87-1 栋" textFill="#1b3f82">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+                  <Label text="联系电话： 027-81339588          027-81337566          027-81337972" textFill="#1b3f82">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+                  <Label text="邮政编码： 430075" textFill="#1b3f82">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+                  <Label text="企业邮箱： service@whnewcando.com" textFill="#1b3f82">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+                  <Label text="企业网址： http: //www.whnewcando.com" textFill="#1b3f82">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets bottom="30.0" left="10.0" right="10.0" top="30.0" />
+               </padding>
+            </VBox>
+            <VBox alignment="BOTTOM_RIGHT" prefHeight="100.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="315.0">
+               <children>
+                  <Label fx:id="GB_SoftInfoLabel" text="Label" textFill="WHITE">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets bottom="20.0" right="20.0" />
+               </padding>
+            </VBox>
+         </children>
+         <effect>
+            <DropShadow />
+         </effect>
+      </AnchorPane>
    </children>
 </AnchorPane>

@@ -5,13 +5,18 @@ import java.io.InputStream;
 
 import javax.annotation.PostConstruct;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.xsx.ncd.define.SoftInfo;
+import com.xsx.ncd.spring.WorkPageSession;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -22,11 +27,12 @@ import javafx.stage.Stage;
 @Component
 public class AboutUsHandler implements HandlerTemplet{
 
-	private Stage s_Stage = null;
 	private AnchorPane root = null;
 	
-	@FXML ImageView logoImageView;
-	private Image logoImage = null;
+	@FXML Label GB_SoftInfoLabel;
+	private StringBuffer tempStr = null;
+	
+	@Autowired private WorkPageSession workPageSession;
 	
 	@PostConstruct
 	@Override
@@ -42,9 +48,17 @@ public class AboutUsHandler implements HandlerTemplet{
 			e.printStackTrace();
 		}
         
-        logoImage = new Image(this.getClass().getResourceAsStream("/RES/logo.png"));
+        tempStr = new StringBuffer(SoftInfo.SoftTitle);
+	    tempStr.append(" -- ");
+	    tempStr.append(String.format("V %d.%d.%02d", SoftInfo.softVersion/1000, SoftInfo.softVersion%1000/100, 
+	    		SoftInfo.softVersion%100));
+	    
+        GB_SoftInfoLabel.setText(tempStr.toString());
         
-        logoImageView.setImage(logoImage);
+        AnchorPane.setTopAnchor(root, 0.0);
+        AnchorPane.setBottomAnchor(root, 0.0);
+        AnchorPane.setLeftAnchor(root, 0.0);
+        AnchorPane.setRightAnchor(root, 0.0);
         
         loader = null;
         in = null;
@@ -52,22 +66,7 @@ public class AboutUsHandler implements HandlerTemplet{
 
 	@Override
 	public void showPane() {
-		// TODO Auto-generated method stub
-		if(s_Stage == null){
-			s_Stage = new Stage();
-			s_Stage.initModality(Modality.APPLICATION_MODAL);
-			
-			s_Stage.getIcons().add(logoImage);
-			s_Stage.setResizable(false);
-
-			s_Stage.setScene(new Scene(root));
-			
-			s_Stage.setOnCloseRequest(e->{
-				s_Stage.hide();
-			});
-		}
-   
-		s_Stage.show();
+		workPageSession.setWorkPane(root);
 	}
 
 	@Override

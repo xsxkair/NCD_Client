@@ -9,36 +9,38 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
 public class DeviceThumnPane extends VBox{
 	
-	public DeviceThumnPane(Image image, Device device){
+	public DeviceThumnPane(Image image, Image logo, Device device){
 		
 		this.setUserData(device);
 		
 		ImageView deviceimage = new ImageView(image);
 		deviceimage.setFitWidth(150);
-		deviceimage.setFitHeight(123);
-		Label deviceid = new Label(device.getDid());
-		deviceid.setFont(Font.font("微软雅黑", FontWeight.BOLD, 16));
+		deviceimage.setFitHeight(150);
 		
-		this.setCursor(Cursor.HAND);
-		this.setAlignment(Pos.CENTER);
-		getChildren().addAll(deviceimage, deviceid);
+		ImageView logoImageView = new ImageView(logo);
+		logoImageView.setFitWidth(50);
+		logoImageView.setFitHeight(42);
 		
-		this.setPadding(new Insets(10, 5, 10, 5));
+		Label deviceIdLabel = new Label(device.getDid());
+		deviceIdLabel.getStyleClass().add("DeviceThumnIdLabel");
+		Label deviceAddrLabel = new Label(device.getAddr());
+		deviceAddrLabel.getStyleClass().add("DeviceThumnAddrLabel");
+		VBox vBox = new VBox(deviceIdLabel, deviceAddrLabel);
+		vBox.getStyleClass().add("DeviceThumnPaneChild");
+		
+		HBox hBox = new HBox(logoImageView, vBox);
+		hBox.getStyleClass().add("DeviceThumnPane");
+
+		getChildren().addAll(deviceimage, hBox);
+		this.getStyleClass().add("DeviceThumnPaneRoot");
+
 		this.setSpacing(10);
-		
-		//提示
-		Label userLabel = new Label("责任人："+ device.getName());
-		Label addrLabel = new Label("设备地点："+ device.getAddr());
-		VBox vBox = new VBox(userLabel, addrLabel);
-		
-		Tooltip tooltip = new Tooltip();
-		tooltip.setGraphic(vBox);
-        Tooltip.install(this, tooltip);
 	}
 }

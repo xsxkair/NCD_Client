@@ -144,7 +144,11 @@ public class QRCodeHandler implements HandlerTemplet{
         
         cardId = new SimpleIntegerProperty();
         cardId.addListener((o, oldValue, newValue)->{
-        	if(newValue.intValue() < 0){
+        	if(newValue.intValue() == -2){
+        		card = null;
+        		return;
+        	}
+        	else if(newValue.intValue() == -1){
 				card = new Card();
 				GB_MakeQRCodeButton1.setVisible(false);
         	}
@@ -169,7 +173,7 @@ public class QRCodeHandler implements HandlerTemplet{
 					fatherPane = oldValue;
 				}
 				else {
-					card = null;
+					cardId.set(-2);
 				}
 			}
 		});
@@ -325,7 +329,7 @@ public class QRCodeHandler implements HandlerTemplet{
 			card.setNormal(cardConstInfo.getNormalresult());
 			card.setDanwei(cardConstInfo.getMeasure());
 			
-			card.setMaker(userSession.getAccount());
+			card.setMaker(userSession.getName());
 			card.setUptime(new Timestamp(System.currentTimeMillis()));
 			
 			if(card.getMstatus() == null){
@@ -341,6 +345,8 @@ public class QRCodeHandler implements HandlerTemplet{
 			
 		}catch(Exception e){
 			e.printStackTrace();
+			if(UserDialog.isVisible())
+				UserDialog.close();
 			showLogsDialog(e.getMessage());
 			return false;
 		}

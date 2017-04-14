@@ -11,6 +11,9 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXDatePicker;
+import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.svg.SVGGlyph;
 import com.jfoenix.svg.SVGGlyphLoader;
 import com.sun.javafx.scene.control.skin.PaginationSkin;
@@ -71,13 +74,12 @@ public class ReportListHandler implements HandlerTemplet{
 	
 	private AnchorPane reportpane;
 	
-	@FXML FlowPane GB_FilterFlowPane;
-	@FXML TextField GB_TestItemFilterTextfield;
-	@FXML DatePicker GB_TestTimeFilterDateChoose;
-	@FXML TextField GB_TesterFilterTextfield;
-	@FXML ComboBox<String> GB_TestDeviceFilterCombox;
-	@FXML TextField GB_TestSampleFilterTextField;
-	@FXML ComboBox<String> GB_ReportResultFilterCombox;
+	@FXML JFXTextField GB_TestItemFilterTextfield;
+	@FXML JFXDatePicker GB_TestTimeFilterDateChoose;
+	@FXML JFXTextField GB_TesterFilterTextfield;
+	@FXML JFXTextField GB_TestDeviceFilterTextField;
+	@FXML JFXTextField GB_TestSampleFilterTextField;
+	@FXML JFXComboBox<String> GB_ReportResultFilterCombox;
 	@FXML StackPane refreshToggleNode;
 	private SVGGlyph svgGlyph = null;
 	
@@ -153,9 +155,7 @@ public class ReportListHandler implements HandlerTemplet{
         refreshToggleNode.setOnMouseExited(e->{
         	svgGlyph.setFill(Color.GREY);
         });
-        refreshToggleNode.setOnMouseClicked(e->{
-        	refreshPage();
-			
+        refreshToggleNode.setOnMouseClicked(e->{			
 			StartReportService();
         });
      
@@ -211,8 +211,8 @@ public class ReportListHandler implements HandlerTemplet{
             return row;
 		});
         
-        GB_ReportResultFilterCombox.getItems().add(null);
-        GB_ReportResultFilterCombox.getItems().addAll("未审核", "合格", "不合格");
+        GB_ReportResultFilterCombox.getItems().addAll("All", "未审核", "合格", "不合格");
+        GB_ReportResultFilterCombox.getSelectionModel().select(0);
         
         S_QueryReportService = new QueryReportService();
         
@@ -221,14 +221,11 @@ public class ReportListHandler implements HandlerTemplet{
 			@Override
 			public void changed(ObservableValue<? extends Pane> observable, Pane oldValue, Pane newValue) {
 				// TODO Auto-generated method stub
-				if(reportpane.equals(newValue)){	
-					
-					refreshPage();
+				if(reportpane.equals(newValue)){
 					
 					StartReportService();
 				}
 				else {
-					GB_TestDeviceFilterCombox.getItems().clear();
 					GB_TableView.getItems().clear();
 					
 					datas = null;
@@ -255,7 +252,7 @@ public class ReportListHandler implements HandlerTemplet{
 		});
 		
 		//过滤测试设备
-		GB_TestDeviceFilterCombox.valueProperty().addListener((o, oldVal, newVal) -> {
+		GB_TestDeviceFilterTextField.textProperty().addListener((o, oldVal, newVal) -> {
 			StartReportService();
 		});
 		
@@ -332,31 +329,6 @@ public class ReportListHandler implements HandlerTemplet{
 	@Override
 	public void showPane() {
 		workPageSession.setWorkPane(reportpane);
-	}
-	
-	private void refreshPage() {
-		//管理员						
-		if(managerSession.getFatherAccount() != null)
-			admin = managerRepository.findByAccount(managerSession.getFatherAccount());
-		else
-			admin = managerRepository.findByAccount(managerSession.getAccount());
-			
-		if(admin == null)
-			return;
-			
-		//查询管理员所管理的所有设备id
-		if(admin.getType() < 3)
-			deviceIdList = deviceRepository.quaryAllDeviceId();
-		else
-			deviceIdList = deviceRepository.queryDidByAccount(admin.getAccount());
-		
-		GB_TestDeviceFilterCombox.getItems().clear();
-		GB_TestDeviceFilterCombox.getItems().add("ALL");
-		GB_TestDeviceFilterCombox.getItems().addAll(deviceIdList);
-		GB_TestDeviceFilterCombox.getSelectionModel().select(null);
-		
-		deviceIdList = null;
-		admin = null;
 	}
 	
 	private void StartReportService(){
@@ -570,14 +542,22 @@ public class ReportListHandler implements HandlerTemplet{
 			
 			private Object[] ReadDeviceInfoFun(){
 				
-				String selectDeviceId = null;
+				String tempStr = null;
 				
-				try {
-					deviceIdList = GB_TestDeviceFilterCombox.getItems().subList(1, GB_TestDeviceFilterCombox.getItems().size()-1);
-				} catch (Exception e) {
-					// TODO: handle exception
+				//管理员						
+				if(managerSession.getFatherAccount() != null)
+					admin = managerRepository.findByAccount(managerSession.getFatherAccount());
+				else
+					admin = managerRepository.findByAccount(managerSession.getAccount());
+					
+				if(admin == null)
 					return null;
-				}
+					
+				//查询管理员所管理的所有设备id
+				if(admin.getType() < 3)
+					deviceIdList = deviceRepository.quaryAllDeviceId();
+				else
+					deviceIdList = deviceRepository.queryDidByAccount(admin.getAccount());
 				
 				java.sql.Date tempdate = null;
 				try {
@@ -586,19 +566,15 @@ public class ReportListHandler implements HandlerTemplet{
 					// TODO: handle exception
 					tempdate = null;
 				}
-
-				selectDeviceId = GB_TestDeviceFilterCombox.getSelectionModel().getSelectedItem();
 				
-				if(selectDeviceId == null)
-					deviceId = null;
-				else if(selectDeviceId.equals("ALL"))
-					deviceId = null;
+				if(GB_ReportResultFilterCombox.getValue().equals("All"))
+					tempStr = null;
 				else
-					deviceId = GB_TestDeviceFilterCombox.getSelectionModel().getSelectedItem();
+					tempStr = GB_ReportResultFilterCombox.getValue();
 				
 				Object[] data = testDataRepository.QueryReportList(GB_TestItemFilterTextfield.getText(), tempdate, GB_TesterFilterTextfield.getText(),
-						deviceId, deviceIdList, GB_TestSampleFilterTextField.getText(), 
-						GB_ReportResultFilterCombox.getValue(), GB_Pagination.getCurrentPageIndex()*systemSetData.getPageSize(), systemSetData.getPageSize());
+						GB_TestDeviceFilterTextField.getText(), deviceIdList, GB_TestSampleFilterTextField.getText(), 
+						tempStr, GB_Pagination.getCurrentPageIndex()*systemSetData.getPageSize(), systemSetData.getPageSize());
 				
 				admin = null;
 				deviceIdList = null;

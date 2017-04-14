@@ -74,6 +74,7 @@ public class CardListPage implements HandlerTemplet{
 	MenuItem myEditMenuItem;
 	MenuItem myDeleteMenuItem;
 	private int selectItem = -1;
+	private CardTableItem tempCardTableItem = null;
 	
 	private QueryCardService S_QueryCardService = null;
 	private List<Object[]> datas;
@@ -242,8 +243,14 @@ public class CardListPage implements HandlerTemplet{
 			@Override
 			public void handle(ActionEvent arg0) {
 				// TODO Auto-generated method stub
-				cardRepository.delete(GB_TableView.getItems().get(selectItem).getDataindex());
-				StartCardService();
+				tempCardTableItem = GB_TableView.getItems().get(selectItem);
+				if("ºÏ¸ñ".equals(tempCardTableItem.getStatus())){
+					
+				}
+				else{
+					cardRepository.delete(tempCardTableItem.getDataindex());
+					StartCardService();
+				}
 			}
 		});
 

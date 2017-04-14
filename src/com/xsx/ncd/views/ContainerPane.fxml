@@ -214,6 +214,6 @@
             <Insets left="50.0" />
          </padding>
       </FlowPane>
-      <AnchorPane fx:id="GB_RootPane" style="-fx-background-color: white;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="138.0" />
+      <AnchorPane fx:id="GB_RootPane" style="-fx-background-color: white;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="140.0" />
    </children>
 </AnchorPane>

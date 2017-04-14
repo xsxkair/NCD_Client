@@ -61,44 +61,43 @@ public class MyInfoHandler implements HandlerTemplet{
 	
 	@FXML StackPane rootStackPane;
 	
-	@FXML StackPane modifyToggleNode;
-	private SVGGlyph svgGlyph;
-	@FXML VBox infoEditBox;
-	@FXML JFXTextField userNameTextField;
-	@FXML JFXTextField userSexTextField;
-	@FXML JFXTextField userAgeTextField;
-	@FXML JFXTextField userPhoneTextField;
-	@FXML JFXTextField userJobTextField;
-	@FXML JFXTextField userDescTextField;
-	@FXML JFXPasswordField userPasswordTextField;
-	@FXML HBox modifyButtonBox;
-	@FXML JFXButton modifyUserPasswordButton;
-	@FXML JFXButton modifyUserInfodButton;
+	@FXML Button GB_ModifyUserPassWordButton;
+	@FXML Button GB_SaveUserInfoButton;
+	@FXML TextField GB_UserNameTextField;
+	@FXML TextField GB_UserAgeTextField;
+	@FXML TextField GB_UserSexTextField;
+	@FXML TextField GB_UserPhoneTextField;
+	@FXML TextField GB_UserJobTextField;
+	@FXML TextField GB_UserDescTextField;
+	@FXML StackPane GB_ModifyIcoStackPane;
+	private SVGGlyph enableModifySvg;
+	private SVGGlyph cancelModifySvg;
+	
+	@FXML JFXDialog modifyUserInfoDialog;
+	@FXML PasswordField userPasswordTextField;
 	@FXML JFXButton acceptButton0;
 	@FXML JFXButton cancelButton0;
-	@FXML JFXDialog modifyUserInfoDialog;
+	
 	@FXML JFXDialog modifyUserPasswordDialog;
 	@FXML PasswordField userNewPasswordTextField0;
 	@FXML PasswordField userNewPasswordTextField1;
 	@FXML PasswordField userOldPasswordTextField;
 	@FXML JFXButton acceptButton1;
 	@FXML JFXButton cancelButton1;
-	@FXML JFXDialog modifyLogDialog;
-	@FXML Label dialogInfo;
-	@FXML Label modifyUserPasswordLog;
+	
+	@FXML JFXDialog LogDialog;
+	@FXML Label LogDialogHead;
+	@FXML Label LogDialogContent;
 	@FXML JFXButton acceptButton2;
 	
+	private User itsMe = null;
+
 	ContextMenu myContextMenu;
 	MenuItem RefreshMenuItem;
 	
-	@Autowired
-	private UserRepository userRepository;
-	
-	@Autowired
-	private UserSession userSession;
-	
-	@Autowired
-	private WorkPageSession workPageSession;
+	@Autowired private UserRepository userRepository;
+	@Autowired private UserSession userSession;
+	@Autowired private WorkPageSession workPageSession;
 	
 	@PostConstruct
 	@Override
@@ -120,38 +119,54 @@ public class MyInfoHandler implements HandlerTemplet{
         
         rootStackPane.getChildren().remove(modifyUserInfoDialog);
         rootStackPane.getChildren().remove(modifyUserPasswordDialog);
-        rootStackPane.getChildren().remove(modifyLogDialog);
+        rootStackPane.getChildren().remove(LogDialog);
         
-        svgGlyph = SVGGlyphLoader.getIcoMoonGlyph("icomoon.svg.pencil2");
-        svgGlyph.setPrefSize(16, 16);
-        svgGlyph.setFill(Color.GREY);
-        
-        modifyToggleNode.getChildren().setAll(svgGlyph);
+        cancelModifySvg = SVGGlyphLoader.getIcoMoonGlyph("icomoon.svg.close, remove, times");
+        cancelModifySvg.setPrefSize(27, 27);
+        cancelModifySvg.setFill(Color.RED);
 
-        modifyToggleNode.setOnMouseClicked(e->{
-        	if(svgGlyph.getFill().equals(Color.GREY))
-        		setEditable(true);
-        	else
+        GB_ModifyIcoStackPane.setOnMouseClicked(e->{
+        	if(GB_ModifyIcoStackPane.getChildren().contains(cancelModifySvg))
         		setEditable(false);
+        	else
+        		setEditable(true);
         });
         
+        GB_SaveUserInfoButton.setOnAction((e)->{
+        	userPasswordTextField.clear();
+    		modifyUserInfoDialog.setTransitionType(DialogTransition.CENTER);
+    		modifyUserInfoDialog.show(rootStackPane);
+        });
         //确认修改个人信息
+        acceptButton0.disableProperty().bind(new BooleanBinding() {
+        	{
+        		bind(userPasswordTextField.lengthProperty());
+        	}
+			@Override
+			protected boolean computeValue() {
+				// TODO Auto-generated method stub
+				if(userPasswordTextField.getLength() > 5)
+					return false;
+				else
+					return true;
+			}
+		});
         acceptButton0.setOnMouseClicked((e)->{
 			modifyUserInfoDialog.close();
-			
-			User user = userRepository.findByAccount(userSession.getAccount());
-			
-			if(user.getPassword().equals(userPasswordTextField.getText())){
-				user.setName(userNameTextField.getText());
-				user.setAge(userAgeTextField.getText());
-				user.setSex(userSexTextField.getText());
-				user.setPhone(userPhoneTextField.getText());
-				user.setJob(userJobTextField.getText());
-				user.setDsc(userDescTextField.getText());
-			
-				userRepository.save(user);
+
+			if(userPasswordTextField.getText().equals(itsMe.getPassword())){
+				itsMe.setName(GB_UserNameTextField.getText());
+				itsMe.setAge(GB_UserAgeTextField.getText());
+				itsMe.setSex(GB_UserSexTextField.getText());
+				itsMe.setPhone(GB_UserPhoneTextField.getText());
+				itsMe.setJob(GB_UserJobTextField.getText());
+				itsMe.setDsc(GB_UserDescTextField.getText());
+				
+				userRepository.save(itsMe);
 				setEditable(false);
 			}
+			else
+				showLogsDialog("错误", "密码错误，禁止修改！");
 		});
         
         //取消修改个人信息
@@ -159,48 +174,44 @@ public class MyInfoHandler implements HandlerTemplet{
 			modifyUserInfoDialog.close();
 		});
         
+        GB_ModifyUserPassWordButton.setOnAction((e)->{
+        	userNewPasswordTextField0.clear();
+    		userNewPasswordTextField1.clear();
+    		userOldPasswordTextField.clear();
+    		modifyUserPasswordDialog.setTransitionType(DialogTransition.CENTER);
+    		modifyUserPasswordDialog.show(rootStackPane);
+        });
         //确认修改密码
+        acceptButton1.disableProperty().bind(new BooleanBinding() {
+        	{
+        		bind(userOldPasswordTextField.lengthProperty());
+        		bind(userNewPasswordTextField0.lengthProperty());
+        		bind(userNewPasswordTextField1.lengthProperty());
+        	}
+			@Override
+			protected boolean computeValue() {
+				// TODO Auto-generated method stub
+				if((userOldPasswordTextField.getLength() > 5) && (userNewPasswordTextField0.getLength() > 5)
+					&& (userNewPasswordTextField1.getLength() > 5))
+					return false;
+				else
+					return true;
+			}
+		});
         acceptButton1.setOnMouseClicked((e)->{
         	modifyUserPasswordDialog.close();
 			
-			User user = userRepository.findByAccount(userSession.getAccount());
-			
-			if(!user.getPassword().equals(userOldPasswordTextField.getText()))
-				showModifyLogsDialog("原始密码错误！");
-			else if ((userNewPasswordTextField0.getText() == null) || (userNewPasswordTextField1.getText() == null)) {
-				showModifyLogsDialog("新密码为空！");
-			}
+			if(!userOldPasswordTextField.getText().equals(itsMe.getPassword()))
+				showLogsDialog("错误", "密码错误，禁止修改！");
 			else if (!userNewPasswordTextField0.getText().equals(userNewPasswordTextField1.getText())) {
-				showModifyLogsDialog("新密码不一致！");
-			}
-			else if (userNewPasswordTextField0.getText().length() < 6) {
-				showModifyLogsDialog("新密码长度小于6位！");
+				showLogsDialog("错误", "新密码必须一致！");
 			}
 			else {
-				user.setPassword(userNewPasswordTextField0.getText());
+				itsMe.setPassword(userNewPasswordTextField0.getText());
 				
-				userRepository.save(user);
-				setEditable(false);
+				userRepository.save(itsMe);
 			}
 		});
-        
-        userNewPasswordTextField1.textProperty().addListener((o, oldValue, newValue)->{
-        	if (newValue.equals(null)) {
-        		modifyUserPasswordLog.setTextFill(Color.RED);
-        		modifyUserPasswordLog.setText("新密码不能为空！");
-			}
-        	else if (newValue.length() < 6) {
-        		modifyUserPasswordLog.setTextFill(Color.RED);
-        		modifyUserPasswordLog.setText("密码长度至少为6位！");
-			}
-        	else if (!newValue.equals(userNewPasswordTextField0.getText())) {
-        		modifyUserPasswordLog.setTextFill(Color.RED);
-        		modifyUserPasswordLog.setText("密码不一致！");
-			}
-        	else {
-        		modifyUserPasswordLog.setText(" ");
-			}
-        });
         
         //取消修改密码
         cancelButton1.setOnMouseClicked((e)->{
@@ -208,7 +219,7 @@ public class MyInfoHandler implements HandlerTemplet{
 		});
         
         acceptButton2.setOnMouseClicked((e)->{
-        	modifyLogDialog.close();
+        	LogDialog.close();
 		});
         
         RefreshMenuItem = new MenuItem("刷新");
@@ -223,9 +234,13 @@ public class MyInfoHandler implements HandlerTemplet{
         myContextMenu = new ContextMenu(RefreshMenuItem);
         
         workPageSession.getWorkPane().addListener((o, oldValue, newValue)->{
-        	if((newValue != null) && (newValue.equals(rootpane))){
+        	if(rootpane.equals(newValue)){
+        		itsMe = userRepository.findByAccount(userSession.getAccount());
         		setEditable(false);
         		upUserInfo();
+        	}
+        	else if(rootpane.equals(oldValue)){
+        		itsMe = null;
         	}
         });
         
@@ -255,60 +270,36 @@ public class MyInfoHandler implements HandlerTemplet{
 	}
 	
 	private void setEditable(boolean editable) {
-		for (Node node : infoEditBox.getChildren()) {
-			JFXTextField textField = (JFXTextField) node;
-			textField.setEditable(editable);
-			if(editable){
-				textField.setFocusColor(Color.web("#405aa8",1.0));
-				textField.setUnFocusColor(Color.web("#4d4d4d",1.0));
-			}
-			else {
-				textField.setFocusColor(Color.web("#405aa8",0));
-				textField.setUnFocusColor(Color.web("#4d4d4d",0));
-			}
-		}
-		modifyButtonBox.setVisible(editable);
+		GB_SaveUserInfoButton.setVisible(editable);
+		GB_UserNameTextField.setEditable(editable);
+		GB_UserAgeTextField.setEditable(editable);
+		GB_UserSexTextField.setEditable(editable);
+		GB_UserPhoneTextField.setEditable(editable);
+		GB_UserJobTextField.setEditable(editable);
+		GB_UserDescTextField.setEditable(editable);
 		
-		if(editable)
-			svgGlyph.setFill(Color.DEEPSKYBLUE);
-		else
-			svgGlyph.setFill(Color.GREY);
+		if(editable){
+			GB_ModifyIcoStackPane.getChildren().add(cancelModifySvg);
+		}
+		else{
+			upUserInfo();
+			GB_ModifyIcoStackPane.getChildren().remove(cancelModifySvg);
+		}
 	}
 	
 	private void upUserInfo() {
-		User user = userRepository.findByAccount(userSession.getAccount());
-		
-		userNameTextField.setText(user.getName());
-		userSexTextField.setText(user.getSex());
-		userAgeTextField.setText(user.getAge());
-		userPhoneTextField.setText(user.getPhone());
-		userJobTextField.setText(user.getJob());
-		userDescTextField.setText(user.getDsc());
+		GB_UserNameTextField.setText(itsMe.getName());
+		GB_UserAgeTextField.setText(itsMe.getSex());
+		GB_UserSexTextField.setText(itsMe.getAge());
+		GB_UserPhoneTextField.setText(itsMe.getPhone());
+		GB_UserJobTextField.setText(itsMe.getJob());
+		GB_UserDescTextField.setText(itsMe.getDsc());
 	}
 	
-
-	@FXML
-	public void modifyUserInfoAction(){
-
-		userPasswordTextField.clear();
-		modifyUserInfoDialog.setTransitionType(DialogTransition.CENTER);
-		modifyUserInfoDialog.show(rootStackPane);
-		
-	}
-	
-	@FXML
-	public void modifyUserPasswordAction(){
-
-		userNewPasswordTextField0.clear();
-		userNewPasswordTextField1.clear();
-		userOldPasswordTextField.clear();
-		modifyUserPasswordDialog.setTransitionType(DialogTransition.CENTER);
-		modifyUserPasswordDialog.show(rootStackPane);	
-	}
-	
-	private void showModifyLogsDialog(String logs) {
-		dialogInfo.setText(logs);
-		modifyLogDialog.show(rootStackPane);
+	private void showLogsDialog(String head, String logs) {
+		LogDialogHead.setText(head);
+		LogDialogContent.setText(logs);
+		LogDialog.show(rootStackPane);
 	}
 
 	@Override

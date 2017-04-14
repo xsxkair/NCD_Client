@@ -46,7 +46,7 @@ public class DeviceHandler implements HandlerTemplet{
 	
 	private Image onImage = null;
 	private Image offImage = null;
-	private Image errorImage = null;
+	private Image logoImage = null;
 	
 	@Autowired private WorkPageSession workPageSession;
 	@Autowired private UserRepository managerRepository;
@@ -75,9 +75,9 @@ public class DeviceHandler implements HandlerTemplet{
 			e.printStackTrace();
 		}
         
-        onImage = new Image(this.getClass().getResourceAsStream("/RES/deviceico_ok.png"));
-    	offImage = new Image(this.getClass().getResourceAsStream("/RES/deviceico_off.png"));
-    	errorImage = new Image(this.getClass().getResourceAsStream("/RES/deviceico_error.png"));
+        onImage = new Image(this.getClass().getResourceAsStream("/RES/device_on.png"));
+    	offImage = new Image(this.getClass().getResourceAsStream("/RES/device_off.png"));
+    	logoImage = new Image(this.getClass().getResourceAsStream("/RES/logo.png"));
         
         S_ReadDeviceInfoService = new ReadDeviceInfoService();
         S_ReadDeviceInfoService.setPeriod(Duration.minutes(5));
@@ -112,14 +112,11 @@ public class DeviceHandler implements HandlerTemplet{
 						if((devicetime == null) || ((currenttime > devicetime) && (currenttime - devicetime > 120000))){
 							image = offImage;
 						}
-						else if("ok".equals(device.getStatus())){
+						else {
 							image = onImage;
 						}
-						else {
-							image = errorImage;
-						}
 						
-						DeviceThumnPane temp = new DeviceThumnPane(image, device);
+						DeviceThumnPane temp = new DeviceThumnPane(image, logoImage, device);
 						
 						temp.setCursor(Cursor.HAND);
 						

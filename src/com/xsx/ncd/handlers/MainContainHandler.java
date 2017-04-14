@@ -435,11 +435,11 @@ public class MainContainHandler {
 			}
 		});
 		
-		s_Scene = new Scene(decorator, decorator.getPrefWidth(), decorator.getPrefHeight());
+		s_Scene = new Scene(decorator, 1024, 800);
 		s_Stage.getIcons().add(new Image(this.getClass().getResourceAsStream("/RES/logo.png")));
 	    s_Stage.setScene(s_Scene);
 	    s_Stage.setMinWidth(1024);
-	    s_Stage.setMinHeight(600);
+	    s_Stage.setMinHeight(800);
 		s_Stage.show();
 	}
 	

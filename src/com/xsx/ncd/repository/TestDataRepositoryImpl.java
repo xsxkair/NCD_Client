@@ -196,7 +196,7 @@ public class TestDataRepositoryImpl implements MyTestDataDao{
         	sql.append("where ");
         
         if(deviceId != null)
-        	sql.append("t.did = :deviceid ");
+        	sql.append("t.did like :deviceid ");
         else
         	sql.append("t.did in(:devicelist) ");
         
@@ -222,7 +222,7 @@ public class TestDataRepositoryImpl implements MyTestDataDao{
             Query query1 = em.createQuery(sqlHead1.toString());
             
             if(deviceId != null)
-            	query1.setParameter("deviceid", deviceId);
+            	query1.setParameter("deviceid", "%"+deviceId+"%");
             else
             	query1.setParameter("devicelist", devices);
             
@@ -249,7 +249,7 @@ public class TestDataRepositoryImpl implements MyTestDataDao{
             Query query2 =  em.createQuery(sqlHead2.toString());
             
             if(deviceId != null)
-            	query2.setParameter("deviceid", deviceId);
+            	query2.setParameter("deviceid", "%"+deviceId+"%");
             else
             	query2.setParameter("devicelist", devices);
             
