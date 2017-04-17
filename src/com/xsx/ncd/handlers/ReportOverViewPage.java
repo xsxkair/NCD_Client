@@ -57,6 +57,7 @@ public class ReportOverViewPage implements HandlerTemplet{
 	
 	private List<String> deviceIds = null;
 	private User admin = null;
+	private StringBuffer tempStringBuffer = null;
 	
 	@FXML PieChart GB_ReportPieChart;
 	private ObservableList<PieChart.Data> GB_ReportPieChartData = null;
@@ -88,7 +89,6 @@ public class ReportOverViewPage implements HandlerTemplet{
 	@Autowired private DeviceRepository deviceRepository;
 	@Autowired private UserRepository userRepository;
 	@Autowired private UserSession userSession;
-	@Autowired private CardRepository cardRepository;
 	@Autowired private TestDataRepository testDataRepository;
 
 	@PostConstruct
@@ -150,28 +150,22 @@ public class ReportOverViewPage implements HandlerTemplet{
 
         			Data temp = new Data((String)objects2[0], ((Long)objects2[1]).intValue());
         			GB_ReportPieChartData.add(temp);
-        			
-        			HBox tempbox = new HBox();
-        			tempbox.setAlignment(Pos.CENTER);
 
-        			Label label2 = new Label((String)objects2[0]);
-        			label2.getStyleClass().add("textstyle1");
+        			tempStringBuffer = new StringBuffer();
+        			tempStringBuffer.append((String)objects2[0]);
+        			tempStringBuffer.append(':');
+        			tempStringBuffer.append((int)(temp.getPieValue()));
+        			tempStringBuffer.append(" 절");
         			
-        			Label label5 = new Label(" : ");
-        			label5.setFont(new Font("System", 16));
-        			
-        			Label label4 = new Label((int)(temp.getPieValue())+"");
-        			label4.getStyleClass().add("textstyle2");
-        			
-        			Label label1 = new Label(" 절 ");
-        			label1.setFont(new Font("System", 16));
-        			
-        			tempbox.getChildren().addAll(label2, label5, label4, label1);
-        			tempbox.setSpacing(5);
+        			Label label = new Label(tempStringBuffer.toString());
+        			label.getStyleClass().add("pieChartLabelStyle");
         			
         			Tooltip tooltip = new Tooltip();
-        			tooltip.setGraphic(tempbox);
+        			tooltip.setGraphic(label);
         	        Tooltip.install(temp.getNode(), tooltip);
+        	        
+        	        tempStringBuffer.setLength(0);
+        	        tempStringBuffer = null;
         		}
         	}
         });
@@ -191,27 +185,21 @@ public class ReportOverViewPage implements HandlerTemplet{
         			Data temp = new Data((String)objects2[0], ((Long)objects2[1]).intValue());
         			GB_ItemPieChartData.add(temp);
         			
-        			HBox tempbox = new HBox();
-        			tempbox.setAlignment(Pos.CENTER);
-
-        			Label label2 = new Label((String)objects2[0]);
-        			label2.getStyleClass().add("textstyle1");
+        			tempStringBuffer = new StringBuffer();
+        			tempStringBuffer.append((String)objects2[0]);
+        			tempStringBuffer.append(':');
+        			tempStringBuffer.append((int)(temp.getPieValue()));
+        			tempStringBuffer.append(" 절");
         			
-        			Label label5 = new Label(" : ");
-        			label5.setFont(new Font("System", 16));
-        			
-        			Label label4 = new Label((int)(temp.getPieValue())+"");
-        			label4.getStyleClass().add("textstyle2");
-        			
-        			Label label1 = new Label(" 절 ");
-        			label1.setFont(new Font("System", 16));
-        			
-        			tempbox.getChildren().addAll(label2, label5, label4, label1);
-        			tempbox.setSpacing(5);
+        			Label label = new Label(tempStringBuffer.toString());
+        			label.getStyleClass().add("pieChartLabelStyle");
         			
         			Tooltip tooltip = new Tooltip();
-        			tooltip.setGraphic(tempbox);
+        			tooltip.setGraphic(label);
         	        Tooltip.install(temp.getNode(), tooltip);
+        	        
+        	        tempStringBuffer.setLength(0);
+        	        tempStringBuffer = null;
         		}
         	}
         });
@@ -231,27 +219,21 @@ public class ReportOverViewPage implements HandlerTemplet{
         			Data temp = new Data((String)objects2[0], ((Long)objects2[1]).intValue());
         			GB_DevicePieChartData.add(temp);
         			
-        			HBox tempbox = new HBox();
-        			tempbox.setAlignment(Pos.CENTER);
-
-        			Label label2 = new Label((String)objects2[0]);
-        			label2.getStyleClass().add("textstyle1");
+        			tempStringBuffer = new StringBuffer();
+        			tempStringBuffer.append((String)objects2[0]);
+        			tempStringBuffer.append(':');
+        			tempStringBuffer.append((int)(temp.getPieValue()));
+        			tempStringBuffer.append(" 절");
         			
-        			Label label5 = new Label(" : ");
-        			label5.setFont(new Font("System", 16));
-        			
-        			Label label4 = new Label((int)(temp.getPieValue())+"");
-        			label4.getStyleClass().add("textstyle2");
-        			
-        			Label label1 = new Label(" 절 ");
-        			label1.setFont(new Font("System", 16));
-        			
-        			tempbox.getChildren().addAll(label2, label5, label4, label1);
-        			tempbox.setSpacing(5);
+        			Label label = new Label(tempStringBuffer.toString());
+        			label.getStyleClass().add("pieChartLabelStyle");
         			
         			Tooltip tooltip = new Tooltip();
-        			tooltip.setGraphic(tempbox);
+        			tooltip.setGraphic(label);
         	        Tooltip.install(temp.getNode(), tooltip);
+        	        
+        	        tempStringBuffer.setLength(0);
+        	        tempStringBuffer = null;
         		}
         	}
         });

@@ -44,6 +44,7 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -69,9 +70,9 @@ public class MyInfoHandler implements HandlerTemplet{
 	@FXML TextField GB_UserPhoneTextField;
 	@FXML TextField GB_UserJobTextField;
 	@FXML TextField GB_UserDescTextField;
-	@FXML StackPane GB_ModifyIcoStackPane;
-	private SVGGlyph enableModifySvg;
-	private SVGGlyph cancelModifySvg;
+
+	@FXML ImageView GB_ModifyImageView;
+	@FXML ImageView GB_CancelModifyImageView;
 	
 	@FXML JFXDialog modifyUserInfoDialog;
 	@FXML PasswordField userPasswordTextField;
@@ -121,15 +122,12 @@ public class MyInfoHandler implements HandlerTemplet{
         rootStackPane.getChildren().remove(modifyUserPasswordDialog);
         rootStackPane.getChildren().remove(LogDialog);
         
-        cancelModifySvg = SVGGlyphLoader.getIcoMoonGlyph("icomoon.svg.close, remove, times");
-        cancelModifySvg.setPrefSize(27, 27);
-        cancelModifySvg.setFill(Color.RED);
-
-        GB_ModifyIcoStackPane.setOnMouseClicked(e->{
-        	if(GB_ModifyIcoStackPane.getChildren().contains(cancelModifySvg))
-        		setEditable(false);
-        	else
-        		setEditable(true);
+        GB_ModifyImageView.setOnMouseClicked((e)->{
+        	setEditable(true);
+        });
+        
+        GB_CancelModifyImageView.setOnMouseClicked((e)->{
+        	setEditable(false);
         });
         
         GB_SaveUserInfoButton.setOnAction((e)->{
@@ -279,18 +277,20 @@ public class MyInfoHandler implements HandlerTemplet{
 		GB_UserDescTextField.setEditable(editable);
 		
 		if(editable){
-			GB_ModifyIcoStackPane.getChildren().add(cancelModifySvg);
+			GB_ModifyImageView.setVisible(false);
+			GB_CancelModifyImageView.setVisible(true);
 		}
 		else{
 			upUserInfo();
-			GB_ModifyIcoStackPane.getChildren().remove(cancelModifySvg);
+			GB_ModifyImageView.setVisible(true);
+			GB_CancelModifyImageView.setVisible(false);
 		}
 	}
 	
 	private void upUserInfo() {
 		GB_UserNameTextField.setText(itsMe.getName());
-		GB_UserAgeTextField.setText(itsMe.getSex());
-		GB_UserSexTextField.setText(itsMe.getAge());
+		GB_UserAgeTextField.setText(itsMe.getAge());
+		GB_UserSexTextField.setText(itsMe.getSex());
 		GB_UserPhoneTextField.setText(itsMe.getPhone());
 		GB_UserJobTextField.setText(itsMe.getJob());
 		GB_UserDescTextField.setText(itsMe.getDsc());

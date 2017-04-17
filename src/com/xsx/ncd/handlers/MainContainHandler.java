@@ -79,8 +79,8 @@ public class MainContainHandler {
 	private Button[] toolSecondButton = new Button[5];
 	private String[] toolSecondButtonText = {"连接设备", "实验数据", "二维码生成", "二维码查询", "软件管理"};
 	//用户的二级菜单
-	private Button[] userSecondButton = new Button[7];
-	private String[] userSecondButtonText = {"我的信息", "管理员管理", "销售人员", "研发人员", "审核人管理", "品控人员", "我的人员"};
+	private Button[] userSecondButton = null;
+	private String[] userSecondButtonText = null;
 	
 	private User user = null;
 	
@@ -237,44 +237,7 @@ public class MainContainHandler {
         	});
 		}
         
-        for (i=0; i<userSecondButton.length; i++) {
-        	userSecondButton[i] = new Button(userSecondButtonText[i]);
-        	userSecondButton[i].setStyle("-fx-background-image :  url(/RES/buttonun.png);");
-        	userSecondButton[i].setPrefSize(84, 27);
-
-        	if(i == 0)
-        		userSecondButton[i].setUserData(managerInfoHandler);
-        	else if (i == 6)
-        		userSecondButton[i].setUserData(childUserHandler);
-        	else if (i == 1)
-        		userSecondButton[i].setUserData(new Object[]{userHandler, new Integer(1)});
-        	else if(i == 2)
-        		userSecondButton[i].setUserData(new Object[]{userHandler, new Integer(2)});
-        	else if (i == 3)
-        		userSecondButton[i].setUserData(new Object[]{userHandler, new Integer(3)});
-        	else if (i == 4)
-        		userSecondButton[i].setUserData(new Object[]{userHandler, new Integer(4)});
-        	else if (i == 5)
-        		userSecondButton[i].setUserData(new Object[]{userHandler, new Integer(5)});
-        	
-        	userSecondButton[i].setOnAction((e)->{
-        		selectSecondMenu.set((Button) e.getSource());
-        	});
-        	
-        	userSecondButton[i].setOnMouseEntered((e)->{
-        		if(!e.getSource().equals(selectSecondMenu.get())){
-        			((Button) e.getSource()).setCursor(Cursor.HAND);
-        			((Button) e.getSource()).setStyle("-fx-background-image :  url(/RES/buttonhover.png);");
-        		}
-        	});
-        	
-        	userSecondButton[i].setOnMouseExited((e)->{
-        		if(!e.getSource().equals(selectSecondMenu.get())){
-        			((Button) e.getSource()).setCursor(Cursor.DEFAULT);
-        			((Button) e.getSource()).setStyle("-fx-background-image :  url(/RES/buttonun.png);");
-        		}
-        	});
-		}
+        
         
         GB_WorkSpaceStackPane.setUserData(workSpaceHandler);
         GB_ReportManagerStackPane.setUserData(reportSecondButton);
@@ -295,7 +258,7 @@ public class MainContainHandler {
         	StackPane tempS = (StackPane) menus;
         	
         	tempS.setOnMouseClicked((e)->{
-        		System.out.println("xsx");
+
         		if(!tempS.equals(selectMenu)){
         			Object userData = tempS.getUserData();
             		
@@ -380,13 +343,92 @@ public class MainContainHandler {
         in = null;
 	}
 	
+	private void makeUserMenuSecondMenuItem(int userType, boolean isChild){
+		int i = 0;
+		
+		if(userType == 0){
+			userSecondButton = new Button[6];
+			userSecondButtonText = new String[]{"我的信息", "管理员管理", "销售人员", "研发人员", "审核人管理", "品控人员"};	
+		}
+		else if(userType == 1){
+			
+		}
+		else if(userType == 2){
+			
+		}
+		else if(userType == 3){
+	
+		}
+		else if(userType == 4){
+			if(isChild){
+				userSecondButton = new Button[1];
+				userSecondButtonText = new String[]{"我的信息"};	
+			}
+			else{
+				userSecondButton = new Button[2];
+				userSecondButtonText = new String[]{"我的信息", "我的人员"};	
+			}
+			
+		}
+		else if(userType == 5){
+	
+		}
+		
+		for (i=0; i<userSecondButton.length; i++) {
+        	userSecondButton[i] = new Button(userSecondButtonText[i]);
+        	userSecondButton[i].setStyle("-fx-background-image :  url(/RES/buttonun.png);");
+        	userSecondButton[i].setPrefSize(84, 27);
+
+        	if(userSecondButton[i].getText().equals("我的信息"))
+        		userSecondButton[i].setUserData(managerInfoHandler);
+        	else if (userSecondButton[i].getText().equals("我的人员"))
+        		userSecondButton[i].setUserData(childUserHandler);
+        	else if (userSecondButton[i].getText().equals("管理员管理"))
+        		userSecondButton[i].setUserData(new Object[]{userHandler, new Integer(1)});
+        	else if(userSecondButton[i].getText().equals("销售人员"))
+        		userSecondButton[i].setUserData(new Object[]{userHandler, new Integer(2)});
+        	else if (userSecondButton[i].getText().equals("研发人员"))
+        		userSecondButton[i].setUserData(new Object[]{userHandler, new Integer(3)});
+        	else if (userSecondButton[i].getText().equals("审核人管理"))
+        		userSecondButton[i].setUserData(new Object[]{userHandler, new Integer(4)});
+        	else if (userSecondButton[i].getText().equals("品控人员"))
+        		userSecondButton[i].setUserData(new Object[]{userHandler, new Integer(5)});
+        	
+        	userSecondButton[i].setOnAction((e)->{
+        		selectSecondMenu.set((Button) e.getSource());
+        	});
+        	
+        	userSecondButton[i].setOnMouseEntered((e)->{
+        		if(!e.getSource().equals(selectSecondMenu.get())){
+        			((Button) e.getSource()).setCursor(Cursor.HAND);
+        			((Button) e.getSource()).setStyle("-fx-background-image :  url(/RES/buttonhover.png);");
+        		}
+        	});
+        	
+        	userSecondButton[i].setOnMouseExited((e)->{
+        		if(!e.getSource().equals(selectSecondMenu.get())){
+        			((Button) e.getSource()).setCursor(Cursor.DEFAULT);
+        			((Button) e.getSource()).setStyle("-fx-background-image :  url(/RES/buttonun.png);");
+        		}
+        	});
+		}
+
+		GB_UsersStackPane.setUserData(userSecondButton);
+	}
+	
 	public void startWorkActivity() {
 		user = userSession.getUser();
 
 		GB_UserNameText.setText(user.getName());
 		
+		GB_MenuHBox.getChildren().setAll(GB_WorkSpaceStackPane, GB_ReportManagerStackPane, GB_DeviceStackPane,
+				GB_CardStackPane, GB_ToolStackPane, GB_UsersStackPane, GB_AboutUsStackPane);
+		
 		//数据库管理员
 		if(user.getType().equals(0)){
+			GB_MenuHBox.getChildren().remove(GB_ToolStackPane);
+			makeUserMenuSecondMenuItem(user.getType(), false);
+			
 			GB_WorkSpaceStackPane.fireEvent(new MouseEvent(MouseEvent.MOUSE_CLICKED, 0.0, 0.0, 0.0, 0.0, MouseButton.PRIMARY, 1, false, false, false, false, false, false, false, false, false, false, new PickResult(GB_WorkSpaceStackPane, 0, 0)));
 		}
 		//超级管理员
@@ -409,9 +451,14 @@ public class MainContainHandler {
 		}
 		//一级审核人
 		else if(user.getType().equals(4)){
-			
 			//进入报告查询界面
-			workSpaceHandler.showPane();
+			GB_MenuHBox.getChildren().remove(GB_ToolStackPane);
+			if(user.getFatheraccount() == null)
+				makeUserMenuSecondMenuItem(user.getType(), false);
+			else
+				makeUserMenuSecondMenuItem(user.getType(), true);
+			
+			GB_WorkSpaceStackPane.fireEvent(new MouseEvent(MouseEvent.MOUSE_CLICKED, 0.0, 0.0, 0.0, 0.0, MouseButton.PRIMARY, 1, false, false, false, false, false, false, false, false, false, false, new PickResult(GB_WorkSpaceStackPane, 0, 0)));
 		}
 		//品控
 		else if(user.getType().equals(5)){
@@ -439,7 +486,7 @@ public class MainContainHandler {
 		s_Stage.getIcons().add(new Image(this.getClass().getResourceAsStream("/RES/logo.png")));
 	    s_Stage.setScene(s_Scene);
 	    s_Stage.setMinWidth(1024);
-	    s_Stage.setMinHeight(800);
+	    s_Stage.setMinHeight(600);
 		s_Stage.show();
 	}
 	

@@ -173,3 +173,14 @@
 .list-cell:filled:hover {
     -fx-background-color: #fad5d2;
 }
+
+/*±®∏Ê∏≈¿¿*/
+.chart-pie:hover {
+    -fx-border-color: red;
+    -fx-border-width: 2px;
+}
+.pieChartLabelStyle{
+	-fx-text-fill : white;
+	-fx-font-size : 18;
+	-fx-font-weight : bold;
+}

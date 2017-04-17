@@ -31,11 +31,17 @@ public class CardRecordTableItem {
 	}
 
 	public String getPiHao() {
-		return this.card.getCid();
+		if(card == null)
+			return null;
+		else
+			return this.card.getCid();
 	}
 
 	public String getItem() {
-		return this.card.getItem();
+		if(card == null)
+			return null;
+		else
+			return this.card.getItem();
 	}
 
 	public String getInOrOutNum() {

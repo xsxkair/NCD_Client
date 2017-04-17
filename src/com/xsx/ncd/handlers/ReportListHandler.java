@@ -97,9 +97,6 @@ public class ReportListHandler implements HandlerTemplet{
 	
 	@FXML VBox GB_FreshPane;
 	
-	ContextMenu myContextMenu;
-	MenuItem myMenuItem1;
-	
 	//²éÑ¯Ïß³Ì
 	private QueryReportService S_QueryReportService;
 	
@@ -313,10 +310,6 @@ public class ReportListHandler implements HandlerTemplet{
         GB_Pagination.setSkin(new coutompanition(GB_Pagination));
         GB_Pagination.setStyle("-fx-page-information-visible: false");
         
-        myMenuItem1 = new MenuItem("É¾³ý");
-        myContextMenu = new ContextMenu();
-        myContextMenu.getItems().add(myMenuItem1);
-        
         AnchorPane.setTopAnchor(reportpane, 0.0);
         AnchorPane.setBottomAnchor(reportpane, 0.0);
         AnchorPane.setLeftAnchor(reportpane, 0.0);
@@ -360,7 +353,7 @@ public class ReportListHandler implements HandlerTemplet{
 							reportDetailHandler.startReportDetailActivity(GB_TableView.getItems().get(row.getIndex()).getDataIndex());
 						}
 						else if(event.getButton().equals(MouseButton.SECONDARY)){
-							myContextMenu.show(cell, event.getScreenX(), event.getScreenY());
+							//myContextMenu.show(cell, event.getScreenX(), event.getScreenY());
 						}
 					}
 					

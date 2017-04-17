@@ -13,9 +13,9 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1024.0" style="-fx-background-color: white;" stylesheets="@MainUI.css" xmlns="http://javafx.com/javafx/8.0.102" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1024.0" style="-fx-background-color: white;" stylesheets="@MainUI.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <AnchorPane fx:id="GB_HeadPane" style="-fx-background-color: #10518c;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <AnchorPane fx:id="GB_HeadPane" minHeight="105.0" minWidth="1024.0" prefHeight="105.0" prefWidth="1024.0" style="-fx-background-color: #10518c;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <HBox fx:id="GB_MenuHBox" alignment="CENTER" spacing="30.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="10.0">
                <children>
@@ -209,11 +209,11 @@
             </AnchorPane>
          </children>
       </AnchorPane>
-      <FlowPane fx:id="GB_SecondeItemFlowPane" alignment="CENTER_LEFT" columnHalignment="CENTER" hgap="30.0" maxHeight="35.0" prefHeight="35.0" style="-fx-background-color: #dfdbd4; -fx-background-radius: 30 30 0 0;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="103.0">
+      <FlowPane fx:id="GB_SecondeItemFlowPane" alignment="CENTER_LEFT" columnHalignment="CENTER" hgap="30.0" maxHeight="35.0" minHeight="35.0" minWidth="1024.0" prefHeight="35.0" prefWidth="1024.0" style="-fx-background-color: #dfdbd4; -fx-background-radius: 30 30 0 0;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="103.0">
          <padding>
             <Insets left="50.0" />
          </padding>
       </FlowPane>
-      <AnchorPane fx:id="GB_RootPane" style="-fx-background-color: white;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="140.0" />
+      <AnchorPane fx:id="GB_RootPane" minHeight="460.0" minWidth="1024.0" prefHeight="460.0" prefWidth="1024.0" style="-fx-background-color: white;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="140.0" />
    </children>
 </AnchorPane>

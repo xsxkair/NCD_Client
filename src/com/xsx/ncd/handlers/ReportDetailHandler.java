@@ -29,6 +29,7 @@ import com.xsx.ncd.spring.UserSession;
 import com.xsx.ncd.spring.SystemSetData;
 import com.xsx.ncd.spring.WorkPageSession;
 
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -77,7 +78,6 @@ public class ReportDetailHandler {
 	private StringBuffer tempStringBuffer = null;
 	private JSONArray jsonArray = null;
 	private List<Integer> seriesdata = null;
-	private boolean isEnableEdit = false;
 	
 	@FXML StackPane GB_RootStackPane;
 	@FXML HBox GB_BackFatherPane;
@@ -123,6 +123,7 @@ public class ReportDetailHandler {
 	private double firstPointX = 0;
 	private int minPoint = -1;
 	private StackPane tempNode = null;
+	private User tempUser = null;
 	
 	@Autowired private TestDataRepository testDataRepository;
 	@Autowired private CardRepository cardRepository;
@@ -323,7 +324,6 @@ public class ReportDetailHandler {
     	        String r_result = testData.getResult();
     	        if(r_result.equals("ºÏ¸ñ")){
     	        	S_ReportToogleGroup.selectToggle(GB_ReportOKToggleButton);
-    	        	isEnableEdit = false;
     	        	GB_ReportOKToggleButton.setDisable(true);
     	        	GB_ReportErrorToggleButton.setDisable(true);
     	        	GB_ReportDescTextField.setEditable(false);
@@ -332,7 +332,6 @@ public class ReportDetailHandler {
     	        }
     	        else if(r_result.equals("²»ºÏ¸ñ")){
     	        	S_ReportToogleGroup.selectToggle(GB_ReportErrorToggleButton);
-    	        	isEnableEdit = false;
     	        	GB_ReportOKToggleButton.setDisable(true);
     	        	GB_ReportErrorToggleButton.setDisable(true);
     	        	GB_ReportDescTextField.setEditable(false);
@@ -341,7 +340,6 @@ public class ReportDetailHandler {
     	        }
     	        else {
     				S_ReportToogleGroup.selectToggle(null);
-    				isEnableEdit = true;
     				GB_ReportOKToggleButton.setDisable(false);
     	        	GB_ReportErrorToggleButton.setDisable(false);
     	        	GB_ReportDescTextField.setEditable(true);
@@ -443,30 +441,53 @@ public class ReportDetailHandler {
         		AccessDialog.close();
         });
         
+        acceptButton0.disableProperty().bind(new BooleanBinding() {
+			
+        	{
+        		bind(AccessPasswordTextField.lengthProperty());
+        	}
+        	
+			@Override
+			protected boolean computeValue() {
+				// TODO Auto-generated method stub
+				if(AccessPasswordTextField.getLength() > 5)
+					return false;
+				else
+					return true;
+			}
+		});
         acceptButton0.setOnAction((e)->{
         	
         	Integer testDataId = (Integer) rootpane.getUserData();
     		
         	AccessDialog.close();
         	
-        	try {
-        		testData = testDataRepository.findOne(testDataId);
-        		testData.setResult((String) S_ReportToogleGroup.getSelectedToggle().getUserData());
-        		testData.setR_desc(GB_ReportDescTextField.getText());
-        		testData.setHandletime(new Timestamp(System.currentTimeMillis()));
-        		
-        		testData.setAccount(userSession.getAccount());
-        		
-        		testDataRepository.save(testData);
-        		
-        		workPageSession.setWorkPane(S_FatherPane);
-        		
-			} catch (Exception e2) {
-				// TODO: handle exception
-				showLogDialog("´íÎó", "Êý¾ÝÌá½»Ê§°Ü,ÇëÖØÊÔ£¡");
+        	tempUser = userRepository.findByAccount(userSession.getAccount());
+        	if(tempUser == null){
+        		showLogDialog("´íÎó", "´íÎó£¡");
+        	}
+        	else if (!AccessPasswordTextField.getText().equals(tempUser.getPassword())) {
+        		showLogDialog("´íÎó", "ÃÜÂë´íÎó£¬½ûÖ¹²Ù×÷£¡");
 			}
-
-    		testData = null;	
+        	else {
+        		try {
+            		testData = testDataRepository.findOne(testDataId);
+            		testData.setResult((String) S_ReportToogleGroup.getSelectedToggle().getUserData());
+            		testData.setR_desc(GB_ReportDescTextField.getText());
+            		testData.setHandletime(new Timestamp(System.currentTimeMillis()));
+            		
+            		testData.setAccount(userSession.getAccount());
+            		
+            		testDataRepository.save(testData);
+            		
+            		workPageSession.setWorkPane(S_FatherPane);
+            		
+    			} catch (Exception e2) {
+    				// TODO: handle exception
+    				showLogDialog("´íÎó", "Êý¾ÝÌá½»Ê§°Ü,ÇëÖØÊÔ£¡");
+    			}
+        		testData = null;
+			}	
         });
         
         acceptButton1.setOnAction((e)->{

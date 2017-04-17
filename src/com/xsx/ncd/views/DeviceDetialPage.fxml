@@ -21,7 +21,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="765.0" prefWidth="1240.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane minHeight="460.0" prefHeight="460.0" prefWidth="1240.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <StackPane fx:id="rootStackPane" prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -63,9 +63,12 @@
             </JFXDialog>
             <VBox spacing="50.0">
                <children>
-                  <HBox fx:id="deviceInfoHBox" alignment="BOTTOM_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
+                  <HBox fx:id="deviceInfoHBox" alignment="BOTTOM_LEFT" spacing="50.0">
                      <children>
-                        <ImageView fx:id="GB_DeviceImg" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                        <ImageView fx:id="GB_DeviceImg" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                           <HBox.margin>
+                              <Insets left="50.0" />
+                           </HBox.margin></ImageView>
                         <VBox fx:id="deviceInfoVBox" alignment="BOTTOM_LEFT" spacing="10.0">
                            <children>
                               <HBox alignment="CENTER_LEFT" spacing="50.0">
@@ -131,7 +134,7 @@
                   </HBox>
                   <StackPane>
                      <children>
-                        <LineChart fx:id="GB_DeviceLineChart" animated="false" legendVisible="false" minHeight="500.0" title="设备活跃度" verticalGridLinesVisible="false">
+                        <LineChart fx:id="GB_DeviceLineChart" animated="false" legendVisible="false" title="设备活跃度" verticalGridLinesVisible="false">
                           <xAxis>
                             <CategoryAxis fx:id="GB_DeviceXaxis" label="日期" side="BOTTOM" />
                           </xAxis>

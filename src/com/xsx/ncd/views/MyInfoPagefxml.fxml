@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="765.0" prefWidth="1240.0" xmlns="http://javafx.com/javafx/8.0.102" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="765.0" prefWidth="1240.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <StackPane fx:id="rootStackPane" prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -201,11 +201,16 @@
                                     </JFXButton>
                                  </children>
                               </VBox>
-                              <StackPane fx:id="GB_ModifyIcoStackPane" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                              <StackPane AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                                  <children>
-                                    <ImageView fitHeight="27.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="GB_ModifyImageView" fitHeight="27.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../../../../RES/modifyIco.png" />
+                                       </image>
+                                    </ImageView>
+                                    <ImageView fx:id="GB_CancelModifyImageView" fitHeight="27.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                                       <image>
+                                          <Image url="@../../../../RES/deleteUserIco.png" />
                                        </image>
                                     </ImageView>
                                  </children>
